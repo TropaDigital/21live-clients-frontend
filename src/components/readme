@@ -1,0 +1,25 @@
+src/
+├── components/
+│ ├── core/ # Componentes primitivos/reutilizáveis
+│ │ ├── Button/
+│ │ ├── Input/
+│ │ └── ... (Componentes com alta reutilização)
+│ │
+│ ├── layouts/ # Componentes de estrutura geral
+│ │ ├── MainLayout/
+│ │ ├── AuthLayout/
+│ │ └── ...  
+│ │
+│ ├── modules/ # Componentes complexos específicos
+│ │ ├── ProductCard/ (Combina vários core components)
+│ │ └── UserProfile/  
+│ │
+│ ├── UI/ # Elementos visuais isolados
+│ │ ├── Loading/
+│ │ ├── Modal/
+│ │ └── ...  
+│ │
+│ └── ...  
+│
+├── pages/ # Componentes de página (rotas)
+└── ...

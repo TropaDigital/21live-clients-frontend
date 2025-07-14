@@ -1,0 +1,46 @@
+import styled from "styled-components";
+
+interface IProps {
+  checked: boolean;
+  color?: string;
+  colorText?: string;
+}
+
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorText", "checked"].includes(prop),
+})<IProps>`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  .checkbox {
+    min-width: 20px;
+    min-height: 20px;
+    max-width: 20px;
+    max-height: 20px;
+    border-radius: 4px;
+    border: 1px solid ${({ color }) => color};
+    background-color: ${({ checked, color, theme }) =>
+      checked ? color : theme.colors.background.default};
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    i {
+      color: ${({ colorText }) => colorText};
+      display: ${({ checked }) => (checked ? "flex" : "none")};
+      animation: zoomIn 0.2s;
+      svg {
+        width: 13px;
+        height: 15px;
+      }
+    }
+  }
+  .label {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.neutral[800]};
+    cursor: pointer;
+    padding: 10px 0px;
+  }
+`;

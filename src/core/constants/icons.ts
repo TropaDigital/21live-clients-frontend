@@ -1,0 +1,4006 @@
+export const LIST_ICONS = [
+  {
+    value: "ad",
+    icon: "ad",
+  },
+  {
+    value: "address-book",
+    icon: "address-book",
+  },
+  {
+    value: "address-card",
+    icon: "address-card",
+  },
+  {
+    value: "adjust",
+    icon: "adjust",
+  },
+  {
+    value: "air-freshener",
+    icon: "air-freshener",
+  },
+  {
+    value: "align-center",
+    icon: "align-center",
+  },
+  {
+    value: "align-justify",
+    icon: "align-justify",
+  },
+  {
+    value: "align-left",
+    icon: "align-left",
+  },
+  {
+    value: "align-right",
+    icon: "align-right",
+  },
+  {
+    value: "allergies",
+    icon: "allergies",
+  },
+  {
+    value: "ambulance",
+    icon: "ambulance",
+  },
+  {
+    value: "american-sign-language-interpreting",
+    icon: "american-sign-language-interpreting",
+  },
+  {
+    value: "anchor",
+    icon: "anchor",
+  },
+  {
+    value: "angle-double-down",
+    icon: "angle-double-down",
+  },
+  {
+    value: "angle-double-left",
+    icon: "angle-double-left",
+  },
+  {
+    value: "angle-double-right",
+    icon: "angle-double-right",
+  },
+  {
+    value: "angle-double-up",
+    icon: "angle-double-up",
+  },
+  {
+    value: "angle-down",
+    icon: "angle-down",
+  },
+  {
+    value: "angle-left",
+    icon: "angle-left",
+  },
+  {
+    value: "angle-right",
+    icon: "angle-right",
+  },
+  {
+    value: "angle-up",
+    icon: "angle-up",
+  },
+  {
+    value: "angry",
+    icon: "angry",
+  },
+  {
+    value: "ankh",
+    icon: "ankh",
+  },
+  {
+    value: "apple-alt",
+    icon: "apple-alt",
+  },
+  {
+    value: "archive",
+    icon: "archive",
+  },
+  {
+    value: "archway",
+    icon: "archway",
+  },
+  {
+    value: "arrow-alt-circle-down",
+    icon: "arrow-alt-circle-down",
+  },
+  {
+    value: "arrow-alt-circle-left",
+    icon: "arrow-alt-circle-left",
+  },
+  {
+    value: "arrow-alt-circle-right",
+    icon: "arrow-alt-circle-right",
+  },
+  {
+    value: "arrow-alt-circle-up",
+    icon: "arrow-alt-circle-up",
+  },
+  {
+    value: "arrow-circle-down",
+    icon: "arrow-circle-down",
+  },
+  {
+    value: "arrow-circle-left",
+    icon: "arrow-circle-left",
+  },
+  {
+    value: "arrow-circle-right",
+    icon: "arrow-circle-right",
+  },
+  {
+    value: "arrow-circle-up",
+    icon: "arrow-circle-up",
+  },
+  {
+    value: "arrow-down",
+    icon: "arrow-down",
+  },
+  {
+    value: "arrow-left",
+    icon: "arrow-left",
+  },
+  {
+    value: "arrow-right",
+    icon: "arrow-right",
+  },
+  {
+    value: "arrow-up",
+    icon: "arrow-up",
+  },
+  {
+    value: "arrows-alt",
+    icon: "arrows-alt",
+  },
+  {
+    value: "arrows-alt-h",
+    icon: "arrows-alt-h",
+  },
+  {
+    value: "arrows-alt-v",
+    icon: "arrows-alt-v",
+  },
+  {
+    value: "assistive-listening-systems",
+    icon: "assistive-listening-systems",
+  },
+  {
+    value: "asterisk",
+    icon: "asterisk",
+  },
+  {
+    value: "at",
+    icon: "at",
+  },
+  {
+    value: "atlas",
+    icon: "atlas",
+  },
+  {
+    value: "atom",
+    icon: "atom",
+  },
+  {
+    value: "audio-description",
+    icon: "audio-description",
+  },
+  {
+    value: "award",
+    icon: "award",
+  },
+  {
+    value: "baby",
+    icon: "baby",
+  },
+  {
+    value: "baby-carriage",
+    icon: "baby-carriage",
+  },
+  {
+    value: "backspace",
+    icon: "backspace",
+  },
+  {
+    value: "backward",
+    icon: "backward",
+  },
+  {
+    value: "bacon",
+    icon: "bacon",
+  },
+  {
+    value: "bacteria",
+    icon: "bacteria",
+  },
+  {
+    value: "bacterium",
+    icon: "bacterium",
+  },
+  {
+    value: "bahai",
+    icon: "bahai",
+  },
+  {
+    value: "balance-scale",
+    icon: "balance-scale",
+  },
+  {
+    value: "balance-scale-left",
+    icon: "balance-scale-left",
+  },
+  {
+    value: "balance-scale-right",
+    icon: "balance-scale-right",
+  },
+  {
+    value: "ban",
+    icon: "ban",
+  },
+  {
+    value: "band-aid",
+    icon: "band-aid",
+  },
+  {
+    value: "barcode",
+    icon: "barcode",
+  },
+  {
+    value: "bars",
+    icon: "bars",
+  },
+  {
+    value: "baseball-ball",
+    icon: "baseball-ball",
+  },
+  {
+    value: "basketball-ball",
+    icon: "basketball-ball",
+  },
+  {
+    value: "bath",
+    icon: "bath",
+  },
+  {
+    value: "battery-empty",
+    icon: "battery-empty",
+  },
+  {
+    value: "battery-full",
+    icon: "battery-full",
+  },
+  {
+    value: "battery-half",
+    icon: "battery-half",
+  },
+  {
+    value: "battery-quarter",
+    icon: "battery-quarter",
+  },
+  {
+    value: "battery-three-quarters",
+    icon: "battery-three-quarters",
+  },
+  {
+    value: "bed",
+    icon: "bed",
+  },
+  {
+    value: "beer",
+    icon: "beer",
+  },
+  {
+    value: "bell",
+    icon: "bell",
+  },
+  {
+    value: "bell-slash",
+    icon: "bell-slash",
+  },
+  {
+    value: "bezier-curve",
+    icon: "bezier-curve",
+  },
+  {
+    value: "bible",
+    icon: "bible",
+  },
+  {
+    value: "bicycle",
+    icon: "bicycle",
+  },
+  {
+    value: "biking",
+    icon: "biking",
+  },
+  {
+    value: "binoculars",
+    icon: "binoculars",
+  },
+  {
+    value: "biohazard",
+    icon: "biohazard",
+  },
+  {
+    value: "birthday-cake",
+    icon: "birthday-cake",
+  },
+  {
+    value: "blender",
+    icon: "blender",
+  },
+  {
+    value: "blender-phone",
+    icon: "blender-phone",
+  },
+  {
+    value: "blind",
+    icon: "blind",
+  },
+  {
+    value: "blog",
+    icon: "blog",
+  },
+  {
+    value: "bold",
+    icon: "bold",
+  },
+  {
+    value: "bolt",
+    icon: "bolt",
+  },
+  {
+    value: "bomb",
+    icon: "bomb",
+  },
+  {
+    value: "bone",
+    icon: "bone",
+  },
+  {
+    value: "bong",
+    icon: "bong",
+  },
+  {
+    value: "book",
+    icon: "book",
+  },
+  {
+    value: "book-dead",
+    icon: "book-dead",
+  },
+  {
+    value: "book-medical",
+    icon: "book-medical",
+  },
+  {
+    value: "book-open",
+    icon: "book-open",
+  },
+  {
+    value: "book-reader",
+    icon: "book-reader",
+  },
+  {
+    value: "bookmark",
+    icon: "bookmark",
+  },
+  {
+    value: "border-all",
+    icon: "border-all",
+  },
+  {
+    value: "border-none",
+    icon: "border-none",
+  },
+  {
+    value: "border-style",
+    icon: "border-style",
+  },
+  {
+    value: "bowling-ball",
+    icon: "bowling-ball",
+  },
+  {
+    value: "box",
+    icon: "box",
+  },
+  {
+    value: "box-open",
+    icon: "box-open",
+  },
+  {
+    value: "box-tissue",
+    icon: "box-tissue",
+  },
+  {
+    value: "boxes",
+    icon: "boxes",
+  },
+  {
+    value: "braille",
+    icon: "braille",
+  },
+  {
+    value: "brain",
+    icon: "brain",
+  },
+  {
+    value: "bread-slice",
+    icon: "bread-slice",
+  },
+  {
+    value: "briefcase",
+    icon: "briefcase",
+  },
+  {
+    value: "briefcase-medical",
+    icon: "briefcase-medical",
+  },
+  {
+    value: "broadcast-tower",
+    icon: "broadcast-tower",
+  },
+  {
+    value: "broom",
+    icon: "broom",
+  },
+  {
+    value: "brush",
+    icon: "brush",
+  },
+  {
+    value: "bug",
+    icon: "bug",
+  },
+  {
+    value: "building",
+    icon: "building",
+  },
+  {
+    value: "bullhorn",
+    icon: "bullhorn",
+  },
+  {
+    value: "bullseye",
+    icon: "bullseye",
+  },
+  {
+    value: "burn",
+    icon: "burn",
+  },
+  {
+    value: "bus",
+    icon: "bus",
+  },
+  {
+    value: "bus-alt",
+    icon: "bus-alt",
+  },
+  {
+    value: "business-time",
+    icon: "business-time",
+  },
+  {
+    value: "calculator",
+    icon: "calculator",
+  },
+  {
+    value: "calendar",
+    icon: "calendar",
+  },
+  {
+    value: "calendar-alt",
+    icon: "calendar-alt",
+  },
+  {
+    value: "calendar-check",
+    icon: "calendar-check",
+  },
+  {
+    value: "calendar-day",
+    icon: "calendar-day",
+  },
+  {
+    value: "calendar-minus",
+    icon: "calendar-minus",
+  },
+  {
+    value: "calendar-plus",
+    icon: "calendar-plus",
+  },
+  {
+    value: "calendar-times",
+    icon: "calendar-times",
+  },
+  {
+    value: "calendar-week",
+    icon: "calendar-week",
+  },
+  {
+    value: "camera",
+    icon: "camera",
+  },
+  {
+    value: "camera-retro",
+    icon: "camera-retro",
+  },
+  {
+    value: "campground",
+    icon: "campground",
+  },
+  {
+    value: "candy-cane",
+    icon: "candy-cane",
+  },
+  {
+    value: "cannabis",
+    icon: "cannabis",
+  },
+  {
+    value: "capsules",
+    icon: "capsules",
+  },
+  {
+    value: "car",
+    icon: "car",
+  },
+  {
+    value: "car-alt",
+    icon: "car-alt",
+  },
+  {
+    value: "car-battery",
+    icon: "car-battery",
+  },
+  {
+    value: "car-crash",
+    icon: "car-crash",
+  },
+  {
+    value: "car-side",
+    icon: "car-side",
+  },
+  {
+    value: "caravan",
+    icon: "caravan",
+  },
+  {
+    value: "caret-down",
+    icon: "caret-down",
+  },
+  {
+    value: "caret-left",
+    icon: "caret-left",
+  },
+  {
+    value: "caret-right",
+    icon: "caret-right",
+  },
+  {
+    value: "caret-square-down",
+    icon: "caret-square-down",
+  },
+  {
+    value: "caret-square-left",
+    icon: "caret-square-left",
+  },
+  {
+    value: "caret-square-right",
+    icon: "caret-square-right",
+  },
+  {
+    value: "caret-square-up",
+    icon: "caret-square-up",
+  },
+  {
+    value: "caret-up",
+    icon: "caret-up",
+  },
+  {
+    value: "carrot",
+    icon: "carrot",
+  },
+  {
+    value: "cart-arrow-down",
+    icon: "cart-arrow-down",
+  },
+  {
+    value: "cart-plus",
+    icon: "cart-plus",
+  },
+  {
+    value: "cash-register",
+    icon: "cash-register",
+  },
+  {
+    value: "cat",
+    icon: "cat",
+  },
+  {
+    value: "certificate",
+    icon: "certificate",
+  },
+  {
+    value: "chair",
+    icon: "chair",
+  },
+  {
+    value: "chalkboard",
+    icon: "chalkboard",
+  },
+  {
+    value: "chalkboard-teacher",
+    icon: "chalkboard-teacher",
+  },
+  {
+    value: "charging-station",
+    icon: "charging-station",
+  },
+  {
+    value: "chart-area",
+    icon: "chart-area",
+  },
+  {
+    value: "chart-bar",
+    icon: "chart-bar",
+  },
+  {
+    value: "chart-line",
+    icon: "chart-line",
+  },
+  {
+    value: "chart-pie",
+    icon: "chart-pie",
+  },
+  {
+    value: "check",
+    icon: "check",
+  },
+  {
+    value: "check-circle",
+    icon: "check-circle",
+  },
+  {
+    value: "check-double",
+    icon: "check-double",
+  },
+  {
+    value: "check-square",
+    icon: "check-square",
+  },
+  {
+    value: "cheese",
+    icon: "cheese",
+  },
+  {
+    value: "chess",
+    icon: "chess",
+  },
+  {
+    value: "chess-bishop",
+    icon: "chess-bishop",
+  },
+  {
+    value: "chess-board",
+    icon: "chess-board",
+  },
+  {
+    value: "chess-king",
+    icon: "chess-king",
+  },
+  {
+    value: "chess-knight",
+    icon: "chess-knight",
+  },
+  {
+    value: "chess-pawn",
+    icon: "chess-pawn",
+  },
+  {
+    value: "chess-queen",
+    icon: "chess-queen",
+  },
+  {
+    value: "chess-rook",
+    icon: "chess-rook",
+  },
+  {
+    value: "chevron-circle-down",
+    icon: "chevron-circle-down",
+  },
+  {
+    value: "chevron-circle-left",
+    icon: "chevron-circle-left",
+  },
+  {
+    value: "chevron-circle-right",
+    icon: "chevron-circle-right",
+  },
+  {
+    value: "chevron-circle-up",
+    icon: "chevron-circle-up",
+  },
+  {
+    value: "chevron-down",
+    icon: "chevron-down",
+  },
+  {
+    value: "chevron-left",
+    icon: "chevron-left",
+  },
+  {
+    value: "chevron-right",
+    icon: "chevron-right",
+  },
+  {
+    value: "chevron-up",
+    icon: "chevron-up",
+  },
+  {
+    value: "child",
+    icon: "child",
+  },
+  {
+    value: "church",
+    icon: "church",
+  },
+  {
+    value: "circle",
+    icon: "circle",
+  },
+  {
+    value: "circle-notch",
+    icon: "circle-notch",
+  },
+  {
+    value: "city",
+    icon: "city",
+  },
+  {
+    value: "clinic-medical",
+    icon: "clinic-medical",
+  },
+  {
+    value: "clipboard",
+    icon: "clipboard",
+  },
+  {
+    value: "clipboard-check",
+    icon: "clipboard-check",
+  },
+  {
+    value: "clipboard-list",
+    icon: "clipboard-list",
+  },
+  {
+    value: "clock",
+    icon: "clock",
+  },
+  {
+    value: "clone",
+    icon: "clone",
+  },
+  {
+    value: "closed-captioning",
+    icon: "closed-captioning",
+  },
+  {
+    value: "cloud",
+    icon: "cloud",
+  },
+  {
+    value: "cloud-download-alt",
+    icon: "cloud-download-alt",
+  },
+  {
+    value: "cloud-meatball",
+    icon: "cloud-meatball",
+  },
+  {
+    value: "cloud-moon",
+    icon: "cloud-moon",
+  },
+  {
+    value: "cloud-moon-rain",
+    icon: "cloud-moon-rain",
+  },
+  {
+    value: "cloud-rain",
+    icon: "cloud-rain",
+  },
+  {
+    value: "cloud-showers-heavy",
+    icon: "cloud-showers-heavy",
+  },
+  {
+    value: "cloud-sun",
+    icon: "cloud-sun",
+  },
+  {
+    value: "cloud-sun-rain",
+    icon: "cloud-sun-rain",
+  },
+  {
+    value: "cloud-upload-alt",
+    icon: "cloud-upload-alt",
+  },
+  {
+    value: "cocktail",
+    icon: "cocktail",
+  },
+  {
+    value: "code",
+    icon: "code",
+  },
+  {
+    value: "code-branch",
+    icon: "code-branch",
+  },
+  {
+    value: "coffee",
+    icon: "coffee",
+  },
+  {
+    value: "cog",
+    icon: "cog",
+  },
+  {
+    value: "cogs",
+    icon: "cogs",
+  },
+  {
+    value: "coins",
+    icon: "coins",
+  },
+  {
+    value: "columns",
+    icon: "columns",
+  },
+  {
+    value: "comment",
+    icon: "comment",
+  },
+  {
+    value: "comment-alt",
+    icon: "comment-alt",
+  },
+  {
+    value: "comment-dollar",
+    icon: "comment-dollar",
+  },
+  {
+    value: "comment-dots",
+    icon: "comment-dots",
+  },
+  {
+    value: "comment-medical",
+    icon: "comment-medical",
+  },
+  {
+    value: "comment-slash",
+    icon: "comment-slash",
+  },
+  {
+    value: "comments",
+    icon: "comments",
+  },
+  {
+    value: "comments-dollar",
+    icon: "comments-dollar",
+  },
+  {
+    value: "compact-disc",
+    icon: "compact-disc",
+  },
+  {
+    value: "compass",
+    icon: "compass",
+  },
+  {
+    value: "compress",
+    icon: "compress",
+  },
+  {
+    value: "compress-alt",
+    icon: "compress-alt",
+  },
+  {
+    value: "compress-arrows-alt",
+    icon: "compress-arrows-alt",
+  },
+  {
+    value: "concierge-bell",
+    icon: "concierge-bell",
+  },
+  {
+    value: "cookie",
+    icon: "cookie",
+  },
+  {
+    value: "cookie-bite",
+    icon: "cookie-bite",
+  },
+  {
+    value: "copy",
+    icon: "copy",
+  },
+  {
+    value: "copyright",
+    icon: "copyright",
+  },
+  {
+    value: "couch",
+    icon: "couch",
+  },
+  {
+    value: "credit-card",
+    icon: "credit-card",
+  },
+  {
+    value: "crop",
+    icon: "crop",
+  },
+  {
+    value: "crop-alt",
+    icon: "crop-alt",
+  },
+  {
+    value: "cross",
+    icon: "cross",
+  },
+  {
+    value: "crosshairs",
+    icon: "crosshairs",
+  },
+  {
+    value: "crow",
+    icon: "crow",
+  },
+  {
+    value: "crown",
+    icon: "crown",
+  },
+  {
+    value: "crutch",
+    icon: "crutch",
+  },
+  {
+    value: "cube",
+    icon: "cube",
+  },
+  {
+    value: "cubes",
+    icon: "cubes",
+  },
+  {
+    value: "cut",
+    icon: "cut",
+  },
+  {
+    value: "database",
+    icon: "database",
+  },
+  {
+    value: "deaf",
+    icon: "deaf",
+  },
+  {
+    value: "democrat",
+    icon: "democrat",
+  },
+  {
+    value: "desktop",
+    icon: "desktop",
+  },
+  {
+    value: "dharmachakra",
+    icon: "dharmachakra",
+  },
+  {
+    value: "diagnoses",
+    icon: "diagnoses",
+  },
+  {
+    value: "dice",
+    icon: "dice",
+  },
+  {
+    value: "dice-d20",
+    icon: "dice-d20",
+  },
+  {
+    value: "dice-d6",
+    icon: "dice-d6",
+  },
+  {
+    value: "dice-five",
+    icon: "dice-five",
+  },
+  {
+    value: "dice-four",
+    icon: "dice-four",
+  },
+  {
+    value: "dice-one",
+    icon: "dice-one",
+  },
+  {
+    value: "dice-six",
+    icon: "dice-six",
+  },
+  {
+    value: "dice-three",
+    icon: "dice-three",
+  },
+  {
+    value: "dice-two",
+    icon: "dice-two",
+  },
+  {
+    value: "digital-tachograph",
+    icon: "digital-tachograph",
+  },
+  {
+    value: "directions",
+    icon: "directions",
+  },
+  {
+    value: "disease",
+    icon: "disease",
+  },
+  {
+    value: "divide",
+    icon: "divide",
+  },
+  {
+    value: "dizzy",
+    icon: "dizzy",
+  },
+  {
+    value: "dna",
+    icon: "dna",
+  },
+  {
+    value: "dog",
+    icon: "dog",
+  },
+  {
+    value: "dollar-sign",
+    icon: "dollar-sign",
+  },
+  {
+    value: "dolly",
+    icon: "dolly",
+  },
+  {
+    value: "dolly-flatbed",
+    icon: "dolly-flatbed",
+  },
+  {
+    value: "donate",
+    icon: "donate",
+  },
+  {
+    value: "door-closed",
+    icon: "door-closed",
+  },
+  {
+    value: "door-open",
+    icon: "door-open",
+  },
+  {
+    value: "dot-circle",
+    icon: "dot-circle",
+  },
+  {
+    value: "dove",
+    icon: "dove",
+  },
+  {
+    value: "download",
+    icon: "download",
+  },
+  {
+    value: "drafting-compass",
+    icon: "drafting-compass",
+  },
+  {
+    value: "dragon",
+    icon: "dragon",
+  },
+  {
+    value: "draw-polygon",
+    icon: "draw-polygon",
+  },
+  {
+    value: "drum",
+    icon: "drum",
+  },
+  {
+    value: "drum-steelpan",
+    icon: "drum-steelpan",
+  },
+  {
+    value: "drumstick-bite",
+    icon: "drumstick-bite",
+  },
+  {
+    value: "dumbbell",
+    icon: "dumbbell",
+  },
+  {
+    value: "dumpster",
+    icon: "dumpster",
+  },
+  {
+    value: "dumpster-fire",
+    icon: "dumpster-fire",
+  },
+  {
+    value: "dungeon",
+    icon: "dungeon",
+  },
+  {
+    value: "edit",
+    icon: "edit",
+  },
+  {
+    value: "egg",
+    icon: "egg",
+  },
+  {
+    value: "eject",
+    icon: "eject",
+  },
+  {
+    value: "ellipsis-h",
+    icon: "ellipsis-h",
+  },
+  {
+    value: "ellipsis-v",
+    icon: "ellipsis-v",
+  },
+  {
+    value: "envelope",
+    icon: "envelope",
+  },
+  {
+    value: "envelope-open",
+    icon: "envelope-open",
+  },
+  {
+    value: "envelope-open-text",
+    icon: "envelope-open-text",
+  },
+  {
+    value: "envelope-square",
+    icon: "envelope-square",
+  },
+  {
+    value: "equals",
+    icon: "equals",
+  },
+  {
+    value: "eraser",
+    icon: "eraser",
+  },
+  {
+    value: "ethernet",
+    icon: "ethernet",
+  },
+  {
+    value: "euro-sign",
+    icon: "euro-sign",
+  },
+  {
+    value: "exchange-alt",
+    icon: "exchange-alt",
+  },
+  {
+    value: "exclamation",
+    icon: "exclamation",
+  },
+  {
+    value: "exclamation-circle",
+    icon: "exclamation-circle",
+  },
+  {
+    value: "exclamation-triangle",
+    icon: "exclamation-triangle",
+  },
+  {
+    value: "expand",
+    icon: "expand",
+  },
+  {
+    value: "expand-alt",
+    icon: "expand-alt",
+  },
+  {
+    value: "expand-arrows-alt",
+    icon: "expand-arrows-alt",
+  },
+  {
+    value: "external-link-alt",
+    icon: "external-link-alt",
+  },
+  {
+    value: "external-link-square-alt",
+    icon: "external-link-square-alt",
+  },
+  {
+    value: "eye",
+    icon: "eye",
+  },
+  {
+    value: "eye-dropper",
+    icon: "eye-dropper",
+  },
+  {
+    value: "eye-slash",
+    icon: "eye-slash",
+  },
+  {
+    value: "fan",
+    icon: "fan",
+  },
+  {
+    value: "fast-backward",
+    icon: "fast-backward",
+  },
+  {
+    value: "fast-forward",
+    icon: "fast-forward",
+  },
+  {
+    value: "faucet",
+    icon: "faucet",
+  },
+  {
+    value: "fax",
+    icon: "fax",
+  },
+  {
+    value: "feather",
+    icon: "feather",
+  },
+  {
+    value: "feather-alt",
+    icon: "feather-alt",
+  },
+  {
+    value: "female",
+    icon: "female",
+  },
+  {
+    value: "fighter-jet",
+    icon: "fighter-jet",
+  },
+  {
+    value: "file",
+    icon: "file",
+  },
+  {
+    value: "file-alt",
+    icon: "file-alt",
+  },
+  {
+    value: "file-archive",
+    icon: "file-archive",
+  },
+  {
+    value: "file-audio",
+    icon: "file-audio",
+  },
+  {
+    value: "file-code",
+    icon: "file-code",
+  },
+  {
+    value: "file-contract",
+    icon: "file-contract",
+  },
+  {
+    value: "file-csv",
+    icon: "file-csv",
+  },
+  {
+    value: "file-download",
+    icon: "file-download",
+  },
+  {
+    value: "file-excel",
+    icon: "file-excel",
+  },
+  {
+    value: "file-export",
+    icon: "file-export",
+  },
+  {
+    value: "file-image",
+    icon: "file-image",
+  },
+  {
+    value: "file-import",
+    icon: "file-import",
+  },
+  {
+    value: "file-invoice",
+    icon: "file-invoice",
+  },
+  {
+    value: "file-invoice-dollar",
+    icon: "file-invoice-dollar",
+  },
+  {
+    value: "file-medical",
+    icon: "file-medical",
+  },
+  {
+    value: "file-medical-alt",
+    icon: "file-medical-alt",
+  },
+  {
+    value: "file-pdf",
+    icon: "file-pdf",
+  },
+  {
+    value: "file-powerpoint",
+    icon: "file-powerpoint",
+  },
+  {
+    value: "file-prescription",
+    icon: "file-prescription",
+  },
+  {
+    value: "file-signature",
+    icon: "file-signature",
+  },
+  {
+    value: "file-upload",
+    icon: "file-upload",
+  },
+  {
+    value: "file-video",
+    icon: "file-video",
+  },
+  {
+    value: "file-word",
+    icon: "file-word",
+  },
+  {
+    value: "fill",
+    icon: "fill",
+  },
+  {
+    value: "fill-drip",
+    icon: "fill-drip",
+  },
+  {
+    value: "film",
+    icon: "film",
+  },
+  {
+    value: "filter",
+    icon: "filter",
+  },
+  {
+    value: "fingerprint",
+    icon: "fingerprint",
+  },
+  {
+    value: "fire",
+    icon: "fire",
+  },
+  {
+    value: "fire-alt",
+    icon: "fire-alt",
+  },
+  {
+    value: "fire-extinguisher",
+    icon: "fire-extinguisher",
+  },
+  {
+    value: "first-aid",
+    icon: "first-aid",
+  },
+  {
+    value: "fish",
+    icon: "fish",
+  },
+  {
+    value: "fist-raised",
+    icon: "fist-raised",
+  },
+  {
+    value: "flag",
+    icon: "flag",
+  },
+  {
+    value: "flag-checkered",
+    icon: "flag-checkered",
+  },
+  {
+    value: "flag-usa",
+    icon: "flag-usa",
+  },
+  {
+    value: "flask",
+    icon: "flask",
+  },
+  {
+    value: "flushed",
+    icon: "flushed",
+  },
+  {
+    value: "folder",
+    icon: "folder",
+  },
+  {
+    value: "folder-minus",
+    icon: "folder-minus",
+  },
+  {
+    value: "folder-open",
+    icon: "folder-open",
+  },
+  {
+    value: "folder-plus",
+    icon: "folder-plus",
+  },
+  {
+    value: "font",
+    icon: "font",
+  },
+  {
+    value: "football-ball",
+    icon: "football-ball",
+  },
+  {
+    value: "forward",
+    icon: "forward",
+  },
+  {
+    value: "frog",
+    icon: "frog",
+  },
+  {
+    value: "frown",
+    icon: "frown",
+  },
+  {
+    value: "frown-open",
+    icon: "frown-open",
+  },
+  {
+    value: "funnel-dollar",
+    icon: "funnel-dollar",
+  },
+  {
+    value: "futbol",
+    icon: "futbol",
+  },
+  {
+    value: "gamepad",
+    icon: "gamepad",
+  },
+  {
+    value: "gas-pump",
+    icon: "gas-pump",
+  },
+  {
+    value: "gavel",
+    icon: "gavel",
+  },
+  {
+    value: "gem",
+    icon: "gem",
+  },
+  {
+    value: "genderless",
+    icon: "genderless",
+  },
+  {
+    value: "ghost",
+    icon: "ghost",
+  },
+  {
+    value: "gift",
+    icon: "gift",
+  },
+  {
+    value: "gifts",
+    icon: "gifts",
+  },
+  {
+    value: "glass-cheers",
+    icon: "glass-cheers",
+  },
+  {
+    value: "glass-martini",
+    icon: "glass-martini",
+  },
+  {
+    value: "glass-martini-alt",
+    icon: "glass-martini-alt",
+  },
+  {
+    value: "glass-whiskey",
+    icon: "glass-whiskey",
+  },
+  {
+    value: "glasses",
+    icon: "glasses",
+  },
+  {
+    value: "globe",
+    icon: "globe",
+  },
+  {
+    value: "globe-africa",
+    icon: "globe-africa",
+  },
+  {
+    value: "globe-americas",
+    icon: "globe-americas",
+  },
+  {
+    value: "globe-asia",
+    icon: "globe-asia",
+  },
+  {
+    value: "globe-europe",
+    icon: "globe-europe",
+  },
+  {
+    value: "golf-ball",
+    icon: "golf-ball",
+  },
+  {
+    value: "gopuram",
+    icon: "gopuram",
+  },
+  {
+    value: "graduation-cap",
+    icon: "graduation-cap",
+  },
+  {
+    value: "greater-than",
+    icon: "greater-than",
+  },
+  {
+    value: "greater-than-equal",
+    icon: "greater-than-equal",
+  },
+  {
+    value: "grimace",
+    icon: "grimace",
+  },
+  {
+    value: "grin",
+    icon: "grin",
+  },
+  {
+    value: "grin-alt",
+    icon: "grin-alt",
+  },
+  {
+    value: "grin-beam",
+    icon: "grin-beam",
+  },
+  {
+    value: "grin-beam-sweat",
+    icon: "grin-beam-sweat",
+  },
+  {
+    value: "grin-hearts",
+    icon: "grin-hearts",
+  },
+  {
+    value: "grin-squint",
+    icon: "grin-squint",
+  },
+  {
+    value: "grin-squint-tears",
+    icon: "grin-squint-tears",
+  },
+  {
+    value: "grin-stars",
+    icon: "grin-stars",
+  },
+  {
+    value: "grin-tears",
+    icon: "grin-tears",
+  },
+  {
+    value: "grin-tongue",
+    icon: "grin-tongue",
+  },
+  {
+    value: "grin-tongue-squint",
+    icon: "grin-tongue-squint",
+  },
+  {
+    value: "grin-tongue-wink",
+    icon: "grin-tongue-wink",
+  },
+  {
+    value: "grin-wink",
+    icon: "grin-wink",
+  },
+  {
+    value: "grip-horizontal",
+    icon: "grip-horizontal",
+  },
+  {
+    value: "grip-lines",
+    icon: "grip-lines",
+  },
+  {
+    value: "grip-lines-vertical",
+    icon: "grip-lines-vertical",
+  },
+  {
+    value: "grip-vertical",
+    icon: "grip-vertical",
+  },
+  {
+    value: "guitar",
+    icon: "guitar",
+  },
+  {
+    value: "h-square",
+    icon: "h-square",
+  },
+  {
+    value: "hamburger",
+    icon: "hamburger",
+  },
+  {
+    value: "hammer",
+    icon: "hammer",
+  },
+  {
+    value: "hamsa",
+    icon: "hamsa",
+  },
+  {
+    value: "hand-holding",
+    icon: "hand-holding",
+  },
+  {
+    value: "hand-holding-heart",
+    icon: "hand-holding-heart",
+  },
+  {
+    value: "hand-holding-medical",
+    icon: "hand-holding-medical",
+  },
+  {
+    value: "hand-holding-usd",
+    icon: "hand-holding-usd",
+  },
+  {
+    value: "hand-holding-water",
+    icon: "hand-holding-water",
+  },
+  {
+    value: "hand-lizard",
+    icon: "hand-lizard",
+  },
+  {
+    value: "hand-middle-finger",
+    icon: "hand-middle-finger",
+  },
+  {
+    value: "hand-paper",
+    icon: "hand-paper",
+  },
+  {
+    value: "hand-peace",
+    icon: "hand-peace",
+  },
+  {
+    value: "hand-point-down",
+    icon: "hand-point-down",
+  },
+  {
+    value: "hand-point-left",
+    icon: "hand-point-left",
+  },
+  {
+    value: "hand-point-right",
+    icon: "hand-point-right",
+  },
+  {
+    value: "hand-point-up",
+    icon: "hand-point-up",
+  },
+  {
+    value: "hand-pointer",
+    icon: "hand-pointer",
+  },
+  {
+    value: "hand-rock",
+    icon: "hand-rock",
+  },
+  {
+    value: "hand-scissors",
+    icon: "hand-scissors",
+  },
+  {
+    value: "hand-sparkles",
+    icon: "hand-sparkles",
+  },
+  {
+    value: "hand-spock",
+    icon: "hand-spock",
+  },
+  {
+    value: "hands",
+    icon: "hands",
+  },
+  {
+    value: "hands-helping",
+    icon: "hands-helping",
+  },
+  {
+    value: "hands-wash",
+    icon: "hands-wash",
+  },
+  {
+    value: "handshake",
+    icon: "handshake",
+  },
+  {
+    value: "handshake-alt-slash",
+    icon: "handshake-alt-slash",
+  },
+  {
+    value: "handshake-slash",
+    icon: "handshake-slash",
+  },
+  {
+    value: "hanukiah",
+    icon: "hanukiah",
+  },
+  {
+    value: "hard-hat",
+    icon: "hard-hat",
+  },
+  {
+    value: "hashtag",
+    icon: "hashtag",
+  },
+  {
+    value: "hat-cowboy",
+    icon: "hat-cowboy",
+  },
+  {
+    value: "hat-cowboy-side",
+    icon: "hat-cowboy-side",
+  },
+  {
+    value: "hat-wizard",
+    icon: "hat-wizard",
+  },
+  {
+    value: "hdd",
+    icon: "hdd",
+  },
+  {
+    value: "head-side-cough",
+    icon: "head-side-cough",
+  },
+  {
+    value: "head-side-cough-slash",
+    icon: "head-side-cough-slash",
+  },
+  {
+    value: "head-side-mask",
+    icon: "head-side-mask",
+  },
+  {
+    value: "head-side-virus",
+    icon: "head-side-virus",
+  },
+  {
+    value: "heading",
+    icon: "heading",
+  },
+  {
+    value: "headphones",
+    icon: "headphones",
+  },
+  {
+    value: "headphones-alt",
+    icon: "headphones-alt",
+  },
+  {
+    value: "headset",
+    icon: "headset",
+  },
+  {
+    value: "heart",
+    icon: "heart",
+  },
+  {
+    value: "heart-broken",
+    icon: "heart-broken",
+  },
+  {
+    value: "heartbeat",
+    icon: "heartbeat",
+  },
+  {
+    value: "helicopter",
+    icon: "helicopter",
+  },
+  {
+    value: "highlighter",
+    icon: "highlighter",
+  },
+  {
+    value: "hiking",
+    icon: "hiking",
+  },
+  {
+    value: "hippo",
+    icon: "hippo",
+  },
+  {
+    value: "history",
+    icon: "history",
+  },
+  {
+    value: "hockey-puck",
+    icon: "hockey-puck",
+  },
+  {
+    value: "holly-berry",
+    icon: "holly-berry",
+  },
+  {
+    value: "home",
+    icon: "home",
+  },
+  {
+    value: "horse",
+    icon: "horse",
+  },
+  {
+    value: "horse-head",
+    icon: "horse-head",
+  },
+  {
+    value: "hospital",
+    icon: "hospital",
+  },
+  {
+    value: "hospital-alt",
+    icon: "hospital-alt",
+  },
+  {
+    value: "hospital-symbol",
+    icon: "hospital-symbol",
+  },
+  {
+    value: "hospital-user",
+    icon: "hospital-user",
+  },
+  {
+    value: "hot-tub",
+    icon: "hot-tub",
+  },
+  {
+    value: "hotdog",
+    icon: "hotdog",
+  },
+  {
+    value: "hotel",
+    icon: "hotel",
+  },
+  {
+    value: "hourglass",
+    icon: "hourglass",
+  },
+  {
+    value: "hourglass-end",
+    icon: "hourglass-end",
+  },
+  {
+    value: "hourglass-half",
+    icon: "hourglass-half",
+  },
+  {
+    value: "hourglass-start",
+    icon: "hourglass-start",
+  },
+  {
+    value: "house-damage",
+    icon: "house-damage",
+  },
+  {
+    value: "house-user",
+    icon: "house-user",
+  },
+  {
+    value: "hryvnia",
+    icon: "hryvnia",
+  },
+  {
+    value: "i-cursor",
+    icon: "i-cursor",
+  },
+  {
+    value: "ice-cream",
+    icon: "ice-cream",
+  },
+  {
+    value: "icicles",
+    icon: "icicles",
+  },
+  {
+    value: "icons",
+    icon: "icons",
+  },
+  {
+    value: "id-badge",
+    icon: "id-badge",
+  },
+  {
+    value: "id-card",
+    icon: "id-card",
+  },
+  {
+    value: "id-card-alt",
+    icon: "id-card-alt",
+  },
+  {
+    value: "igloo",
+    icon: "igloo",
+  },
+  {
+    value: "image",
+    icon: "image",
+  },
+  {
+    value: "images",
+    icon: "images",
+  },
+  {
+    value: "inbox",
+    icon: "inbox",
+  },
+  {
+    value: "indent",
+    icon: "indent",
+  },
+  {
+    value: "industry",
+    icon: "industry",
+  },
+  {
+    value: "infinity",
+    icon: "infinity",
+  },
+  {
+    value: "info",
+    icon: "info",
+  },
+  {
+    value: "info-circle",
+    icon: "info-circle",
+  },
+  {
+    value: "italic",
+    icon: "italic",
+  },
+  {
+    value: "jedi",
+    icon: "jedi",
+  },
+  {
+    value: "joint",
+    icon: "joint",
+  },
+  {
+    value: "journal-whills",
+    icon: "journal-whills",
+  },
+  {
+    value: "kaaba",
+    icon: "kaaba",
+  },
+  {
+    value: "key",
+    icon: "key",
+  },
+  {
+    value: "keyboard",
+    icon: "keyboard",
+  },
+  {
+    value: "khanda",
+    icon: "khanda",
+  },
+  {
+    value: "kiss",
+    icon: "kiss",
+  },
+  {
+    value: "kiss-beam",
+    icon: "kiss-beam",
+  },
+  {
+    value: "kiss-wink-heart",
+    icon: "kiss-wink-heart",
+  },
+  {
+    value: "kiwi-bird",
+    icon: "kiwi-bird",
+  },
+  {
+    value: "landmark",
+    icon: "landmark",
+  },
+  {
+    value: "language",
+    icon: "language",
+  },
+  {
+    value: "laptop",
+    icon: "laptop",
+  },
+  {
+    value: "laptop-code",
+    icon: "laptop-code",
+  },
+  {
+    value: "laptop-house",
+    icon: "laptop-house",
+  },
+  {
+    value: "laptop-medical",
+    icon: "laptop-medical",
+  },
+  {
+    value: "laugh",
+    icon: "laugh",
+  },
+  {
+    value: "laugh-beam",
+    icon: "laugh-beam",
+  },
+  {
+    value: "laugh-squint",
+    icon: "laugh-squint",
+  },
+  {
+    value: "laugh-wink",
+    icon: "laugh-wink",
+  },
+  {
+    value: "layer-group",
+    icon: "layer-group",
+  },
+  {
+    value: "leaf",
+    icon: "leaf",
+  },
+  {
+    value: "lemon",
+    icon: "lemon",
+  },
+  {
+    value: "less-than",
+    icon: "less-than",
+  },
+  {
+    value: "less-than-equal",
+    icon: "less-than-equal",
+  },
+  {
+    value: "level-down-alt",
+    icon: "level-down-alt",
+  },
+  {
+    value: "level-up-alt",
+    icon: "level-up-alt",
+  },
+  {
+    value: "life-ring",
+    icon: "life-ring",
+  },
+  {
+    value: "lightbulb",
+    icon: "lightbulb",
+  },
+  {
+    value: "link",
+    icon: "link",
+  },
+  {
+    value: "lira-sign",
+    icon: "lira-sign",
+  },
+  {
+    value: "list",
+    icon: "list",
+  },
+  {
+    value: "list-alt",
+    icon: "list-alt",
+  },
+  {
+    value: "list-ol",
+    icon: "list-ol",
+  },
+  {
+    value: "list-ul",
+    icon: "list-ul",
+  },
+  {
+    value: "location-arrow",
+    icon: "location-arrow",
+  },
+  {
+    value: "lock",
+    icon: "lock",
+  },
+  {
+    value: "lock-open",
+    icon: "lock-open",
+  },
+  {
+    value: "long-arrow-alt-down",
+    icon: "long-arrow-alt-down",
+  },
+  {
+    value: "long-arrow-alt-left",
+    icon: "long-arrow-alt-left",
+  },
+  {
+    value: "long-arrow-alt-right",
+    icon: "long-arrow-alt-right",
+  },
+  {
+    value: "long-arrow-alt-up",
+    icon: "long-arrow-alt-up",
+  },
+  {
+    value: "low-vision",
+    icon: "low-vision",
+  },
+  {
+    value: "luggage-cart",
+    icon: "luggage-cart",
+  },
+  {
+    value: "lungs",
+    icon: "lungs",
+  },
+  {
+    value: "lungs-virus",
+    icon: "lungs-virus",
+  },
+  {
+    value: "magic",
+    icon: "magic",
+  },
+  {
+    value: "magnet",
+    icon: "magnet",
+  },
+  {
+    value: "mail-bulk",
+    icon: "mail-bulk",
+  },
+  {
+    value: "male",
+    icon: "male",
+  },
+  {
+    value: "map",
+    icon: "map",
+  },
+  {
+    value: "map-marked",
+    icon: "map-marked",
+  },
+  {
+    value: "map-marked-alt",
+    icon: "map-marked-alt",
+  },
+  {
+    value: "map-marker",
+    icon: "map-marker",
+  },
+  {
+    value: "map-marker-alt",
+    icon: "map-marker-alt",
+  },
+  {
+    value: "map-pin",
+    icon: "map-pin",
+  },
+  {
+    value: "map-signs",
+    icon: "map-signs",
+  },
+  {
+    value: "marker",
+    icon: "marker",
+  },
+  {
+    value: "mars",
+    icon: "mars",
+  },
+  {
+    value: "mars-double",
+    icon: "mars-double",
+  },
+  {
+    value: "mars-stroke",
+    icon: "mars-stroke",
+  },
+  {
+    value: "mars-stroke-h",
+    icon: "mars-stroke-h",
+  },
+  {
+    value: "mars-stroke-v",
+    icon: "mars-stroke-v",
+  },
+  {
+    value: "mask",
+    icon: "mask",
+  },
+  {
+    value: "medal",
+    icon: "medal",
+  },
+  {
+    value: "medkit",
+    icon: "medkit",
+  },
+  {
+    value: "meh",
+    icon: "meh",
+  },
+  {
+    value: "meh-blank",
+    icon: "meh-blank",
+  },
+  {
+    value: "meh-rolling-eyes",
+    icon: "meh-rolling-eyes",
+  },
+  {
+    value: "memory",
+    icon: "memory",
+  },
+  {
+    value: "menorah",
+    icon: "menorah",
+  },
+  {
+    value: "mercury",
+    icon: "mercury",
+  },
+  {
+    value: "meteor",
+    icon: "meteor",
+  },
+  {
+    value: "microchip",
+    icon: "microchip",
+  },
+  {
+    value: "microphone",
+    icon: "microphone",
+  },
+  {
+    value: "microphone-alt",
+    icon: "microphone-alt",
+  },
+  {
+    value: "microphone-alt-slash",
+    icon: "microphone-alt-slash",
+  },
+  {
+    value: "microphone-slash",
+    icon: "microphone-slash",
+  },
+  {
+    value: "microscope",
+    icon: "microscope",
+  },
+  {
+    value: "minus",
+    icon: "minus",
+  },
+  {
+    value: "minus-circle",
+    icon: "minus-circle",
+  },
+  {
+    value: "minus-square",
+    icon: "minus-square",
+  },
+  {
+    value: "mitten",
+    icon: "mitten",
+  },
+  {
+    value: "mobile",
+    icon: "mobile",
+  },
+  {
+    value: "mobile-alt",
+    icon: "mobile-alt",
+  },
+  {
+    value: "money-bill",
+    icon: "money-bill",
+  },
+  {
+    value: "money-bill-alt",
+    icon: "money-bill-alt",
+  },
+  {
+    value: "money-bill-wave",
+    icon: "money-bill-wave",
+  },
+  {
+    value: "money-bill-wave-alt",
+    icon: "money-bill-wave-alt",
+  },
+  {
+    value: "money-check",
+    icon: "money-check",
+  },
+  {
+    value: "money-check-alt",
+    icon: "money-check-alt",
+  },
+  {
+    value: "monument",
+    icon: "monument",
+  },
+  {
+    value: "moon",
+    icon: "moon",
+  },
+  {
+    value: "mortar-pestle",
+    icon: "mortar-pestle",
+  },
+  {
+    value: "mosque",
+    icon: "mosque",
+  },
+  {
+    value: "motorcycle",
+    icon: "motorcycle",
+  },
+  {
+    value: "mountain",
+    icon: "mountain",
+  },
+  {
+    value: "mouse",
+    icon: "mouse",
+  },
+  {
+    value: "mouse-pointer",
+    icon: "mouse-pointer",
+  },
+  {
+    value: "mug-hot",
+    icon: "mug-hot",
+  },
+  {
+    value: "music",
+    icon: "music",
+  },
+  {
+    value: "network-wired",
+    icon: "network-wired",
+  },
+  {
+    value: "neuter",
+    icon: "neuter",
+  },
+  {
+    value: "newspaper",
+    icon: "newspaper",
+  },
+  {
+    value: "not-equal",
+    icon: "not-equal",
+  },
+  {
+    value: "notes-medical",
+    icon: "notes-medical",
+  },
+  {
+    value: "object-group",
+    icon: "object-group",
+  },
+  {
+    value: "object-ungroup",
+    icon: "object-ungroup",
+  },
+  {
+    value: "oil-can",
+    icon: "oil-can",
+  },
+  {
+    value: "om",
+    icon: "om",
+  },
+  {
+    value: "otter",
+    icon: "otter",
+  },
+  {
+    value: "outdent",
+    icon: "outdent",
+  },
+  {
+    value: "pager",
+    icon: "pager",
+  },
+  {
+    value: "paint-brush",
+    icon: "paint-brush",
+  },
+  {
+    value: "paint-roller",
+    icon: "paint-roller",
+  },
+  {
+    value: "palette",
+    icon: "palette",
+  },
+  {
+    value: "pallet",
+    icon: "pallet",
+  },
+  {
+    value: "paper-plane",
+    icon: "paper-plane",
+  },
+  {
+    value: "paperclip",
+    icon: "paperclip",
+  },
+  {
+    value: "parachute-box",
+    icon: "parachute-box",
+  },
+  {
+    value: "paragraph",
+    icon: "paragraph",
+  },
+  {
+    value: "parking",
+    icon: "parking",
+  },
+  {
+    value: "passport",
+    icon: "passport",
+  },
+  {
+    value: "pastafarianism",
+    icon: "pastafarianism",
+  },
+  {
+    value: "paste",
+    icon: "paste",
+  },
+  {
+    value: "pause",
+    icon: "pause",
+  },
+  {
+    value: "pause-circle",
+    icon: "pause-circle",
+  },
+  {
+    value: "paw",
+    icon: "paw",
+  },
+  {
+    value: "peace",
+    icon: "peace",
+  },
+  {
+    value: "pen",
+    icon: "pen",
+  },
+  {
+    value: "pen-alt",
+    icon: "pen-alt",
+  },
+  {
+    value: "pen-fancy",
+    icon: "pen-fancy",
+  },
+  {
+    value: "pen-nib",
+    icon: "pen-nib",
+  },
+  {
+    value: "pen-square",
+    icon: "pen-square",
+  },
+  {
+    value: "pencil-alt",
+    icon: "pencil-alt",
+  },
+  {
+    value: "pencil-ruler",
+    icon: "pencil-ruler",
+  },
+  {
+    value: "people-arrows",
+    icon: "people-arrows",
+  },
+  {
+    value: "people-carry",
+    icon: "people-carry",
+  },
+  {
+    value: "pepper-hot",
+    icon: "pepper-hot",
+  },
+  {
+    value: "percent",
+    icon: "percent",
+  },
+  {
+    value: "percentage",
+    icon: "percentage",
+  },
+  {
+    value: "person-booth",
+    icon: "person-booth",
+  },
+  {
+    value: "phone",
+    icon: "phone",
+  },
+  {
+    value: "phone-alt",
+    icon: "phone-alt",
+  },
+  {
+    value: "phone-slash",
+    icon: "phone-slash",
+  },
+  {
+    value: "phone-square",
+    icon: "phone-square",
+  },
+  {
+    value: "phone-square-alt",
+    icon: "phone-square-alt",
+  },
+  {
+    value: "phone-volume",
+    icon: "phone-volume",
+  },
+  {
+    value: "photo-video",
+    icon: "photo-video",
+  },
+  {
+    value: "piggy-bank",
+    icon: "piggy-bank",
+  },
+  {
+    value: "pills",
+    icon: "pills",
+  },
+  {
+    value: "pizza-slice",
+    icon: "pizza-slice",
+  },
+  {
+    value: "place-of-worship",
+    icon: "place-of-worship",
+  },
+  {
+    value: "plane",
+    icon: "plane",
+  },
+  {
+    value: "plane-arrival",
+    icon: "plane-arrival",
+  },
+  {
+    value: "plane-departure",
+    icon: "plane-departure",
+  },
+  {
+    value: "plane-slash",
+    icon: "plane-slash",
+  },
+  {
+    value: "play",
+    icon: "play",
+  },
+  {
+    value: "play-circle",
+    icon: "play-circle",
+  },
+  {
+    value: "plug",
+    icon: "plug",
+  },
+  {
+    value: "plus",
+    icon: "plus",
+  },
+  {
+    value: "plus-circle",
+    icon: "plus-circle",
+  },
+  {
+    value: "plus-square",
+    icon: "plus-square",
+  },
+  {
+    value: "podcast",
+    icon: "podcast",
+  },
+  {
+    value: "poll",
+    icon: "poll",
+  },
+  {
+    value: "poll-h",
+    icon: "poll-h",
+  },
+  {
+    value: "poo",
+    icon: "poo",
+  },
+  {
+    value: "poo-storm",
+    icon: "poo-storm",
+  },
+  {
+    value: "poop",
+    icon: "poop",
+  },
+  {
+    value: "portrait",
+    icon: "portrait",
+  },
+  {
+    value: "pound-sign",
+    icon: "pound-sign",
+  },
+  {
+    value: "power-off",
+    icon: "power-off",
+  },
+  {
+    value: "pray",
+    icon: "pray",
+  },
+  {
+    value: "praying-hands",
+    icon: "praying-hands",
+  },
+  {
+    value: "prescription",
+    icon: "prescription",
+  },
+  {
+    value: "prescription-bottle",
+    icon: "prescription-bottle",
+  },
+  {
+    value: "prescription-bottle-alt",
+    icon: "prescription-bottle-alt",
+  },
+  {
+    value: "print",
+    icon: "print",
+  },
+  {
+    value: "procedures",
+    icon: "procedures",
+  },
+  {
+    value: "project-diagram",
+    icon: "project-diagram",
+  },
+  {
+    value: "pump-medical",
+    icon: "pump-medical",
+  },
+  {
+    value: "pump-soap",
+    icon: "pump-soap",
+  },
+  {
+    value: "puzzle-piece",
+    icon: "puzzle-piece",
+  },
+  {
+    value: "qrcode",
+    icon: "qrcode",
+  },
+  {
+    value: "question",
+    icon: "question",
+  },
+  {
+    value: "question-circle",
+    icon: "question-circle",
+  },
+  {
+    value: "quidditch",
+    icon: "quidditch",
+  },
+  {
+    value: "quote-left",
+    icon: "quote-left",
+  },
+  {
+    value: "quote-right",
+    icon: "quote-right",
+  },
+  {
+    value: "quran",
+    icon: "quran",
+  },
+  {
+    value: "radiation",
+    icon: "radiation",
+  },
+  {
+    value: "radiation-alt",
+    icon: "radiation-alt",
+  },
+  {
+    value: "rainbow",
+    icon: "rainbow",
+  },
+  {
+    value: "random",
+    icon: "random",
+  },
+  {
+    value: "receipt",
+    icon: "receipt",
+  },
+  {
+    value: "record-vinyl",
+    icon: "record-vinyl",
+  },
+  {
+    value: "recycle",
+    icon: "recycle",
+  },
+  {
+    value: "redo",
+    icon: "redo",
+  },
+  {
+    value: "redo-alt",
+    icon: "redo-alt",
+  },
+  {
+    value: "registered",
+    icon: "registered",
+  },
+  {
+    value: "remove-format",
+    icon: "remove-format",
+  },
+  {
+    value: "reply",
+    icon: "reply",
+  },
+  {
+    value: "reply-all",
+    icon: "reply-all",
+  },
+  {
+    value: "republican",
+    icon: "republican",
+  },
+  {
+    value: "restroom",
+    icon: "restroom",
+  },
+  {
+    value: "retweet",
+    icon: "retweet",
+  },
+  {
+    value: "ribbon",
+    icon: "ribbon",
+  },
+  {
+    value: "ring",
+    icon: "ring",
+  },
+  {
+    value: "road",
+    icon: "road",
+  },
+  {
+    value: "robot",
+    icon: "robot",
+  },
+  {
+    value: "rocket",
+    icon: "rocket",
+  },
+  {
+    value: "route",
+    icon: "route",
+  },
+  {
+    value: "rss",
+    icon: "rss",
+  },
+  {
+    value: "rss-square",
+    icon: "rss-square",
+  },
+  {
+    value: "ruble-sign",
+    icon: "ruble-sign",
+  },
+  {
+    value: "ruler",
+    icon: "ruler",
+  },
+  {
+    value: "ruler-combined",
+    icon: "ruler-combined",
+  },
+  {
+    value: "ruler-horizontal",
+    icon: "ruler-horizontal",
+  },
+  {
+    value: "ruler-vertical",
+    icon: "ruler-vertical",
+  },
+  {
+    value: "running",
+    icon: "running",
+  },
+  {
+    value: "rupee-sign",
+    icon: "rupee-sign",
+  },
+  {
+    value: "sad-cry",
+    icon: "sad-cry",
+  },
+  {
+    value: "sad-tear",
+    icon: "sad-tear",
+  },
+  {
+    value: "satellite",
+    icon: "satellite",
+  },
+  {
+    value: "satellite-dish",
+    icon: "satellite-dish",
+  },
+  {
+    value: "save",
+    icon: "save",
+  },
+  {
+    value: "school",
+    icon: "school",
+  },
+  {
+    value: "screwdriver",
+    icon: "screwdriver",
+  },
+  {
+    value: "scroll",
+    icon: "scroll",
+  },
+  {
+    value: "sd-card",
+    icon: "sd-card",
+  },
+  {
+    value: "search",
+    icon: "search",
+  },
+  {
+    value: "search-dollar",
+    icon: "search-dollar",
+  },
+  {
+    value: "search-location",
+    icon: "search-location",
+  },
+  {
+    value: "search-minus",
+    icon: "search-minus",
+  },
+  {
+    value: "search-plus",
+    icon: "search-plus",
+  },
+  {
+    value: "seedling",
+    icon: "seedling",
+  },
+  {
+    value: "server",
+    icon: "server",
+  },
+  {
+    value: "shapes",
+    icon: "shapes",
+  },
+  {
+    value: "share",
+    icon: "share",
+  },
+  {
+    value: "share-alt",
+    icon: "share-alt",
+  },
+  {
+    value: "share-alt-square",
+    icon: "share-alt-square",
+  },
+  {
+    value: "share-square",
+    icon: "share-square",
+  },
+  {
+    value: "shekel-sign",
+    icon: "shekel-sign",
+  },
+  {
+    value: "shield-alt",
+    icon: "shield-alt",
+  },
+  {
+    value: "shield-virus",
+    icon: "shield-virus",
+  },
+  {
+    value: "ship",
+    icon: "ship",
+  },
+  {
+    value: "shipping-fast",
+    icon: "shipping-fast",
+  },
+  {
+    value: "shoe-prints",
+    icon: "shoe-prints",
+  },
+  {
+    value: "shopping-bag",
+    icon: "shopping-bag",
+  },
+  {
+    value: "shopping-basket",
+    icon: "shopping-basket",
+  },
+  {
+    value: "shopping-cart",
+    icon: "shopping-cart",
+  },
+  {
+    value: "shower",
+    icon: "shower",
+  },
+  {
+    value: "shuttle-van",
+    icon: "shuttle-van",
+  },
+  {
+    value: "sign",
+    icon: "sign",
+  },
+  {
+    value: "sign-in-alt",
+    icon: "sign-in-alt",
+  },
+  {
+    value: "sign-language",
+    icon: "sign-language",
+  },
+  {
+    value: "sign-out-alt",
+    icon: "sign-out-alt",
+  },
+  {
+    value: "signal",
+    icon: "signal",
+  },
+  {
+    value: "signature",
+    icon: "signature",
+  },
+  {
+    value: "sim-card",
+    icon: "sim-card",
+  },
+  {
+    value: "sink",
+    icon: "sink",
+  },
+  {
+    value: "sitemap",
+    icon: "sitemap",
+  },
+  {
+    value: "skating",
+    icon: "skating",
+  },
+  {
+    value: "skiing",
+    icon: "skiing",
+  },
+  {
+    value: "skiing-nordic",
+    icon: "skiing-nordic",
+  },
+  {
+    value: "skull",
+    icon: "skull",
+  },
+  {
+    value: "skull-crossbones",
+    icon: "skull-crossbones",
+  },
+  {
+    value: "slash",
+    icon: "slash",
+  },
+  {
+    value: "sleigh",
+    icon: "sleigh",
+  },
+  {
+    value: "sliders-h",
+    icon: "sliders-h",
+  },
+  {
+    value: "smile",
+    icon: "smile",
+  },
+  {
+    value: "smile-beam",
+    icon: "smile-beam",
+  },
+  {
+    value: "smile-wink",
+    icon: "smile-wink",
+  },
+  {
+    value: "smog",
+    icon: "smog",
+  },
+  {
+    value: "smoking",
+    icon: "smoking",
+  },
+  {
+    value: "smoking-ban",
+    icon: "smoking-ban",
+  },
+  {
+    value: "sms",
+    icon: "sms",
+  },
+  {
+    value: "snowboarding",
+    icon: "snowboarding",
+  },
+  {
+    value: "snowflake",
+    icon: "snowflake",
+  },
+  {
+    value: "snowman",
+    icon: "snowman",
+  },
+  {
+    value: "snowplow",
+    icon: "snowplow",
+  },
+  {
+    value: "soap",
+    icon: "soap",
+  },
+  {
+    value: "socks",
+    icon: "socks",
+  },
+  {
+    value: "solar-panel",
+    icon: "solar-panel",
+  },
+  {
+    value: "sort",
+    icon: "sort",
+  },
+  {
+    value: "sort-alpha-down",
+    icon: "sort-alpha-down",
+  },
+  {
+    value: "sort-alpha-down-alt",
+    icon: "sort-alpha-down-alt",
+  },
+  {
+    value: "sort-alpha-up",
+    icon: "sort-alpha-up",
+  },
+  {
+    value: "sort-alpha-up-alt",
+    icon: "sort-alpha-up-alt",
+  },
+  {
+    value: "sort-amount-down",
+    icon: "sort-amount-down",
+  },
+  {
+    value: "sort-amount-down-alt",
+    icon: "sort-amount-down-alt",
+  },
+  {
+    value: "sort-amount-up",
+    icon: "sort-amount-up",
+  },
+  {
+    value: "sort-amount-up-alt",
+    icon: "sort-amount-up-alt",
+  },
+  {
+    value: "sort-down",
+    icon: "sort-down",
+  },
+  {
+    value: "sort-numeric-down",
+    icon: "sort-numeric-down",
+  },
+  {
+    value: "sort-numeric-down-alt",
+    icon: "sort-numeric-down-alt",
+  },
+  {
+    value: "sort-numeric-up",
+    icon: "sort-numeric-up",
+  },
+  {
+    value: "sort-numeric-up-alt",
+    icon: "sort-numeric-up-alt",
+  },
+  {
+    value: "sort-up",
+    icon: "sort-up",
+  },
+  {
+    value: "spa",
+    icon: "spa",
+  },
+  {
+    value: "space-shuttle",
+    icon: "space-shuttle",
+  },
+  {
+    value: "spell-check",
+    icon: "spell-check",
+  },
+  {
+    value: "spider",
+    icon: "spider",
+  },
+  {
+    value: "spinner",
+    icon: "spinner",
+  },
+  {
+    value: "splotch",
+    icon: "splotch",
+  },
+  {
+    value: "spray-can",
+    icon: "spray-can",
+  },
+  {
+    value: "square",
+    icon: "square",
+  },
+  {
+    value: "square-full",
+    icon: "square-full",
+  },
+  {
+    value: "square-root-alt",
+    icon: "square-root-alt",
+  },
+  {
+    value: "stamp",
+    icon: "stamp",
+  },
+  {
+    value: "star",
+    icon: "star",
+  },
+  {
+    value: "star-and-crescent",
+    icon: "star-and-crescent",
+  },
+  {
+    value: "star-half",
+    icon: "star-half",
+  },
+  {
+    value: "star-half-alt",
+    icon: "star-half-alt",
+  },
+  {
+    value: "star-of-david",
+    icon: "star-of-david",
+  },
+  {
+    value: "star-of-life",
+    icon: "star-of-life",
+  },
+  {
+    value: "step-backward",
+    icon: "step-backward",
+  },
+  {
+    value: "step-forward",
+    icon: "step-forward",
+  },
+  {
+    value: "stethoscope",
+    icon: "stethoscope",
+  },
+  {
+    value: "sticky-note",
+    icon: "sticky-note",
+  },
+  {
+    value: "stop",
+    icon: "stop",
+  },
+  {
+    value: "stop-circle",
+    icon: "stop-circle",
+  },
+  {
+    value: "stopwatch",
+    icon: "stopwatch",
+  },
+  {
+    value: "stopwatch-20",
+    icon: "stopwatch-20",
+  },
+  {
+    value: "store",
+    icon: "store",
+  },
+  {
+    value: "store-alt",
+    icon: "store-alt",
+  },
+  {
+    value: "store-alt-slash",
+    icon: "store-alt-slash",
+  },
+  {
+    value: "store-slash",
+    icon: "store-slash",
+  },
+  {
+    value: "stream",
+    icon: "stream",
+  },
+  {
+    value: "street-view",
+    icon: "street-view",
+  },
+  {
+    value: "strikethrough",
+    icon: "strikethrough",
+  },
+  {
+    value: "stroopwafel",
+    icon: "stroopwafel",
+  },
+  {
+    value: "subscript",
+    icon: "subscript",
+  },
+  {
+    value: "subway",
+    icon: "subway",
+  },
+  {
+    value: "suitcase",
+    icon: "suitcase",
+  },
+  {
+    value: "suitcase-rolling",
+    icon: "suitcase-rolling",
+  },
+  {
+    value: "sun",
+    icon: "sun",
+  },
+  {
+    value: "superscript",
+    icon: "superscript",
+  },
+  {
+    value: "surprise",
+    icon: "surprise",
+  },
+  {
+    value: "swatchbook",
+    icon: "swatchbook",
+  },
+  {
+    value: "swimmer",
+    icon: "swimmer",
+  },
+  {
+    value: "swimming-pool",
+    icon: "swimming-pool",
+  },
+  {
+    value: "synagogue",
+    icon: "synagogue",
+  },
+  {
+    value: "sync",
+    icon: "sync",
+  },
+  {
+    value: "sync-alt",
+    icon: "sync-alt",
+  },
+  {
+    value: "syringe",
+    icon: "syringe",
+  },
+  {
+    value: "table",
+    icon: "table",
+  },
+  {
+    value: "table-tennis",
+    icon: "table-tennis",
+  },
+  {
+    value: "tablet",
+    icon: "tablet",
+  },
+  {
+    value: "tablet-alt",
+    icon: "tablet-alt",
+  },
+  {
+    value: "tablets",
+    icon: "tablets",
+  },
+  {
+    value: "tachometer-alt",
+    icon: "tachometer-alt",
+  },
+  {
+    value: "tag",
+    icon: "tag",
+  },
+  {
+    value: "tags",
+    icon: "tags",
+  },
+  {
+    value: "tape",
+    icon: "tape",
+  },
+  {
+    value: "tasks",
+    icon: "tasks",
+  },
+  {
+    value: "taxi",
+    icon: "taxi",
+  },
+  {
+    value: "teeth",
+    icon: "teeth",
+  },
+  {
+    value: "teeth-open",
+    icon: "teeth-open",
+  },
+  {
+    value: "temperature-high",
+    icon: "temperature-high",
+  },
+  {
+    value: "temperature-low",
+    icon: "temperature-low",
+  },
+  {
+    value: "tenge",
+    icon: "tenge",
+  },
+  {
+    value: "terminal",
+    icon: "terminal",
+  },
+  {
+    value: "text-height",
+    icon: "text-height",
+  },
+  {
+    value: "text-width",
+    icon: "text-width",
+  },
+  {
+    value: "th",
+    icon: "th",
+  },
+  {
+    value: "th-large",
+    icon: "th-large",
+  },
+  {
+    value: "th-list",
+    icon: "th-list",
+  },
+  {
+    value: "theater-masks",
+    icon: "theater-masks",
+  },
+  {
+    value: "thermometer",
+    icon: "thermometer",
+  },
+  {
+    value: "thermometer-empty",
+    icon: "thermometer-empty",
+  },
+  {
+    value: "thermometer-full",
+    icon: "thermometer-full",
+  },
+  {
+    value: "thermometer-half",
+    icon: "thermometer-half",
+  },
+  {
+    value: "thermometer-quarter",
+    icon: "thermometer-quarter",
+  },
+  {
+    value: "thermometer-three-quarters",
+    icon: "thermometer-three-quarters",
+  },
+  {
+    value: "thumbs-down",
+    icon: "thumbs-down",
+  },
+  {
+    value: "thumbs-up",
+    icon: "thumbs-up",
+  },
+  {
+    value: "thumbtack",
+    icon: "thumbtack",
+  },
+  {
+    value: "ticket-alt",
+    icon: "ticket-alt",
+  },
+  {
+    value: "times",
+    icon: "times",
+  },
+  {
+    value: "times-circle",
+    icon: "times-circle",
+  },
+  {
+    value: "tint",
+    icon: "tint",
+  },
+  {
+    value: "tint-slash",
+    icon: "tint-slash",
+  },
+  {
+    value: "tired",
+    icon: "tired",
+  },
+  {
+    value: "toggle-off",
+    icon: "toggle-off",
+  },
+  {
+    value: "toggle-on",
+    icon: "toggle-on",
+  },
+  {
+    value: "toilet",
+    icon: "toilet",
+  },
+  {
+    value: "toilet-paper",
+    icon: "toilet-paper",
+  },
+  {
+    value: "toilet-paper-slash",
+    icon: "toilet-paper-slash",
+  },
+  {
+    value: "toolbox",
+    icon: "toolbox",
+  },
+  {
+    value: "tools",
+    icon: "tools",
+  },
+  {
+    value: "tooth",
+    icon: "tooth",
+  },
+  {
+    value: "torah",
+    icon: "torah",
+  },
+  {
+    value: "torii-gate",
+    icon: "torii-gate",
+  },
+  {
+    value: "tractor",
+    icon: "tractor",
+  },
+  {
+    value: "trademark",
+    icon: "trademark",
+  },
+  {
+    value: "traffic-light",
+    icon: "traffic-light",
+  },
+  {
+    value: "trailer",
+    icon: "trailer",
+  },
+  {
+    value: "train",
+    icon: "train",
+  },
+  {
+    value: "tram",
+    icon: "tram",
+  },
+  {
+    value: "transgender",
+    icon: "transgender",
+  },
+  {
+    value: "transgender-alt",
+    icon: "transgender-alt",
+  },
+  {
+    value: "trash",
+    icon: "trash",
+  },
+  {
+    value: "trash-alt",
+    icon: "trash-alt",
+  },
+  {
+    value: "trash-restore",
+    icon: "trash-restore",
+  },
+  {
+    value: "trash-restore-alt",
+    icon: "trash-restore-alt",
+  },
+  {
+    value: "tree",
+    icon: "tree",
+  },
+  {
+    value: "trophy",
+    icon: "trophy",
+  },
+  {
+    value: "truck",
+    icon: "truck",
+  },
+  {
+    value: "truck-loading",
+    icon: "truck-loading",
+  },
+  {
+    value: "truck-monster",
+    icon: "truck-monster",
+  },
+  {
+    value: "truck-moving",
+    icon: "truck-moving",
+  },
+  {
+    value: "truck-pickup",
+    icon: "truck-pickup",
+  },
+  {
+    value: "tshirt",
+    icon: "tshirt",
+  },
+  {
+    value: "tty",
+    icon: "tty",
+  },
+  {
+    value: "tv",
+    icon: "tv",
+  },
+  {
+    value: "umbrella",
+    icon: "umbrella",
+  },
+  {
+    value: "umbrella-beach",
+    icon: "umbrella-beach",
+  },
+  {
+    value: "underline",
+    icon: "underline",
+  },
+  {
+    value: "undo",
+    icon: "undo",
+  },
+  {
+    value: "undo-alt",
+    icon: "undo-alt",
+  },
+  {
+    value: "universal-access",
+    icon: "universal-access",
+  },
+  {
+    value: "university",
+    icon: "university",
+  },
+  {
+    value: "unlink",
+    icon: "unlink",
+  },
+  {
+    value: "unlock",
+    icon: "unlock",
+  },
+  {
+    value: "unlock-alt",
+    icon: "unlock-alt",
+  },
+  {
+    value: "upload",
+    icon: "upload",
+  },
+  {
+    value: "user",
+    icon: "user",
+  },
+  {
+    value: "user-alt",
+    icon: "user-alt",
+  },
+  {
+    value: "user-alt-slash",
+    icon: "user-alt-slash",
+  },
+  {
+    value: "user-astronaut",
+    icon: "user-astronaut",
+  },
+  {
+    value: "user-check",
+    icon: "user-check",
+  },
+  {
+    value: "user-circle",
+    icon: "user-circle",
+  },
+  {
+    value: "user-clock",
+    icon: "user-clock",
+  },
+  {
+    value: "user-cog",
+    icon: "user-cog",
+  },
+  {
+    value: "user-edit",
+    icon: "user-edit",
+  },
+  {
+    value: "user-friends",
+    icon: "user-friends",
+  },
+  {
+    value: "user-graduate",
+    icon: "user-graduate",
+  },
+  {
+    value: "user-injured",
+    icon: "user-injured",
+  },
+  {
+    value: "user-lock",
+    icon: "user-lock",
+  },
+  {
+    value: "user-md",
+    icon: "user-md",
+  },
+  {
+    value: "user-minus",
+    icon: "user-minus",
+  },
+  {
+    value: "user-ninja",
+    icon: "user-ninja",
+  },
+  {
+    value: "user-nurse",
+    icon: "user-nurse",
+  },
+  {
+    value: "user-plus",
+    icon: "user-plus",
+  },
+  {
+    value: "user-secret",
+    icon: "user-secret",
+  },
+  {
+    value: "user-shield",
+    icon: "user-shield",
+  },
+  {
+    value: "user-slash",
+    icon: "user-slash",
+  },
+  {
+    value: "user-tag",
+    icon: "user-tag",
+  },
+  {
+    value: "user-tie",
+    icon: "user-tie",
+  },
+  {
+    value: "user-times",
+    icon: "user-times",
+  },
+  {
+    value: "users",
+    icon: "users",
+  },
+  {
+    value: "users-cog",
+    icon: "users-cog",
+  },
+  {
+    value: "users-slash",
+    icon: "users-slash",
+  },
+  {
+    value: "utensil-spoon",
+    icon: "utensil-spoon",
+  },
+  {
+    value: "utensils",
+    icon: "utensils",
+  },
+  {
+    value: "vector-square",
+    icon: "vector-square",
+  },
+  {
+    value: "venus",
+    icon: "venus",
+  },
+  {
+    value: "venus-double",
+    icon: "venus-double",
+  },
+  {
+    value: "venus-mars",
+    icon: "venus-mars",
+  },
+  {
+    value: "vest",
+    icon: "vest",
+  },
+  {
+    value: "vest-patches",
+    icon: "vest-patches",
+  },
+  {
+    value: "vial",
+    icon: "vial",
+  },
+  {
+    value: "vials",
+    icon: "vials",
+  },
+  {
+    value: "video",
+    icon: "video",
+  },
+  {
+    value: "video-slash",
+    icon: "video-slash",
+  },
+  {
+    value: "vihara",
+    icon: "vihara",
+  },
+  {
+    value: "virus",
+    icon: "virus",
+  },
+  {
+    value: "virus-slash",
+    icon: "virus-slash",
+  },
+  {
+    value: "viruses",
+    icon: "viruses",
+  },
+  {
+    value: "voicemail",
+    icon: "voicemail",
+  },
+  {
+    value: "volleyball-ball",
+    icon: "volleyball-ball",
+  },
+  {
+    value: "volume-down",
+    icon: "volume-down",
+  },
+  {
+    value: "volume-mute",
+    icon: "volume-mute",
+  },
+  {
+    value: "volume-off",
+    icon: "volume-off",
+  },
+  {
+    value: "volume-up",
+    icon: "volume-up",
+  },
+  {
+    value: "vote-yea",
+    icon: "vote-yea",
+  },
+  {
+    value: "vr-cardboard",
+    icon: "vr-cardboard",
+  },
+  {
+    value: "walking",
+    icon: "walking",
+  },
+  {
+    value: "wallet",
+    icon: "wallet",
+  },
+  {
+    value: "warehouse",
+    icon: "warehouse",
+  },
+  {
+    value: "water",
+    icon: "water",
+  },
+  {
+    value: "wave-square",
+    icon: "wave-square",
+  },
+  {
+    value: "weight",
+    icon: "weight",
+  },
+  {
+    value: "weight-hanging",
+    icon: "weight-hanging",
+  },
+  {
+    value: "wheelchair",
+    icon: "wheelchair",
+  },
+  {
+    value: "wifi",
+    icon: "wifi",
+  },
+  {
+    value: "wind",
+    icon: "wind",
+  },
+  {
+    value: "window-close",
+    icon: "window-close",
+  },
+  {
+    value: "window-maximize",
+    icon: "window-maximize",
+  },
+  {
+    value: "window-minimize",
+    icon: "window-minimize",
+  },
+  {
+    value: "window-restore",
+    icon: "window-restore",
+  },
+  {
+    value: "wine-bottle",
+    icon: "wine-bottle",
+  },
+  {
+    value: "wine-glass",
+    icon: "wine-glass",
+  },
+  {
+    value: "wine-glass-alt",
+    icon: "wine-glass-alt",
+  },
+  {
+    value: "won-sign",
+    icon: "won-sign",
+  },
+  {
+    value: "wrench",
+    icon: "wrench",
+  },
+  {
+    value: "x-ray",
+    icon: "x-ray",
+  },
+  {
+    value: "yen-sign",
+    icon: "yen-sign",
+  },
+  {
+    value: "yin-yang",
+    icon: "yin-yang",
+  },
+];
