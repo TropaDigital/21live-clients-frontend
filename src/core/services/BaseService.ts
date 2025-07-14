@@ -7,9 +7,9 @@ const getBaseUrl = (): string => {
     case "development":
       return "https://dev.21live.com.br/";
     case "production":
-      return "https://api.21live.com.br/";
+      return "https://dev.21live.com.br/";
     case "staging":
-      return "https://stage.21live.com.br/";
+      return "https://dev.21live.com.br/";
     default:
       return "https://dev.21live.com.br/";
   }
