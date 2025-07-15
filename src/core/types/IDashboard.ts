@@ -4,7 +4,9 @@ export interface IDashBanner {
   title: string;
   description: string;
   link: string;
+  fullLink: string;
   path: string;
+  urlFullPath: string;
   order: number;
   screens: any;
   access: string;
@@ -55,16 +57,40 @@ export interface IDashInfo {
 
 export interface IDashPost {
   message_id: number;
-  tenant_id: number;
   user_id: number;
   title: string;
   msg: string;
   type: string;
   access: string;
   path: string;
+  aws: number | null;
+  tenant_id: number;
   created: string;
   updated: string;
-
-  avatar: string;
-  name: string;
+  user: {
+    user_id: number;
+    organization_id: number;
+    tenant_id: number;
+    username: string;
+    email: string;
+    password: string;
+    name: string;
+    avatar: string;
+    aws: number;
+    email2: string;
+    whatsapp: string;
+    downlimit: number;
+    need_fill: number;
+    dummy: number;
+    askpswd: number;
+    remember_token: string;
+    remember_expires: string;
+    referralkey: string;
+    whats_country_id: number;
+    referraluser_id: number | null;
+    created: string;
+    updated: string;
+    footer: string | null;
+  };
+  thumb: string;
 }

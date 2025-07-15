@@ -191,6 +191,7 @@ export const ContainerRecents = styled.div.withConfig({
     display: flex;
     overflow: hidden;
     gap: 20px;
+    height: 100%;
     padding: 0px 25px 25px 25px;
     @media (max-width: 1480px) {
       width: 40vw;
@@ -233,6 +234,7 @@ export const ContainerPosts = styled.div.withConfig({
   flex: 1;
   .overflow {
     flex: 1;
+    height: 100%;
     max-height: 360px;
     overflow: auto;
     padding: 0px 20px 20px 20px;
@@ -271,5 +273,27 @@ export const ContainerPosts = styled.div.withConfig({
         background-size: cover;
       }
     }
+  }
+`;
+
+export const ContainerEmpty = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  > i {
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: ${({ theme }) => theme.colors.warning[200]};
+  }
+  p {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.neutral[600]};
   }
 `;

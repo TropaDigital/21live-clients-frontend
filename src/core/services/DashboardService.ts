@@ -24,7 +24,7 @@ export const DashboardService = {
   },
   getGraphs: async () => {
     const tenant = getSlug();
-    const response = await BaseService.get(`/${tenant}/API/Dashboard/graps`);
+    const response = await BaseService.get(`/${tenant}/API/Dashboard/graphs`);
     return response.data;
   },
 };

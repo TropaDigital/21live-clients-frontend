@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import * as S from './styles';
 import { DashboardService } from '../../core/services/DashboardService';
 import type { IDashBanner, IDashInfo, IDashPost } from '../../core/types/IDashboard';
-import { IconAnnouncement, IconArchive, IconArchiveMultiple, IconChevronDown, IconPencil, IconRefresh, IconSolicitation } from '../../assets/icons';
+import { IconAnnouncement, IconArchive, IconArchiveMultiple, IconChevronDown, IconFolder, IconPencil, IconRefresh, IconSolicitation } from '../../assets/icons';
 import { Skeleton } from '../../components/UI/loading/skeleton/styles';
 import { useTenant } from '../../core/contexts/TenantContext';
 import type { IFolderFileItem } from '../../core/types/iFolder';
@@ -11,6 +11,7 @@ import { CardArchiveLoading } from '../../components/modules/cards/card-archive/
 import { ModalViewArchive } from '../../components/modules/modal-view-archive';
 import { AvatarUser } from '../../components/UI/avatar/avatar-user';
 import moment from 'moment';
+import { ButtonDefault } from '../../components/UI/form/button-default';
 
 export default function Home() {
 
@@ -24,6 +25,8 @@ export default function Home() {
                 <CardRecents />
                 <CardPosts />
             </div>
+
+            <CardGraphs />
         </S.Container>
     )
 }
@@ -38,36 +41,9 @@ const CardBanner = () => {
 
     const getData = async () => {
         setLoading(true);
-        //const response = await DashboardService.getBanners();
-        setTimeout(() => {
-            setData([{
-                "banner_id": 8,
-                "tenant_id": 2,
-                "title": "Teste 1",
-                "description": "",
-                "link": "https://www.google.com",
-                "path": "https://21live-275-mcdonald-s.s3.amazonaws.com/banners/191/20250602173512683e0b00c3405.jpg",
-                "order": 0,
-                "screens": null,
-                "access": "public",
-                "created": "2023-01-11 17:56:32",
-                "updated": "2023-01-11 17:56:32"
-            },
-            {
-                "banner_id": 9,
-                "tenant_id": 2,
-                "title": "Teste 2",
-                "description": "",
-                "link": "https://www.google.com",
-                "path": "https://21live-304-21panda.s3.amazonaws.com/banners/248/20250715123323687674c34ffba.jpg",
-                "order": 0,
-                "screens": null,
-                "access": "public",
-                "created": "2023-01-11 17:56:32",
-                "updated": "2023-01-11 17:56:32"
-            }])
-            setLoading(false);
-        }, 1000)
+        const response = await DashboardService.getBanners();
+        if (response.items) setData([...response.items])
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -88,7 +64,7 @@ const CardBanner = () => {
 
     const banner = data.length > 0 ? data[item] : {} as IDashBanner
 
-    return (
+    return loading || data.length > 0 ? (
         <S.ContainerBanners>
             {data.length > 1 &&
                 <div className='controls'>
@@ -100,14 +76,14 @@ const CardBanner = () => {
                 {loading &&
                     <Skeleton width='100%' height='30vh' />
                 }
-                {!loading &&
-                    <a href={banner.link} target='_blank'>
-                        <img src={banner.path} alt={banner.title} />
+                {!loading && banner.urlFullPath &&
+                    <a href={banner.fullLink} target='_blank'>
+                        <img src={banner.urlFullPath} alt={banner.title} />
                     </a>
                 }
             </div>
         </S.ContainerBanners>
-    )
+    ) : ''
 }
 
 const CardInfos = () => {
@@ -118,51 +94,9 @@ const CardInfos = () => {
 
     const getData = async () => {
         setLoading(true);
-        await DashboardService.getInfo();
-
-        setTimeout(() => {
-            setData({
-                "fileCount": 31,
-                "customCount": 9,
-                "ticketCount": 56,
-                "jobsCount": 0,
-                "mostDownloaded": {
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                "mostMedia": {
-                    "media_id": 2,
-                    "tenant_id": 2,
-                    "media_cat_id": 2,
-                    "name": "Post de Facebook",
-                    "measure": "px",
-                    "sizeable": false,
-                    "value": 69.9,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32"
-                }
-            })
-            setLoading(false);
-        }, 2000)
+        const response = await DashboardService.getInfo();
+        setData({ ...response.data })
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -202,15 +136,17 @@ const CardInfos = () => {
                 </div>
             </div>
 
-            <div className='card'>
-                <i>
-                    <IconRefresh />
-                </i>
-                <div className='info'>
-                    <p>Tipo de pedido mais realizado</p>
-                    {loading ? <Skeleton widthAuto={true} height='27px' /> : <b>{data.mostMedia?.name}</b>}
+            {data.mostMedia?.name &&
+                <div className='card'>
+                    <i>
+                        <IconRefresh />
+                    </i>
+                    <div className='info'>
+                        <p>Tipo de pedido mais realizado</p>
+                        {loading ? <Skeleton widthAuto={true} height='27px' /> : <b>{data.mostMedia?.name}</b>}
+                    </div>
                 </div>
-            </div>
+            }
         </S.ContainerInfo>
     )
 }
@@ -231,181 +167,9 @@ const CardRecents = () => {
 
     const getData = async () => {
         setLoading(true);
-        //const response = await DashboardService.getPosts();
-
-        setTimeout(() => {
-            setData([
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                },
-                {
-                    "url_inline": "",
-                    "file_id": 209093,
-                    "folder_id": 34426,
-                    "user_id": 20109,
-                    "tenant_id": 5,
-                    "name": "S-Way - Folder Publicitário Digital",
-                    "path": "2024081217471666ba74d4b29c0.pdf",
-                    "thumb": "202501151810216788243d41a3a.jpg",
-                    "tags": "material, folder",
-                    "customizable": true,
-                    "dpi": 300,
-                    "cmyk": true,
-                    "publishable": false,
-                    "social_caption": null,
-                    "social_hashtags": null,
-                    "aws": true,
-                    "created": "2023-01-11 17:56:32",
-                    "updated": "2023-01-11 17:56:32",
-                    "_table": "file",
-                    "_pk": "file_id",
-                    "url_path": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.pdf",
-                    "thumbnail": "https://21live-5-brooks.s3.amazonaws.com/files/34426/2024081217471666ba74d4b29c0.thumb.jpg"
-                }
-            ])
-            setLoading(false);
-        }, 3000)
+        const response = await DashboardService.getRecents();
+        if (response.items) setData([...response.items])
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -467,17 +231,21 @@ const CardRecents = () => {
                             onView={() => setModalViewArchive(item)}
                         />
                     )}
+
+                    {!loading && data.length === 0 && <CardEmpty text='Nenhum novo arquivo.' onClick={getData} />}
                 </div>
 
-                <div className="bullets">
-                    {Array.from({ length: pageCount }).map((_, index) => (
-                        <button
-                            key={index}
-                            onClick={() => goToPage(index)}
-                            className={currentPage === index ? 'active' : ''}
-                        />
-                    ))}
-                </div>
+                {(data.length > 0 || loading) &&
+                    <div className="bullets">
+                        {Array.from({ length: pageCount }).map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => goToPage(index)}
+                                className={currentPage === index ? 'active' : ''}
+                            />
+                        ))}
+                    </div>
+                }
             </div>
         </S.ContainerRecents>
     )
@@ -490,98 +258,10 @@ const CardPosts = () => {
 
     const getData = async () => {
         setLoading(true);
-        //const response = await DashboardService.getRecents();
+        const response = await DashboardService.getPosts();
+        if (response.items) setData([...response.items])
+        setLoading(false)
 
-        setTimeout(() => {
-            setData([
-                {
-                    "avatar": 'https://21live-304-21panda.s3.amazonaws.com/users/25993/0b69481425331ba1c974.jpeg',
-                    "name": 'Vitor Deco',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                },
-                {
-                    "avatar": '',
-                    "name": 'Kaique Steck',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público com um titulo maior para ver como fica",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                },
-                {
-                    "avatar": 'https://21live-304-21panda.s3.amazonaws.com/users/25993/0b69481425331ba1c974.jpeg',
-                    "name": 'Vitor Deco',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                },
-                {
-                    "avatar": '',
-                    "name": 'Kaique Steck',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público com um titulo maior para ver como fica",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                },
-                {
-                    "avatar": 'https://21live-304-21panda.s3.amazonaws.com/users/25993/0b69481425331ba1c974.jpeg',
-                    "name": 'Vitor Deco',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                },
-                {
-                    "avatar": '',
-                    "name": 'Kaique Steck',
-                    "message_id": 15,
-                    "tenant_id": 2,
-                    "user_id": 1,
-                    "title": "Teste de Post Público com um titulo maior para ver como fica",
-                    "msg": "<p>Vamos ver com imagem</p>\r\n",
-                    "type": "post",
-                    "access": "public",
-                    "path": "20210430174158608c6b96178fb.jpg",
-                    "created": "2025-05-16 10:54:14",
-                    "updated": "2025-05-16 10:54:14"
-                }
-            ])
-            setLoading(false);
-        }, 4000
-        )
     }
 
     useEffect(() => {
@@ -607,29 +287,29 @@ const CardPosts = () => {
                     }
                     {data.map((item) =>
                         <div className='post'>
-                            <AvatarUser fontSize={20} size={50} name={item.name} image={item.avatar} />
+                            <AvatarUser fontSize={20} size={50} name={item.user.name} image={item.user.avatar} />
                             <div className='info'>
-                                <b className='name'>{item.name}</b>
+                                <b className='name'>{item.user.name}</b>
                                 <p>{item.title}</p>
                                 <span>{moment(item.created).format('DD/MM/YYYY HH:mm')}</span>
                             </div>
                             <div className='preview' style={{ backgroundImage: `url('https://dev.21live.com.br/public/img/placeholder.new.jpg')` }} />
                         </div>
                     )}
+                    {!loading && data.length === 0 && <CardEmpty text='Nenhuma nova publicação.' onClick={getData} />}
                 </div>
             </div>
         </S.ContainerPosts>
     )
 }
 
-/*
 const CardGraphs = () => {
 
     const [loading, setLoading] = useState(true);
 
     const getData = async () => {
         setLoading(true);
-        const response = await DashboardService.getGraphs();
+        await DashboardService.getGraphs();
         setLoading(false);
     }
 
@@ -641,4 +321,18 @@ const CardGraphs = () => {
         <div>Graphs - {loading ? 'load' : 'loaded'}</div>
     )
 }
-    */
+
+
+const CardEmpty = ({ text, onClick }: { text: string, onClick(): void }) => {
+    return (
+        <S.ContainerEmpty>
+            <i>
+                <IconFolder />
+            </i>
+            <p>{text}</p>
+            <div>
+                <ButtonDefault variant='dark' onClick={onClick} icon={<IconRefresh />}>Recarregar</ButtonDefault>
+            </div>
+        </S.ContainerEmpty>
+    )
+}
