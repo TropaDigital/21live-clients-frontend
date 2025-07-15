@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { theme } from "../../assets/theme/theme";
 import { useTenant } from "../../core/contexts/TenantContext";
 import { LinkSlug } from "../../core/utils/link-slug";
@@ -13,11 +13,12 @@ import { InputDefault } from "../../components/UI/form/input-default";
 import { IconEnvelope, IconPassword, IconWarning } from "../../assets/icons";
 import * as S from "./styles";
 import { getSlug } from "../../core/utils/params-location";
+import { LoadingMain } from "../../components/UI/loading/loading-main";
 
 export default function Login() {
 
     const slug = getSlug();
-    const { tenant } = useTenant();
+    const { tenant, getTenant, loadingTenant } = useTenant();
     const { handleLogin } = useAuth();
     const { redirectSlug } = useRedirect();
 
@@ -30,6 +31,10 @@ export default function Login() {
     })
 
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        getTenant();
+    }, [slug])
 
     const handleSubmit = async (e: React.FormEvent) => {
         try {
@@ -51,6 +56,9 @@ export default function Login() {
 
     return (
         <S.Container color={tenant?.colormain} colorText={tenant?.colorsecond}>
+
+            <LoadingMain loading={loadingTenant} />
+
             <div className="container">
                 <div className="head">
                     <img className="logo" alt={tenant?.name} src={tenant?.images.logo} />

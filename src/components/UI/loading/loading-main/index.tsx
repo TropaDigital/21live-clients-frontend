@@ -1,31 +1,9 @@
-import { useEffect, useState } from 'react';
 import { useTenant } from '../../../../core/contexts/TenantContext'
 import * as S from './styles'
-import { useAuth } from '../../../../core/contexts/AuthContext';
 
-export const LoadingMain = () => {
+export const LoadingMain = ({ loading }: { loading: boolean }) => {
 
-    const { tenant, loadingTenant } = useTenant();
-
-    const { loadingMenus, loadingProfile, isLogged } = useAuth();
-
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-
-        setTimeout(() => {
-
-            if (!isLogged) {
-                setLoading(false)
-            } else if (isLogged && !loadingTenant && !loadingProfile) {
-                setLoading(false)
-            } else {
-                setLoading(true);
-            }
-        }, 1000)
-
-    }, [loadingTenant, loadingMenus, loadingProfile, isLogged])
-
+    const { tenant } = useTenant();
 
     return (
         <S.Container

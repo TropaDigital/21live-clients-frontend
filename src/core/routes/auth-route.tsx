@@ -2,6 +2,7 @@ import { useEffect, useState, type JSX } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { LoadingMain } from '../../components/UI/loading/loading-main'
+import { useTenant } from '../contexts/TenantContext'
 
 interface Props {
     children: JSX.Element
@@ -12,6 +13,7 @@ export const AuthRoute = ({
 }: Props) => {
 
     const { user, isLogged, handleRefreshToken, getUserProfileRoles, getMenus } = useAuth();
+    const { getTenant, loadingTenant } = useTenant();
     const { slug } = useParams();
 
     const [loadingAuthLayout, setLoadingAuthLayout] = useState(true);
@@ -22,6 +24,10 @@ export const AuthRoute = ({
         setPermissionLayout(user?.tenant_slug !== slug ? false : true)
         setLoadingAuthLayout(false);
     }
+
+    useEffect(() => {
+        getTenant();
+    }, [slug])
 
     useEffect(() => {
         if (!isLogged) {
@@ -45,5 +51,8 @@ export const AuthRoute = ({
         return <Navigate to={`/${slug}/login`} replace />
     }
 
-    return permissionLayout && !loadingAuthLayout ? children : <LoadingMain />
+    return <>
+        {children}
+        <LoadingMain loading={(!permissionLayout && loadingAuthLayout) || loadingTenant} />
+    </>
 }

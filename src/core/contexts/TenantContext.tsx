@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { TenantService } from '../services/TenantService';
 import { getSlug } from '../utils/params-location';
-import { LoadingMain } from '../../components/UI/loading/loading-main';
 import type { ITenant } from '../types/iTenants';
-import { useAuth } from './AuthContext';
 import type { IOrganization, IOrganizationGroup } from '../types/IOrganization';
 import { OrganizationService } from '../services/OrganizationService';
 import type { IUser } from '../types/iUser';
@@ -11,6 +9,7 @@ import { UserService } from '../services/UserService';
 
 // Definição da interface para o contexto do Tenant
 interface TenantContextType {
+    getTenant(): void;
     loadingTenant: boolean;
     tenant: ITenant | null;
     setTenant(tenant: ITenant | null): void;
@@ -43,9 +42,7 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
 
     const slug = getSlug();
 
-    const { user } = useAuth();
-
-    const [loadingTenant, setLoadingTenant] = useState(false)
+    const [loadingTenant, setLoadingTenant] = useState(true)
     const [tenant, setTenant] = useState<ITenant | null>(null);
 
     const [organizations, setOrganizations] = useState<IOrganization[]>([])
@@ -61,7 +58,6 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
         try {
             if (!slug) return;
             if (tenant?.tenant_id) return;
-            if (loadingTenant) return;
             setLoadingTenant(true);
             const response = await TenantService.getBySlug(slug);
             setTenant({ ...response.item });
@@ -75,10 +71,6 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
             //window.location.href = `/`
         }
     }
-
-    useEffect(() => {
-        getTenant();
-    }, [user, slug, tenant, loadingTenant])
 
     useEffect(() => {
         if (tenant?.tenant_id) {
@@ -124,6 +116,7 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
 
     return (
         <TenantContext.Provider value={{
+            getTenant,
             setTenant,
             tenant,
             loadingTenant,
@@ -138,9 +131,6 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
             loadingUsers
 
         }}>
-            {slug &&
-                <LoadingMain />
-            }
             {children}
         </TenantContext.Provider>
     );
