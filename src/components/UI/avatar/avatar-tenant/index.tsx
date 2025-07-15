@@ -7,9 +7,10 @@ interface IProps {
     colorBg: string;
     colorText: string;
     image: string;
+    size?: 'small' | 'medium' | 'large'
 }
 
-export const AvatarTenant = ({ name, color, colorBg, colorText, image }: IProps) => {
+export const AvatarTenant = ({ name, color, colorBg, colorText, image, size = 'small' }: IProps) => {
 
     const [imageExist, setImageExist] = useState(false);
 
@@ -21,7 +22,7 @@ export const AvatarTenant = ({ name, color, colorBg, colorText, image }: IProps)
     }, [image])
 
     return (
-        <S.Container color={color} colorBg={colorBg} colorText={colorText}>
+        <S.Container size={size} color={color} colorBg={colorBg} colorText={colorText}>
             <div className='name'>
                 <span>
                     {!imageExist &&

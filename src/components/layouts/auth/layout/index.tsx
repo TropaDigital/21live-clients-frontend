@@ -71,7 +71,6 @@ export default function AuthLayout() {
     useEffect(() => {
         if (timeLeft <= 180) {
             handleRefreshToken();
-            alert('é esse refresh')
         }
     }, [pathname]);
 

@@ -14,17 +14,18 @@ import { ModalConfirm } from '../../../UI/modal/modal-confirm';
 import { FilesService } from '../../../../core/services/FilesService';
 
 interface IProps {
+    ref?: any;
     item: IFolderFileItem;
     type: 'card' | 'list';
-    checked: boolean;
-    onChecked(): void;
+    checked?: boolean;
+    onChecked?(): void;
 
     onView(): void;
-    onEdit(e: IFolderFileItem): void;
-    onDelete(type: string, id: string): void;
+    onEdit?(e: IFolderFileItem): void;
+    onDelete?(type: string, id: string): void;
 }
 
-export const CardArchive = ({ checked, onChecked, onView, onEdit, onDelete, type, item }: IProps) => {
+export const CardArchive = ({ ref, checked, onChecked, onView, onEdit, onDelete, type, item }: IProps) => {
 
     const refTitle = useRef<any>(null);
 
@@ -51,21 +52,21 @@ export const CardArchive = ({ checked, onChecked, onView, onEdit, onDelete, type
 
     useEffect(() => {
         const newList: ISubmenuSelect[] = []
-        if (verifyPermission('files_edit')) {
+        if (verifyPermission('files_edit') && onEdit) {
             newList.push({
                 name: 'Renomar',
                 icon: <IconTextRename />,
                 onClick: () => handleOnRename()
             })
         }
-        if (verifyPermission('files_edit')) {
+        if (verifyPermission('files_edit') && onEdit) {
             newList.push({
                 name: 'Editar',
                 icon: <IconPencil />,
                 onClick: () => onEdit(item)
             })
         }
-        if (verifyPermission('files_delete')) {
+        if (verifyPermission('files_delete') && onDelete) {
             newList.push({
                 name: 'Remover',
                 icon: <IconTrash />,
@@ -92,12 +93,14 @@ export const CardArchive = ({ checked, onChecked, onView, onEdit, onDelete, type
         await FilesService.delete({ id: item.file_id });
         setLoadingDelete(false);
         setModalDelete(false)
-        onDelete('file', String(item.file_id));
+        if (onDelete) onDelete('file', String(item.file_id));
     }
 
     return (
         <>
             <S.Container
+                ref={ref}
+                className='card-archive'
                 draggable
                 checked={checked}
                 type={type}
@@ -116,9 +119,11 @@ export const CardArchive = ({ checked, onChecked, onView, onEdit, onDelete, type
                     }} />
 
                 </div>
-                <div className='item-checkbox'>
-                    <InputCheckbox checked={checked} onChange={onChecked} />
-                </div>
+                {onChecked &&
+                    <div className='item-checkbox'>
+                        <InputCheckbox checked={checked ?? false} onChange={onChecked} />
+                    </div>
+                }
                 <div className='tools'>
                     <button className={`more star`}>
                         <IconStar />

@@ -4,14 +4,16 @@ type SkeletonProps = {
   height: string;
   width?: string;
   widthAuto?: boolean;
+  borderRadius?: string
 };
 
 export const Skeleton = styled.div.withConfig({
-  shouldForwardProp: (prop) => !["height", "width", "widthAuto"].includes(prop),
+  shouldForwardProp: (prop) => !["height", "width", "widthAuto", "borderRadius"].includes(prop),
 })<SkeletonProps>`
-  border-radius: 4px;
+  border-radius: ${({borderRadius}) => borderRadius ? borderRadius : '4px'};
   animation: shimmer 1.2s ease-in-out infinite;
   height: ${({ height }) => height};
+  min-height: ${({ height }) => height};
   width: ${({ width, widthAuto }) =>
     widthAuto
       ? `${Math.floor(Math.random() * (100 - 30 + 1)) + 30}%`

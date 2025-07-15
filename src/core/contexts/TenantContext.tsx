@@ -6,7 +6,6 @@ import type { IOrganization, IOrganizationGroup } from '../types/IOrganization';
 import { OrganizationService } from '../services/OrganizationService';
 import type { IUser } from '../types/iUser';
 import { UserService } from '../services/UserService';
-import { useAlert } from './AlertContext';
 
 // Definição da interface para o contexto do Tenant
 interface TenantContextType {

@@ -1,3 +1,275 @@
 import styled from "styled-components";
 
-export const Container = styled.div``;
+export const Container = styled.div`
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  .row {
+    display: flex;
+    gap: 25px;
+    @media (max-width: 1130px) {
+      flex-direction: column;
+    }
+  }
+  .box-dash {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-radius: 20px;
+    flex-direction: column;
+    box-sizing: border-box;
+    height: 100%;
+    .head {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      i {
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100px;
+        background-color: ${({ theme }) => theme.colors.neutral[200]};
+        color: ${({ theme }) => theme.colors.neutral[600]};
+        svg {
+          width: 25px;
+          height: 25px;
+        }
+      }
+      .title-head {
+        font-size: 14px;
+        color: ${({ theme }) => theme.colors.neutral[700]};
+      }
+    }
+  }
+`;
+
+interface IPropsTenant {
+  color?: string;
+  colorBg?: string;
+  colorText?: string;
+}
+
+export const ContainerBanners = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.2s;
+  &:hover {
+    .image {
+      box-shadow: 0px 5px 10px ${({ theme }) => theme.colors.neutral[300]};
+    }
+  }
+  .controls {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: 30px;
+    animation: fadeIn 5s;
+    z-index: 2;
+    button {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      justify-content: center;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 100px;
+      color: white;
+      transition: all 0.5s;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    .prev {
+      svg {
+        transform: rotate(90deg);
+      }
+    }
+    .next {
+      svg {
+        transform: rotate(-90deg);
+      }
+    }
+  }
+  .image {
+    width: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all 0.5s;
+    a {
+      display: flex;
+      flex-direction: column;
+      img {
+        width: 100%;
+        animation: fadeIn 0.5s;
+      }
+    }
+  }
+`;
+
+export const ContainerInfo = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0px 0px;
+  position: relative;
+  @media (max-width: 1480px) {
+    flex-wrap: wrap;
+  }
+  .card {
+    display: flex;
+    padding: 20px;
+    background-color: ${({ theme }) => theme.colors.background.default};
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid ${({ theme }) => theme.colors.neutral[200]};
+    gap: 10px;
+    flex: 1;
+    i {
+      min-width: 50px;
+      min-height: 50px;
+      max-height: 50px;
+      border-radius: 100px;
+      background-color: ${({ colorBg }) => colorBg};
+      color: ${({ colorText }) => colorText};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      svg {
+        width: 30px;
+        height: 30px;
+      }
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+      p {
+        color: ${({ theme }) => theme.colors.neutral[600]};
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+      b {
+        color: ${({ theme }) => theme.colors.neutral[700]};
+        font-size: 20px;
+      }
+    }
+  }
+`;
+
+export const ContainerRecents = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  .overflow {
+    width: 50vw;
+    display: flex;
+    overflow: hidden;
+    gap: 20px;
+    padding: 0px 25px 25px 25px;
+    @media (max-width: 1480px) {
+      width: 40vw;
+    }
+    @media (max-width: 1130px) {
+      width: calc(100vw - 120px);
+    }
+  }
+  .bullets {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 25px;
+    gap: 8px;
+    button {
+      min-width: 25px;
+      max-width: 10px;
+      min-height: 10px;
+      max-height: 10px;
+      border-radius: 100px;
+      background-color: ${({ theme }) => theme.colors.neutral[300]};
+      border: none;
+      cursor: pointer;
+      transition: all 0.5s;
+      &.active {
+        min-width: 45px;
+        background-color: ${({ colorBg }) => colorBg};
+        opacity: 1;
+      }
+    }
+  }
+`;
+
+export const ContainerPosts = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  flex: 1;
+  .overflow {
+    flex: 1;
+    max-height: 360px;
+    overflow: auto;
+    padding: 0px 20px 20px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    .post {
+      display: flex;
+      gap: 15px;
+      background-color: ${({ theme }) => theme.colors.neutral[100]};
+      border-radius: 20px;
+      padding: 10px;
+      align-items: center;
+      .info {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        .name {
+          font-size: 13px;
+          color: ${({ theme }) => theme.colors.neutral[700]};
+        }
+        p {
+          font-size: 12px;
+          color: ${({ theme }) => theme.colors.neutral[600]};
+        }
+        span {
+          font-size: 11px;
+          color: ${({ theme }) => theme.colors.neutral[500]};
+        }
+      }
+      .preview {
+        width: 50px;
+        height: 50px;
+        border-radius: 8px;
+        background-size: cover;
+      }
+    }
+  }
+`;

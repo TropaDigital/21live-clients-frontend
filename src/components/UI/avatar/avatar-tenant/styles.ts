@@ -4,16 +4,21 @@ interface IProps {
   colorBg: string;
   color: string;
   colorText: string;
+  size: "small" | "medium" | "large";
 }
 
 export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["color", "colorBg", "colorText"].includes(prop),
+    !["color", "colorBg", "colorText", "size"].includes(prop),
 })<IProps>`
-  width: 45px;
-  height: 45px;
-  min-width: 45px;
-  min-height: 45px;
+  width: ${({ size }) =>
+    size === "small" ? "45px" : size === "medium" ? "90px" : "135px"};
+  height: ${({ size }) =>
+    size === "small" ? "45px" : size === "medium" ? "90px" : "135px"};
+  min-width: ${({ size }) =>
+    size === "small" ? "45px" : size === "medium" ? "90px" : "135px"};
+  min-height: ${({ size }) =>
+    size === "small" ? "45px" : size === "medium" ? "90px" : "135px"};
   border-radius: 0.75rem;
   position: relative;
   .name {

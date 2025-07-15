@@ -57,7 +57,7 @@ export const Container = styled.div.withConfig({
       transition: all 0.5s;
       animation: moveLine 1s linear infinite;
       background-color: ${({ loading, colorBg }) =>
-        loading ? "black" : colorBg};
+        loading ? (colorBg ? colorBg : "black") : colorBg};
       @keyframes moveLine {
         0% {
           top: 0;

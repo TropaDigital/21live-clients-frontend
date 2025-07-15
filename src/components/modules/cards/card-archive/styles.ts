@@ -6,7 +6,7 @@ interface IProps {
   colorText?: string;
   loading?: boolean;
   type: "card" | "list";
-  checked: boolean;
+  checked?: boolean;
 }
 
 export const Container = styled.div.withConfig({
@@ -29,7 +29,7 @@ export const Container = styled.div.withConfig({
     height: 200px;
     background: linear-gradient(
       to right,
-      ${({theme}) => theme.colors.background.default},
+      ${({ theme }) => theme.colors.background.default},
       transparent
     );
     position: absolute;
