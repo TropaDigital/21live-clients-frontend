@@ -24,6 +24,7 @@ export const Container = styled.div`
     flex-direction: column;
     width: 380px;
     max-width: 100%;
+    box-sizing: border-box;
     .preview-file {
       width: 100%;
       padding: 10px;

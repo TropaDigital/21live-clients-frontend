@@ -580,16 +580,18 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
     return (
         <S.ContainerListItems>
             <div className='head'>
-                <div className='toggle'>
-                    <button className={`${toggleShow ? 'show' : 'hide'}`} onClick={() => setToggleShow(!toggleShow)}>
-                        <IconChevronDown />
-                    </button>
-                </div>
-                <i>
-                    {icon}
-                </i>
-                <p className='title'>{name}</p>
 
+                <div className='info-fab'>
+                    <div className='toggle'>
+                        <button className={`${toggleShow ? 'show' : 'hide'}`} onClick={() => setToggleShow(!toggleShow)}>
+                            <IconChevronDown />
+                        </button>
+                    </div>
+                    <i>
+                        {icon}
+                    </i>
+                    <p className='title'>{name}</p>
+                </div>
 
                 {(onCheck && onActionSelected) &&
                     <div className='selected-function'>

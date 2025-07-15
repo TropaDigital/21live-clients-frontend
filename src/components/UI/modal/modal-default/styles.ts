@@ -12,8 +12,8 @@ export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
     !["opened", "layout", "padding", "paddingHeader"].includes(prop),
 })<IProps>`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   left: 0;
   top: 0;
   position: fixed;
@@ -80,7 +80,7 @@ export const Container = styled.div.withConfig({
     max-width: 90%;
     display: flex;
     flex-direction: column;
-    z-index: 2;
+    z-index: 3;
     .head-box {
       display: flex;
       justify-content: flex-end;

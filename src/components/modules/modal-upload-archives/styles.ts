@@ -25,6 +25,7 @@ export const Container = styled.div`
     flex-direction: column;
     width: 380px;
     max-width: 100%;
+    box-sizing: border-box;
   }
   .loading-percent {
     width: 100%;

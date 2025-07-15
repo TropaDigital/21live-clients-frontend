@@ -32,6 +32,7 @@ export const Container = styled.div.withConfig({
     flex-direction: column;
     gap: 20px;
     animation: fadeInUp 0.5s;
+    box-sizing: border-box;
     .head {
       display: flex;
       flex-direction: column;

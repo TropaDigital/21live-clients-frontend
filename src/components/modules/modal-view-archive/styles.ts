@@ -13,7 +13,10 @@ export const Container = styled.div`
     min-height: 400px;
     border-radius: 0px 0px 40px 40px;
     overflow: hidden;
-    video{
+    @media (max-width: 400px) {
+      max-height: 500px;
+    }
+    video {
       width: 100%;
       min-height: 400px;
       max-height: 60vh;

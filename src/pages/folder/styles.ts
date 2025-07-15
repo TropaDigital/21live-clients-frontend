@@ -17,6 +17,10 @@ export const Container = styled.div`
       gap: 10px;
       justify-content: flex-start;
       gap: 15px;
+      @media (max-width: 400px) {
+        overflow-y: auto;
+        width: 100%;
+      }
       .total {
         display: flex;
         align-items: center;
@@ -50,6 +54,7 @@ export const Container = styled.div`
         flex-direction: column;
         align-items: unset;
         gap: 10px;
+        width: 100%;
         flex: 1;
         > div {
           width: 100%;
@@ -111,6 +116,9 @@ export const ToolBarTypeView = styled.div.withConfig({
   background-color: ${({ theme }) => theme.colors.neutral[100]};
   box-sizing: border-box;
   border-radius: 8px;
+  @media (max-width: 400px) {
+    display: none;
+  }
   button {
     border-radius: 8px;
     outline: none;
@@ -140,43 +148,51 @@ export const ContainerListItems = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
-    i {
-      display: flex;
-      color: ${({ theme }) => theme.colors.neutral[800]};
-      svg {
-        width: 25px;
-        height: 25px;
-      }
+    @media (max-width: 400px) {
+      flex-direction: column;
+      align-items: flex-start;
     }
-    .title {
+    .info-fab {
       display: flex;
-      margin: 0px;
-      font-size: 17px;
-      font-weight: 700;
-      color: ${({ theme }) => theme.colors.neutral[800]};
-    }
-    .toggle {
-      display: flex;
-      button {
-        border: none;
-        outline: none;
+      flex: 1;
+      gap: 10px;
+      .toggle {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background-color: transparent;
-        svg {
-          transition: all 0.2s;
-        }
-        &.hide {
+        button {
+          border: none;
+          outline: none;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background-color: transparent;
           svg {
-            transform: rotate(180deg);
+            transition: all 0.2s;
+          }
+          &.hide {
+            svg {
+              transform: rotate(180deg);
+            }
           }
         }
       }
+      i {
+        display: flex;
+        color: ${({ theme }) => theme.colors.neutral[800]};
+        svg {
+          width: 25px;
+          height: 25px;
+        }
+      }
+      .title {
+        display: flex;
+        margin: 0px;
+        font-size: 17px;
+        font-weight: 700;
+        color: ${({ theme }) => theme.colors.neutral[800]};
+      }
     }
     .selected-function {
-      flex: 1;
       display: flex;
       gap: 10px;
       justify-content: flex-end;
