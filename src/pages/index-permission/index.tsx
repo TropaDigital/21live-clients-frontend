@@ -8,6 +8,8 @@ export default function IndexPermission() {
     const { redirectSlug } = useRedirect();
 
     useEffect(() => {
+        if (!user?.user_id) return;
+        if (role?.role.length === 0) return;
         if (verifyPermission('dashboard_admin') || verifyPermission('dashboard_user')) {
             redirectSlug('dashboard')
         } else if (verifyPermission('folders_view')) {
