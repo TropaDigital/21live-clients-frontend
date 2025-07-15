@@ -287,9 +287,9 @@ const CardPosts = () => {
                     }
                     {data.map((item) =>
                         <div className='post'>
-                            <AvatarUser fontSize={20} size={50} name={item.user.name} image={item.user.avatar} />
+                            <AvatarUser fontSize={20} size={50} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
                             <div className='info'>
-                                <b className='name'>{item.user.name}</b>
+                                <b className='name'>{item.user?.name ?? 'Sistema'}</b>
                                 <p>{item.title}</p>
                                 <span>{moment(item.created).format('DD/MM/YYYY HH:mm')}</span>
                             </div>
