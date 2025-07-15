@@ -80,7 +80,7 @@ export default function Folder() {
         {
             name: 'Início',
             icon: <IconHome />,
-            redirect: '/',
+            redirect: '/folders',
             here: true,
         }
     ])
@@ -160,7 +160,7 @@ export default function Folder() {
             return {
                 name: item.name,
                 icon: item.name === 'Início' ? <IconHome /> : <IconFolder />,
-                redirect: item.name === 'Início' ? '/' : `/folders/${item.folder_id}`,
+                redirect: item.name === 'Início' ? '/folders' : `/folders/${item.folder_id}`,
                 here: response.item.breacrumb.length === (key + 1) ? true : false,
             }
         })
