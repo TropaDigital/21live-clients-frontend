@@ -148,6 +148,7 @@ export const Container = styled.div.withConfig({
           display: flex;
           justify-content: flex-start;
           align-items: center;
+          color: ${({ theme }) => theme.colors.neutral[800]};
         }
         span {
           color: ${({ theme }) => theme.colors.neutral[700]};

@@ -18,6 +18,9 @@ export const Container = styled.ul`
     display: flex;
     align-items: center;
     box-sizing: border-box;
+    @media (max-width: 400px) {
+      max-width: 100vw;
+    }
     &::-webkit-scrollbar {
       height: 8px;
     }
@@ -53,6 +56,7 @@ export const Container = styled.ul`
     border-radius: 8px;
     text-decoration: none;
     color: ${({ theme }) => theme.colors.neutral[700]};
+    cursor: pointer;
     &:hover {
       background-color: ${({ theme }) => theme.colors.neutral[100]};
       text-decoration: none;

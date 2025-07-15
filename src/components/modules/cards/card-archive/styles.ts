@@ -29,7 +29,7 @@ export const Container = styled.div.withConfig({
     height: 200px;
     background: linear-gradient(
       to right,
-      rgba(255, 255, 255, 0.9),
+      ${({theme}) => theme.colors.background.default},
       transparent
     );
     position: absolute;
@@ -109,6 +109,7 @@ export const Container = styled.div.withConfig({
       justify-content: center;
       border: none;
       outline: none;
+      color: ${({ theme }) => theme.colors.neutral[700]};
       svg {
         width: 20px;
         height: 20px;

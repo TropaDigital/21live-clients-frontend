@@ -11,6 +11,7 @@ export const Container = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column;
+  padding-bottom: 30px;
 `;
 
 export const ItemWrapper = styled.div.withConfig({
@@ -50,6 +51,7 @@ export const ItemWrapper = styled.div.withConfig({
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: 2.5px;
       width: 25px;
       height: 25px;
       min-width: 25px;

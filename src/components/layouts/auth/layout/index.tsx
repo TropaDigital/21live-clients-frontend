@@ -71,6 +71,7 @@ export default function AuthLayout() {
     useEffect(() => {
         if (timeLeft <= 180) {
             handleRefreshToken();
+            alert('é esse refresh')
         }
     }, [pathname]);
 
@@ -202,7 +203,7 @@ const RenderMenusFolder = ({ isMobile, siderbarToggle }: { isMobile: boolean; si
         }
     };
 
-    const permissionSotable = verifyPermission('folders_edit');
+    const permissionSotable = !isMobile && verifyPermission('folders_edit');
 
     return loadingMenus ?
         (

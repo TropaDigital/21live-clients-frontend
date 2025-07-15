@@ -117,6 +117,7 @@ export const Container = styled.div.withConfig({
       justify-content: center;
       border: none;
       outline: none;
+      color: ${({ theme }) => theme.colors.neutral[700]};
       svg {
         width: 20px;
         height: 20px;

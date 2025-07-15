@@ -6,6 +6,7 @@ import type { IOrganization, IOrganizationGroup } from '../types/IOrganization';
 import { OrganizationService } from '../services/OrganizationService';
 import type { IUser } from '../types/iUser';
 import { UserService } from '../services/UserService';
+import { useAlert } from './AlertContext';
 
 // Definição da interface para o contexto do Tenant
 interface TenantContextType {
@@ -65,10 +66,11 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
             document.title = `${response.item?.name} | 21Live`;
 
             const favicon = document.querySelector("link[rel~='icon']") as HTMLLinkElement;
-            favicon.href = response.item?.images.icon ?? '';
+            favicon.href = response.item?.images.icon ?? '/favicon.ico';
 
         } catch (error) {
             //window.location.href = `/`
+            alert(`Instância ${slug} não existe.`)
         }
     }
 

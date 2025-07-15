@@ -56,7 +56,7 @@ export const Container = styled.button.withConfig({
       case "lightWhite":
         return theme.colors.background.default;
       case "dark":
-        return theme.colors.neutral[900];
+        return "#212529";
       case "blocked":
         return theme.colors.neutral[400];
       default:

@@ -4,6 +4,9 @@ import { theme } from "../../../../assets/theme/theme";
 export const Container = styled.div`
   background-color: ${({ theme }) => theme.colors.background.surface};
   min-height: 100vh;
+  @media (max-width: 400px) {
+    min-height: 100%;
+  }
   display: flex;
   .content {
     display: flex;
@@ -29,6 +32,7 @@ export const Container = styled.div`
         background-color: transparent;
         padding: 0px;
         cursor: pointer;
+        color: ${({ theme }) => theme.colors.neutral[700]};
         svg {
           width: 20px;
           height: 20px;
@@ -71,6 +75,11 @@ export const Container = styled.div`
       display: flex;
       flex-direction: column;
       overflow: auto;
+      @media (max-width: 400px) {
+        height: calc(100% - 70px);
+        top: 70px;
+        position: absolute;
+      }
       &::-webkit-scrollbar {
         width: 8px;
       }
@@ -127,6 +136,7 @@ export const ContainerSidebar = styled.div.withConfig({
     position: fixed;
     z-index: 10;
     left: ${({ openedMobile }) => (openedMobile ? "0%" : "-100%")};
+    height: 100%;
   }
   .tenant-info {
     height: 70px;

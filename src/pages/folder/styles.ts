@@ -127,6 +127,7 @@ export const ToolBarTypeView = styled.div.withConfig({
     cursor: pointer;
     width: 35px;
     transition: all 0.2s;
+    color: ${({ theme }) => theme.colors.neutral[700]};
     &.card {
       background-color: ${({ type, theme }) =>
         type === "card" ? theme.colors.neutral[300] : "transparent"};
@@ -138,7 +139,16 @@ export const ToolBarTypeView = styled.div.withConfig({
   }
 `;
 
-export const ContainerListItems = styled.div`
+interface IPropsRenderList {
+  color?: string;
+  colorBg?: string;
+  colorText?: string;
+}
+
+export const ContainerListItems = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsRenderList>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -148,6 +158,7 @@ export const ContainerListItems = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    min-height: 40px;
     @media (max-width: 400px) {
       flex-direction: column;
       align-items: flex-start;
@@ -156,9 +167,17 @@ export const ContainerListItems = styled.div`
       display: flex;
       flex: 1;
       gap: 10px;
+      align-items: center;
       .toggle {
         display: flex;
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        background-color: ${({ theme }) => theme.colors.background.default};
+        border-radius: 8px;
         button {
+          color: ${({ theme }) => theme.colors.neutral[700]};
           border: none;
           outline: none;
           display: flex;
@@ -168,6 +187,8 @@ export const ContainerListItems = styled.div`
           background-color: transparent;
           svg {
             transition: all 0.2s;
+            width: 20px;
+            height: 20px;
           }
           &.hide {
             svg {
@@ -178,10 +199,16 @@ export const ContainerListItems = styled.div`
       }
       i {
         display: flex;
-        color: ${({ theme }) => theme.colors.neutral[800]};
+        color: ${({ colorText }) => colorText};
+        background-color: ${({ color }) => color};
+        width: 30px;
+        height: 30px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 100px;
         svg {
-          width: 25px;
-          height: 25px;
+          width: 15px;
+          height: 15px;
         }
       }
       .title {
@@ -196,6 +223,16 @@ export const ContainerListItems = styled.div`
       display: flex;
       gap: 10px;
       justify-content: flex-end;
+      @media (max-width: 400px) {
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        > button,
+        > div {
+          width: 100%;
+          box-sizing: border-box;
+        }
+      }
       .loading-action {
         height: 40px;
         background: ${({ theme }) => theme.colors.background.default};
@@ -219,6 +256,7 @@ export const ContainerListItems = styled.div`
 
   .content-toggle {
     margin-top: 15px;
+    animation: fadeIn 0.5s;
   }
 
   .list-folders {

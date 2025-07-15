@@ -16,6 +16,7 @@ export const AuthRoute = ({
     const { getTenant, loadingTenant } = useTenant();
     const { slug } = useParams();
 
+    const [loadingMain, setLoadingMain] = useState(true);
     const [loadingAuthLayout, setLoadingAuthLayout] = useState(true);
     const [permissionLayout, setPermissionLayout] = useState(false);
 
@@ -29,20 +30,45 @@ export const AuthRoute = ({
         getTenant();
     }, [slug])
 
+    const handleChangeTenant = async () => {
+        setLoadingAuthLayout(true);
+        await handleRefresh();
+        await handleGetUserInfos()
+    }
+
+    const handleGetUserInfos = async () => {
+        setLoadingAuthLayout(true);
+        setPermissionLayout(false);
+        await getUserProfileRoles();
+        await getMenus();
+        setLoadingAuthLayout(false);
+        setPermissionLayout(true);
+    }
+
+
     useEffect(() => {
+        if (loadingAuthLayout === false && loadingTenant === false) {
+            setLoadingMain(false)
+        } else {
+            setLoadingMain(true);
+        }
+    }, [loadingAuthLayout, loadingTenant])
+
+    useEffect(() => {
+        console.log('user', user)
         if (!isLogged) {
+            console.log('!isLogged = user?.tenant_slug', user?.tenant_slug)
+            console.log('!isLogged = slug', slug)
             setLoadingAuthLayout(false);
             setPermissionLayout(false);
         } else if (user?.tenant_slug && user.tenant_slug !== slug) {
-            handleRefresh();
-        } else if (user?.tenant_slug) {
-            getUserProfileRoles().finally(() => {
-                getMenus().finally(() => {
-                    setLoadingAuthLayout(false);
-                    setPermissionLayout(true);
-                })
-
-            })
+            console.log('handleRefresh = user?.tenant_slug', user?.tenant_slug)
+            console.log('handleRefresh = slug', slug)
+            handleChangeTenant();
+        } else if (user?.tenant_slug && user?.tenant_slug === slug) {
+            console.log('getuser = user?.tenant_slug', user?.tenant_slug)
+            console.log('getuser = slug', slug)
+            handleGetUserInfos();
         }
     }, [isLogged, user, slug])
 
@@ -52,7 +78,7 @@ export const AuthRoute = ({
     }
 
     return <>
-        {children}
-        <LoadingMain loading={(!permissionLayout && loadingAuthLayout) || loadingTenant} />
+        {permissionLayout && children}
+        <LoadingMain loading={loadingMain} />
     </>
 }

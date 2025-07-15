@@ -19,11 +19,11 @@ export const Container = styled.div`
     gap: 10px;
     overflow: auto;
     flex: 1;
-    max-height: calc(100vh - 240px);
+    max-height: calc(100vh - 180px);
     display: flex;
     padding: 20px 30px;
     flex-direction: column;
-    width: 380px;
+    width: 450px;
     max-width: 100%;
     box-sizing: border-box;
   }

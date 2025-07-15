@@ -116,8 +116,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
     const handleRefreshToken = async () => {
         try {
             if (slug && user) {
-                user.tenant_slug = slug;
                 const response = await UserService.refreshToken(slug)
+                user.tenant_slug = slug;
                 window.localStorage.setItem(STORAGE_TOKEN, response.token);
                 window.localStorage.setItem(STORAGE_USER, JSON.stringify(user));
                 //setUser({ ...user })

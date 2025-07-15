@@ -146,6 +146,7 @@ export const FoldersService = {
     icon,
     menulink,
     order,
+    access,
   }: {
     folder_id: number;
     parent_id: number | null;
@@ -154,20 +155,28 @@ export const FoldersService = {
     icon: string;
     menulink?: boolean;
     order?: number;
+    access?: string;
   }) => {
     const tenant = getSlug();
 
+    const paylaod = {
+      folder_id,
+      parent_id,
+      tenant_id,
+      name,
+      icon,
+      menulink,
+      access,
+      order,
+    };
+
+    if ( !access ) delete paylaod.access
+    if ( !menulink ) delete paylaod.menulink
+    if ( !order ) delete paylaod.order
+
     const response = await BaseService.put(
       `/${tenant}/API/Folders/${folder_id}`,
-      {
-        folder_id,
-        parent_id,
-        tenant_id,
-        name,
-        icon,
-        menulink: menulink ?? false,
-        order,
-      }
+      paylaod
     );
 
     return response.data;

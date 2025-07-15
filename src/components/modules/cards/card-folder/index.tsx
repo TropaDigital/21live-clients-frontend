@@ -24,7 +24,7 @@ interface IProps {
 export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
 
     const { tenant } = useTenant();
-    const { verifyPermission, role } = useAuth();
+    const { verifyPermission, role, getMenus } = useAuth();
 
     const refTitle = useRef<any>(null);
 
@@ -36,6 +36,8 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
 
     const [rename, setRename] = useState(item.name)
     const [loadingRename, setLoadingRename] = useState(false);
+
+    const [access, setAccess] = useState(item.access)
 
     const [list, setList] = useState<ISubmenuSelect[]>([])
 
@@ -51,6 +53,7 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
     const handleDelete = async () => {
         setLoadingDelete(true);
         await FoldersService.delete({ id: item.folder_id });
+        if (item.menulink) getMenus()
         setLoadingDelete(false);
         setModalDelete(false)
         onDelete('folder', String(item.folder_id));
@@ -65,8 +68,10 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
             parent_id: item.parent_id,
             tenant_id: item.tenant_id,
             name: rename,
-            icon: item.icon
+            icon: item.icon,
+            menulink: item.menulink,
         });
+        if (item.menulink) getMenus()
         item.name = rename;
         setEditableName(false);
         setLoadingRename(false);
@@ -77,8 +82,6 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
         if (type === 'folder' && id === String(folderId)) return
 
         if (DTO) DTO = JSON.parse(DTO)
-
-        //alert('move ' + type + ', id:' + id + ', na pasta:' + folderId)
 
         switch (type) {
             case 'folder':
@@ -98,7 +101,7 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
                     file_id: Number(id),
                     folder_id: Number(folderId),
                     tenant_id: item.tenant_id,
-                    name: DTO.name
+                    name: DTO.name,
                 })
                 onDelete('file', id);
                 break;
@@ -150,6 +153,13 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
         setList([...newList])
     }, [role, item])
 
+    const handleChangeVisibility = async () => {
+        const visibility = item.access === 'public' ? 'private' : 'public'
+        item.access = visibility;
+        setAccess(visibility)
+        await FoldersService.update({ ...item, access: visibility })
+    }
+
     return (
         <>
             <S.Container
@@ -188,9 +198,12 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
                     </div>
 
                     <div className='tools'>
-                        <button className={`more star`}>
-                            {item.access === 'public' ? <IconEye /> : <IconEyeClose />}
-                        </button>
+                        {verifyPermission('folders_edit') &&
+                            <button onClick={handleChangeVisibility} className={`more star`}>
+                                {access === 'public' ? <IconEye /> : <IconEyeClose />}
+                            </button>
+                        }
+
                         <button className={`more star`}>
                             <IconStar />
                         </button>

@@ -33,6 +33,7 @@ import { FilesService } from '../../core/services/FilesService';
 import { downloadZipFromUrls, type IFileItemDownload } from '../../core/utils/download';
 import { useAuth } from '../../core/contexts/AuthContext';
 import { ModalMoveArchive } from '../../components/modules/modal-move-archive';
+import { useTenant } from '../../core/contexts/TenantContext';
 
 
 interface IPropsModalArchive extends IFolderFileItem {
@@ -576,9 +577,10 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
 }) => {
 
     const [toggleShow, setToggleShow] = useState(true)
+    const { tenant } = useTenant();
 
     return (
-        <S.ContainerListItems>
+        <S.ContainerListItems color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
             <div className='head'>
 
                 <div className='info-fab'>
@@ -593,7 +595,7 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
                     <p className='title'>{name}</p>
                 </div>
 
-                {(onCheck && onActionSelected) &&
+                {toggleShow && (onCheck && onActionSelected) &&
                     <div className='selected-function'>
 
                         {loadingAction && checkeds &&
