@@ -218,7 +218,7 @@ export const ContainerPosts = styled.div.withConfig({
   .preview-post {
     display: flex;
     flex-direction: column;
-    min-width: 450px;
+    min-width: 350px;
     max-width: 780px;
     .head-preview-post {
       display: flex;
@@ -290,7 +290,7 @@ export const ContainerPosts = styled.div.withConfig({
     gap: 15px;
     cursor: pointer;
     .image {
-      width: 350px;
+      width: 330px;
       height: 200px;
       border-radius: 30px;
       position: relative;
@@ -384,7 +384,11 @@ export const ContainerGraphs = styled.div.withConfig({
     .box-dash {
       height: auto;
       flex: 1;
-      min-width: 400px;
+      min-width: 350px;
+      @media(max-width: 400px){
+        min-width: 300px;
+        width: 100%;
+      }
     }
   }
   .chart-dash {

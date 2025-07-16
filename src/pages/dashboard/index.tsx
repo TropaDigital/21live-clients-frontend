@@ -395,6 +395,24 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
     const chartUsersDownloads = chartConvertData({ labelName: 'Downloads', labels: data?.userDownloads?.users, values: data?.userDownloads?.values })
     const chartUnitStatus = convertUnitStatusToBarSeries(data?.unitStatus);
 
+    const [windowSize, setWindowSize] = useState({
+        width: window.innerWidth,
+        height: window.innerHeight,
+    });
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight,
+            });
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <S.ContainerGraphs>
 
@@ -463,8 +481,8 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                                         startAngle: -45,
                                                     },
                                                 ]}
-                                                width={280}
-                                                height={280}
+                                                width={windowSize.width >= 500 ? 280 : 200}
+                                                height={windowSize.width >= 500 ? 280 : 200}
                                             />
                                         </div>
                                     }
@@ -661,8 +679,8 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                                         startAngle: -45,
                                                     },
                                                 ]}
-                                                width={280}
-                                                height={280}
+                                                width={windowSize.width >= 500 ? 280 : 200}
+                                                height={windowSize.width >= 500 ? 280 : 200}
                                             />
                                         </div>
                                     }
@@ -704,9 +722,6 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
 
     useEffect(() => {
 
-        console.log('refContainerCarrousel', refParent)
-        console.log('refCard', refCard)
-        console.log('data', data)
         if (width === 0) return;
         if (!refParent.current || !refCard.current || !data) return;
 
@@ -728,8 +743,9 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
         const cardWidth = refCard.current.offsetWidth;
         const scrollX = pageIndex * cardWidth * Math.floor(refParent.current.offsetWidth / cardWidth);
 
+
         refOverflow.current.scrollTo({
-            left: scrollX,
+            left: scrollX + (pageIndex >= 1 ? 20 : 0),
             behavior: 'smooth',
         });
 
