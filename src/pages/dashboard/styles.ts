@@ -22,6 +22,7 @@ export const Container = styled.div`
     flex-direction: column;
     box-sizing: border-box;
     height: 100%;
+
     .head {
       padding: 20px;
       display: flex;
@@ -44,6 +45,16 @@ export const Container = styled.div`
       .title-head {
         font-size: 14px;
         color: ${({ theme }) => theme.colors.neutral[700]};
+      }
+    }
+
+    &.transparent {
+      background-color: transparent;
+      .head {
+        padding: 0px 0px 20px 0px;
+        i {
+          background-color: ${({ theme }) => theme.colors.neutral[300]};
+        }
       }
     }
   }
@@ -194,43 +205,6 @@ export const ContainerRecents = styled.div.withConfig({
   display: flex;
   flex-direction: column;
   gap: 25px;
-  .overflow {
-    width: 50vw;
-    display: flex;
-    overflow: hidden;
-    animation: fadeInUp 0.5s;
-    gap: 20px;
-    height: 100%;
-    padding: 0px 25px 25px 25px;
-    @media (max-width: 1480px) {
-      width: 40vw;
-    }
-    @media (max-width: 1130px) {
-      width: calc(100vw - 120px);
-    }
-  }
-  .bullets {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 25px;
-    gap: 8px;
-    button {
-      min-width: 25px;
-      max-width: 10px;
-      min-height: 10px;
-      max-height: 10px;
-      border-radius: 100px;
-      background-color: ${({ theme }) => theme.colors.neutral[300]};
-      border: none;
-      cursor: pointer;
-      transition: all 0.5s;
-      &.active {
-        min-width: 45px;
-        background-color: ${({ colorBg }) => colorBg};
-        opacity: 1;
-      }
-    }
-  }
 `;
 
 export const ContainerPosts = styled.div.withConfig({
@@ -244,7 +218,8 @@ export const ContainerPosts = styled.div.withConfig({
   .preview-post {
     display: flex;
     flex-direction: column;
-    max-width: 50vw;
+    min-width: 450px;
+    max-width: 780px;
     .head-preview-post {
       display: flex;
       border-bottom: 1px solid ${({ theme }) => theme.colors.neutral[300]};
@@ -252,6 +227,50 @@ export const ContainerPosts = styled.div.withConfig({
       background-color: ${({ theme }) => theme.colors.neutral[200]};
       justify-content: center;
       align-items: center;
+      .thumb {
+        width: 100%;
+        height: 200px;
+        background-size: auto 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        background-color: ${({ color }) => color};
+        position: relative;
+        span {
+          background-color: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(10px);
+          color: white;
+          border-radius: 20px;
+          padding: 10px;
+          margin: 15px;
+          display: flex;
+          font-size: 12px;
+        }
+        .no-image {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          i {
+            width: 90px;
+            height: 90px;
+            border-radius: 100px;
+            background-color: ${({ theme }) => theme.colors.background.default};
+            box-shadow: 0px 0px 30px 5px
+              ${({ theme }) => theme.colors.background.default};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: ${({ color }) => color};
+          }
+        }
+      }
       img {
         max-width: 100%;
         max-height: 20vh;
@@ -265,62 +284,90 @@ export const ContainerPosts = styled.div.withConfig({
       overflow: auto;
     }
   }
-  .overflow {
-    flex: 1;
-    height: 100%;
-    max-height: 360px;
-    overflow: auto;
-    animation: fadeInUp 0.5s;
-    padding: 0px;
-    box-sizing: border-box;
+  .post {
     display: flex;
     flex-direction: column;
-    .post {
-      width: 100%;
-      display: flex;
-      gap: 15px;
-      border-top: 1px solid ${({ theme }) => theme.colors.neutral[200]};
-      border-radius: 0px;
-      box-sizing: border-box;
-      padding: 15px 25px;
-      align-items: center;
-      .info {
+    gap: 15px;
+    cursor: pointer;
+    .image {
+      width: 350px;
+      height: 200px;
+      border-radius: 30px;
+      position: relative;
+
+      .blur {
+        width: 100%;
+        height: 100%;
+        filter: blur(40px);
+        position: absolute;
+        background-size: cover;
+        transform: scale(0.7);
+        margin-top: 20px;
+        border-radius: 30px;
+        background-position: center;
+        background-color: ${({ color }) => color};
+      }
+      .thumb {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-size: cover;
+        border-radius: 30px;
+        background-position: center;
         display: flex;
-        flex: 1;
-        flex-direction: column;
-        gap: 4px;
-        .head-info {
+        justify-content: flex-start;
+        align-items: flex-start;
+        background-color: ${({ color }) => color};
+        position: relative;
+        span {
+          background-color: rgba(0, 0, 0, 0.4);
+          backdrop-filter: blur(10px);
+          color: white;
+          border-radius: 20px;
+          padding: 10px;
+          margin: 15px;
+          display: flex;
+          font-size: 12px;
+        }
+        .no-image {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          .name {
-            font-size: 13px;
-            color: ${({ theme }) => theme.colors.neutral[700]};
+          justify-content: center;
+          i {
+            width: 90px;
+            height: 90px;
+            border-radius: 100px;
+            background-color: ${({ theme }) => theme.colors.background.default};
+            box-shadow: 0px 0px 30px 5px
+              ${({ theme }) => theme.colors.background.default};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: ${({ color }) => color};
           }
-          span {
-            font-size: 11px;
-            color: ${({ theme }) => theme.colors.neutral[500]};
-          }
-        }
-        p {
-          font-size: 12px;
-          color: ${({ theme }) => theme.colors.neutral[600]};
         }
       }
-      .preview {
-        width: 0px;
-        height: 50px;
-        border-radius: 8px;
-        background-size: cover;
-        transition: all 0.2s;
-        background-size: cover;
+    }
+    .infos {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      .title {
+        font-size: 17px;
+        color: ${({ theme }) => theme.colors.neutral[700]};
+        font-weight: 400;
       }
-      &:hover {
-        background-color: ${({ theme }) => theme.colors.neutral[200]};
-        cursor: pointer;
-        .preview {
-          width: 50px;
-        }
+      .user {
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: ${({ theme }) => theme.colors.neutral[600]};
       }
     }
   }
@@ -382,5 +429,42 @@ export const ContainerEmpty = styled.div`
   p {
     font-size: 13px;
     color: ${({ theme }) => theme.colors.neutral[600]};
+  }
+`;
+
+export const ContainerOverflowCarrousel = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  display: flex;
+  flex-direction: column;
+  .overflow {
+    display: flex;
+    overflow: hidden;
+    gap: 20px;
+    height: 100%;
+    padding: 0px 0px 0px 0px;
+  }
+  .bullets {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0px;
+    gap: 8px;
+    button {
+      min-width: 25px;
+      max-width: 10px;
+      min-height: 10px;
+      max-height: 10px;
+      border-radius: 100px;
+      background-color: ${({ theme }) => theme.colors.neutral[300]};
+      border: none;
+      cursor: pointer;
+      transition: all 0.5s;
+      &.active {
+        min-width: 45px;
+        background-color: ${({ colorBg }) => colorBg};
+        opacity: 1;
+      }
+    }
   }
 `;

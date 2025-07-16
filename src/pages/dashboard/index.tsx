@@ -18,33 +18,36 @@ import { ModalDefault } from '../../components/UI/modal/modal-default';
 
 export default function Home() {
 
+    const [startAPI, setStartAPI] = useState(0)
+
     return (
         <S.Container>
-
-            <CardBanner />
-            <CardInfos />
-
-            <div className='row'>
-                <CardRecents />
-                <CardPosts />
-            </div>
-
-            <CardGraphs />
+            <CardBanner onLoad={() => setStartAPI(1)} />
+            <CardInfos start={startAPI === 1 ? true : false} onLoad={() => setStartAPI(2)} />
+            <CardPosts start={startAPI === 2 ? true : false} onLoad={() => setStartAPI(3)} />
+            <CardRecents start={startAPI === 3 ? true : false} onLoad={() => setStartAPI(4)} />
+            <CardGraphs start={startAPI === 4 ? true : false} onLoad={() => setStartAPI(5)} />
         </S.Container>
     )
 }
 
-const CardBanner = () => {
+const CardBanner = ({ onLoad }: { onLoad(): void }) => {
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<IDashBanner[]>([])
     const [item, setItem] = useState<number>(0)
 
     const getData = async () => {
-        setLoading(true);
-        const response = await DashboardService.getBanners();
-        if (response.items) setData([...response.items])
-        setLoading(false)
+        try {
+            setLoading(true);
+            const response = await DashboardService.getBanners();
+            if (response.items) setData([...response.items])
+            setLoading(false)
+            onLoad()
+        } catch (error) {
+            onLoad();
+            setLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -64,21 +67,6 @@ const CardBanner = () => {
     }
 
     const banner = data.length > 0 ? data[item] : {} as IDashBanner
-
-    const LazyBlurImage = ({ src, alt }: { src: string, alt: string }) => {
-
-        const [loaded, setLoaded] = useState(false);
-
-        return (
-            <S.StyledImage
-                src={src}
-                alt={alt}
-                loaded={loaded}
-                onLoad={() => setLoaded(true)}
-                loading="lazy"
-            />
-        );
-    };
 
     return loading || data.length > 0 ? (
         <S.ContainerBanners>
@@ -102,24 +90,29 @@ const CardBanner = () => {
     ) : ''
 }
 
-const CardInfos = () => {
+const CardInfos = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
 
     const { tenant } = useTenant();
     const [data, setData] = useState<IDashInfo>({} as IDashInfo)
     const [loading, setLoading] = useState(true);
 
     const getData = async () => {
-        setLoading(true);
-        const response = await DashboardService.getInfo();
-        setData({ ...response.data })
-        setLoading(false)
+        try {
+            setLoading(true);
+            const response = await DashboardService.getInfo();
+            setData({ ...response.data })
+            setLoading(false)
+        } catch (error) {
+            setLoading(false);
+            onLoad();
+        }
     }
 
     useEffect(() => {
-        getData();
-    }, [])
+        if (start) getData();
+    }, [start])
 
-    return (
+    return loading || data.fileCount > 0 ? (
         <S.ContainerInfo colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
             <div className='card'>
                 <i>
@@ -164,10 +157,10 @@ const CardInfos = () => {
                 </div>
             }
         </S.ContainerInfo>
-    )
+    ) : ''
 }
 
-const CardRecents = () => {
+const CardRecents = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
 
     const { tenant } = useTenant();
 
@@ -175,55 +168,29 @@ const CardRecents = () => {
     const [loading, setLoading] = useState(true);
     const [modalViewArchive, setModalViewArchive] = useState<IFolderFileItem>({} as IFolderFileItem);
 
-    const refContainerCarrousel = useRef<HTMLDivElement>(null);
     const refCard = useRef<HTMLDivElement>(null);
 
-    const [currentPage, setCurrentPage] = useState(0);
-    const [pageCount, setPageCount] = useState(1);
-
     const getData = async () => {
-        setLoading(true);
-        const response = await DashboardService.getRecents();
-        if (response.data) setData([...response.data])
-        setLoading(false)
+        try {
+            setLoading(true);
+            const response = await DashboardService.getRecents();
+            if (response.data) setData([...response.data])
+            setLoading(false)
+            onLoad();
+        } catch (error) {
+            setLoading(false)
+            onLoad();
+        }
     }
 
     useEffect(() => {
-        getData();
-    }, [])
+        if (start) getData();
+    }, [start])
 
-    useEffect(() => {
-        if (!refContainerCarrousel.current || !refCard.current || !data) return;
-
-        const containerWidth = refContainerCarrousel.current.offsetWidth;
-        const cardWidth = refCard.current.offsetWidth;
-
-        if (cardWidth === 0) return;
-
-        const itemsPerPage = Math.floor(containerWidth / cardWidth);
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-
-        setPageCount(totalPages);
-    }, [data, refContainerCarrousel.current, refCard.current]);
-
-    const goToPage = (pageIndex: number) => {
-        if (!refContainerCarrousel.current || !refCard.current) return;
-
-        const cardWidth = refCard.current.offsetWidth;
-        const scrollX = pageIndex * cardWidth * Math.floor(refContainerCarrousel.current.offsetWidth / cardWidth);
-
-        refContainerCarrousel.current.scrollTo({
-            left: scrollX,
-            behavior: 'smooth',
-        });
-
-        setCurrentPage(pageIndex);
-    };
-
-    return (
+    return (loading || data.length > 0) ? (
 
         <S.ContainerRecents colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
-            <div className='box-dash'>
+            <div className='box-dash transparent'>
                 <div className='head'>
                     <i>
                         <IconArchiveMultiple />
@@ -237,7 +204,7 @@ const CardRecents = () => {
                     onClose={() => setModalViewArchive({} as IFolderFileItem)}
                 />
 
-                <div className='overflow' ref={refContainerCarrousel}>
+                <RenderCarrousel refCard={refCard} data={data}>
                     {loading && <CardArchiveLoading type={'card'} quantity={10} />}
                     {!loading && data?.map((item) =>
                         <CardArchive
@@ -248,47 +215,43 @@ const CardRecents = () => {
                             onView={() => setModalViewArchive(item)}
                         />
                     )}
-
                     {!loading && data.length === 0 && <CardEmpty text='Nenhum novo arquivo.' onClick={getData} />}
-                </div>
+                </RenderCarrousel>
 
-                {(data.length > 0 || loading) &&
-                    <div className="bullets">
-                        {Array.from({ length: pageCount }).map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => goToPage(index)}
-                                className={currentPage === index ? 'active' : ''}
-                            />
-                        ))}
-                    </div>
-                }
+
             </div>
         </S.ContainerRecents>
-    )
+    ) : ''
 }
 
-const CardPosts = () => {
+const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
 
-    const [data, setData] = useState<IDashPost[]>([])
+    const { tenant } = useTenant();
+    const refCard = useRef<HTMLDivElement>(null);
+    const [data, setData] = useState<IDashPost[]>([]);
     const [loading, setLoading] = useState(true);
+    const [preview, setPreview] = useState<IDashPost>({} as IDashPost);
 
     const getData = async () => {
-        setLoading(true);
-        const response = await DashboardService.getPosts();
-        if (response.items) setData([...response.items])
-        setLoading(false)
+        try {
+            setLoading(true);
+            const response = await DashboardService.getPosts();
+            if (response.items) setData([...response.items])
+            setLoading(false)
+            onLoad();
+        } catch (error) {
+            setLoading(false)
+            onLoad();
+        }
     }
 
     useEffect(() => {
-        getData();
-    }, [])
+        if (start) getData();
+    }, [start])
 
-    const [preview, setPreview] = useState<IDashPost>({} as IDashPost)
-
-    return (
-        <S.ContainerPosts>
-            <div className='box-dash'>
+    return loading || data.length > 0 ? (
+        <S.ContainerPosts color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
+            <div className='box-dash transparent'>
                 <div className='head'>
                     <i>
                         <IconAnnouncement />
@@ -299,45 +262,55 @@ const CardPosts = () => {
                 <ModalDefault padding='0px' layout='center' title={preview.title} opened={preview.message_id ? true : false} onClose={() => setPreview({} as IDashPost)}>
                     <div className='preview-post'>
                         <div className='head-preview-post'>
-                            <img src={preview.path} />
+                            <RenderImage image={preview.path} created={preview.created} />
                         </div>
                         <div className='msg' dangerouslySetInnerHTML={{ __html: preview.msg }} />
                     </div>
                 </ModalDefault>
 
-                <div className='overflow'>
+                <RenderCarrousel refCard={refCard} data={data}>
                     {loading &&
                         <div className='post'>
-                            <Skeleton width='50px' height='50px' borderRadius='100px' />
-                            <div className='info'>
-                                <div className='head-info'>
-                                    <Skeleton widthAuto={true} height='18px' />
+                            <div className='image'>
+                                <Skeleton width='100%' height='100%' borderRadius='30px' />
+                            </div>
+                            <div className='infos'>
+                                <p className='title'>
+                                    <Skeleton widthAuto height='23px' />
+                                </p>
+                                <div className='user'>
+                                    <Skeleton height='25px' width='25px' borderRadius='100px' />
+                                    <Skeleton widthAuto height='23px' />
                                 </div>
-                                <Skeleton widthAuto={true} height='17px' />
                             </div>
                         </div>
                     }
                     {data.map((item) =>
-                        <div className='post' onClick={() => setPreview(item)}>
-                            <AvatarUser fontSize={20} size={50} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
-                            <div className='info'>
-                                <div className='head-info'>
-                                    <b className='name'>{item.user?.name ?? 'Sistema'}</b>
-                                    <span>{moment(item.created).format('DD/MM/YYYY HH:mm')}</span>
-                                </div>
-                                <p>{item.title}</p>
+                        <div ref={refCard} className='post' onClick={() => setPreview(item)}>
+                            <div className='image'>
+                                <div className='blur' style={{ backgroundImage: `url(${item.path})` }} />
+                                <RenderImage image={item.path} created={item.created} />
                             </div>
-                            <div className='preview' style={{ backgroundImage: `url(${item.thumb})` }} />
+
+                            <div className='infos'>
+                                <p className='title'>
+                                    {item.title}
+                                </p>
+                                <div className='user'>
+                                    <AvatarUser fontSize={13} size={25} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
+                                    <span>{item.user.name}</span>
+                                </div>
+                            </div>
                         </div>
                     )}
-                    {!loading && data.length === 0 && <CardEmpty text='Nenhuma nova publicação.' onClick={getData} />}
-                </div>
+                </RenderCarrousel>
+
             </div>
-        </S.ContainerPosts>
-    )
+        </S.ContainerPosts >
+    ) : ''
 }
 
-const CardGraphs = () => {
+const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
 
     const { verifyPermission } = useAuth();
     const { tenant } = useTenant();
@@ -345,15 +318,21 @@ const CardGraphs = () => {
     const [data, setData] = useState<IDashboardInfo>({} as IDashboardInfo)
 
     const getData = async () => {
-        setLoading(true);
-        const response = await DashboardService.getGraphs();
-        setData({ ...response.data })
-        setLoading(false);
+        try {
+            setLoading(true);
+            const response = await DashboardService.getGraphs();
+            setData({ ...response.data })
+            setLoading(false);
+            onLoad();
+        } catch (error) {
+            setLoading(false);
+            onLoad();
+        }
     }
 
     useEffect(() => {
-        getData();
-    }, [])
+        if (start) getData();
+    }, [start])
 
     const chartConvertData = (data: { labelName: string, labels: string[], values: number[] }) => {
 
@@ -415,8 +394,6 @@ const CardGraphs = () => {
     const chartFileDownloads = chartConvertData({ labelName: 'Downloads', labels: data?.fileDownloads?.files, values: data?.fileDownloads?.values })
     const chartUsersDownloads = chartConvertData({ labelName: 'Downloads', labels: data?.userDownloads?.users, values: data?.userDownloads?.values })
     const chartUnitStatus = convertUnitStatusToBarSeries(data?.unitStatus);
-
-    console.log('chartUnitStatus', chartUnitStatus)
 
     return (
         <S.ContainerGraphs>
@@ -701,7 +678,6 @@ const CardGraphs = () => {
     )
 }
 
-
 const CardEmpty = ({ text, onClick }: { text: string, onClick(): void }) => {
     return (
         <S.ContainerEmpty>
@@ -715,3 +691,126 @@ const CardEmpty = ({ text, onClick }: { text: string, onClick(): void }) => {
         </S.ContainerEmpty>
     )
 }
+
+const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNode, data: any[], refCard: any }) => {
+
+    const refParent = useRef<HTMLDivElement>(null);
+    const refOverflow = useRef<HTMLDivElement>(null);
+
+    const [currentPage, setCurrentPage] = useState(0);
+    const [pageCount, setPageCount] = useState(1);
+    const [width, setWidth] = useState<number>(0)
+    const { tenant } = useTenant();
+
+    useEffect(() => {
+
+        console.log('refContainerCarrousel', refParent)
+        console.log('refCard', refCard)
+        console.log('data', data)
+        if (width === 0) return;
+        if (!refParent.current || !refCard.current || !data) return;
+
+        const containerWidth = refParent.current.offsetWidth;
+        const cardWidth = refCard.current.offsetWidth;
+
+        if (cardWidth === 0) return;
+
+        const itemsPerPage = Math.floor(containerWidth / cardWidth);
+        const totalPages = Math.ceil(data.length / itemsPerPage);
+
+        setPageCount(totalPages);
+
+    }, [data, refParent.current, refCard.current, width]);
+
+    const goToPage = (pageIndex: number) => {
+        if (!refParent.current || !refCard.current || !refOverflow.current) return;
+
+        const cardWidth = refCard.current.offsetWidth;
+        const scrollX = pageIndex * cardWidth * Math.floor(refParent.current.offsetWidth / cardWidth);
+
+        refOverflow.current.scrollTo({
+            left: scrollX,
+            behavior: 'smooth',
+        });
+
+        setCurrentPage(pageIndex);
+    };
+
+    useEffect(() => {
+        const updateWidth = () => {
+            setWidth(0);
+            setTimeout(() => {
+                if (refParent.current) {
+                    setWidth(refParent.current.offsetWidth);
+                }
+            }, 500)
+        };
+
+        updateWidth(); // pega ao montar
+        window.addEventListener('resize', updateWidth); // atualiza ao redimensionar
+        return () => window.removeEventListener('resize', updateWidth);
+    }, []);
+
+    return (
+        <S.ContainerOverflowCarrousel ref={refParent} color={tenant?.colormain} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
+            <div ref={refOverflow} style={{ width: width }} className={`overflow ${width > 0 ? 'animate__animated animate__fadeInUp' : ''}`}>
+                {children}
+            </div>
+            {pageCount > 1 &&
+                <div className="bullets">
+                    {Array.from({ length: pageCount }).map((_, index) => (
+                        <button
+                            key={index}
+                            onClick={() => goToPage(index)}
+                            className={currentPage === index ? 'active' : ''}
+                        />
+                    ))}
+                </div>
+            }
+        </S.ContainerOverflowCarrousel>
+    )
+}
+
+const RenderImage = ({ image, created }: { image: string; created: string }) => {
+
+    const [imageExist, setImageExist] = useState(false);
+
+    const validateImage = () => {
+        const img = new Image();
+        img.onload = () => setImageExist(true);
+        img.onerror = () => setImageExist(false);
+        img.src = image;
+    }
+
+    useEffect(() => {
+        validateImage();
+    }, [image])
+
+    return (
+        <div className='thumb' style={{ backgroundImage: `url(${image})` }}>
+            <span>{moment(created).format('DD/MM/YYYY HH:mm')}</span>
+            {!imageExist &&
+                <div className='no-image'>
+                    <i>
+                        <IconAnnouncement />
+                    </i>
+                </div>
+            }
+        </div>
+    )
+}
+
+const LazyBlurImage = ({ src, alt }: { src: string, alt: string }) => {
+
+    const [loaded, setLoaded] = useState(false);
+
+    return (
+        <S.StyledImage
+            src={src}
+            alt={alt}
+            loaded={loaded}
+            onLoad={() => setLoaded(true)}
+            loading="lazy"
+        />
+    );
+};
