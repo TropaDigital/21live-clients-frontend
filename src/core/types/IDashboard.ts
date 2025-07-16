@@ -1,3 +1,5 @@
+import type { IUser } from "./iUser";
+
 export interface IDashBanner {
   banner_id: number;
   tenant_id: number;
@@ -94,3 +96,124 @@ export interface IDashPost {
   };
   thumb: string;
 }
+
+//graphs
+interface ITenant {
+  tenant_id: number;
+  name: string;
+  slug: string;
+  bucket: string;
+  colormain: string;
+  colorsecond: string;
+  colorhigh: string;
+  parent_id: number | null;
+  language_id: number;
+  whiteLabel: number;
+  downlimit: number;
+  customApproval: number;
+  apikey: string;
+  register: number;
+  register_validate: number;
+  register_setOrganization: number;
+  jobs: number;
+  jobs_tree: string;
+  jobs_autocreate: string;
+  complete_fill: number;
+  referral: number;
+  elearning: number;
+  products: number;
+  social: number;
+  sharedMedia: number;
+  materials: number;
+  tickets: number;
+  tickets_name: string;
+  tickets_color: string;
+  tickets_btn: string;
+  tickets_userview: number;
+  tickets_deadline: number;
+  tickets_hourlimitreached: string | null;
+  cookiejar: number;
+  privacyterms: string | null;
+  type: string;
+  user_limit: number;
+  price_fee: number | null;
+  price_user: number | null;
+  price_sub: number | null;
+  created: string;
+  updated: string;
+  tickets_defaultfields: number;
+}
+
+export interface IStatusFreq {
+  status: string[];
+  values: number[];
+  colors: string[];
+}
+
+export interface IUserAccess {
+  users: string[];
+  values: number[];
+}
+
+export interface IUnitStatusDataset {
+  label: string;
+  backgroundColor: string;
+  data: Record<string, number>;
+}
+
+export interface IUnitStatus {
+  labels: Record<string, string>;
+  datasets: Record<string, IUnitStatusDataset>;
+}
+
+export interface IUnitTickets {
+  units: string[];
+  values: number[];
+  total: number;
+}
+
+export interface IFileDownloads {
+  files: string[];
+  values: number[];
+}
+
+export interface IMediaTickets {
+  medias: string[];
+  values: number[];
+}
+
+export interface IUserDownloads {
+  users: string[];
+  values: number[];
+  total: number;
+  step: number;
+}
+
+export interface IDashboardInfo {
+  tenant: ITenant;
+  user: IUser;
+  mode: string;
+  hour: number;
+  statusFreq: IStatusFreq;
+  lastDownloads: any;
+  courses: any;
+  userAccess: IUserAccess;
+  unitStatus: IUnitStatus;
+  unitTickets: IUnitTickets;
+  fileDownloads: IFileDownloads;
+  mediaTickets: IMediaTickets;
+  userDownloads: IUserDownloads;
+  fromAPI: boolean;
+}
+
+export type UnitStatusData = {
+  labels: Record<string, string>;
+  datasets: Record<
+    string,
+    {
+      label: string;
+      backgroundColor: string;
+      data: Record<string, number>;
+    }
+  >;
+};

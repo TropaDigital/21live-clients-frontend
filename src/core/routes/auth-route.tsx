@@ -55,19 +55,12 @@ export const AuthRoute = ({
     }, [loadingAuthLayout, loadingTenant])
 
     useEffect(() => {
-        console.log('user', user)
         if (!isLogged) {
-            console.log('!isLogged = user?.tenant_slug', user?.tenant_slug)
-            console.log('!isLogged = slug', slug)
             setLoadingAuthLayout(false);
             setPermissionLayout(false);
         } else if (user?.tenant_slug && user.tenant_slug !== slug) {
-            console.log('handleRefresh = user?.tenant_slug', user?.tenant_slug)
-            console.log('handleRefresh = slug', slug)
             handleChangeTenant();
         } else if (user?.tenant_slug && user?.tenant_slug === slug) {
-            console.log('getuser = user?.tenant_slug', user?.tenant_slug)
-            console.log('getuser = slug', slug)
             handleGetUserInfos();
         }
     }, [isLogged, user, slug])

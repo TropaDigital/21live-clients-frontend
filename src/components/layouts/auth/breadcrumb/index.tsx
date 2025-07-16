@@ -22,7 +22,6 @@ export const BreadCrumbAuthLayout = ({ data }: {
     }, [data])
 
     const handleRedirect = (redirect: string, key: number) => {
-        console.log('items.filter((obj) => redirect !== obj.redirect)', items.filter((obj) => redirect !== obj.redirect))
         const newItems: IPropsBreadcrumb[] = [];
 
         items.map((item, index) => {

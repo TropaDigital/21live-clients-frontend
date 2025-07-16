@@ -338,9 +338,6 @@ const RenderTabPermission = ({ loading, DTO, onChangeDTO }: {
         }
     }, [])
 
-    console.log('DTO.organizations', DTO.organizations)
-    console.log('DTO.users', DTO.users)
-
     return (
         <div className='inputs-flex'>
             <SelectDefault

@@ -125,6 +125,13 @@ export const ContainerBanners = styled.div.withConfig({
   }
 `;
 
+export const StyledImage = styled.img<{ loaded: boolean }>`
+  width: 100%;
+  height: auto;
+  transition: filter 0.3s ease-in-out;
+  filter: ${({ loaded }) => (loaded ? "blur(0)" : "blur(10px)")};
+`;
+
 export const ContainerInfo = styled.div.withConfig({
   shouldForwardProp: (prop) =>
     !["color", "colorBg", "colorText"].includes(prop),
@@ -234,47 +241,124 @@ export const ContainerPosts = styled.div.withConfig({
   flex-direction: column;
   gap: 25px;
   flex: 1;
+  .preview-post {
+    display: flex;
+    flex-direction: column;
+    max-width: 50vw;
+    .head-preview-post {
+      display: flex;
+      border-bottom: 1px solid ${({ theme }) => theme.colors.neutral[300]};
+      margin-top: 20px;
+      background-color: ${({ theme }) => theme.colors.neutral[200]};
+      justify-content: center;
+      align-items: center;
+      img {
+        max-width: 100%;
+        max-height: 20vh;
+      }
+    }
+    .msg {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      max-height: 50vh;
+      overflow: auto;
+    }
+  }
   .overflow {
     flex: 1;
     height: 100%;
     max-height: 360px;
     overflow: auto;
     animation: fadeInUp 0.5s;
-    padding: 0px 20px 20px 20px;
+    padding: 0px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 5px;
     .post {
+      width: 100%;
       display: flex;
       gap: 15px;
-      background-color: ${({ theme }) => theme.colors.neutral[100]};
-      border-radius: 20px;
-      padding: 10px;
+      border-top: 1px solid ${({ theme }) => theme.colors.neutral[200]};
+      border-radius: 0px;
+      box-sizing: border-box;
+      padding: 15px 25px;
       align-items: center;
       .info {
         display: flex;
         flex: 1;
         flex-direction: column;
-        .name {
-          font-size: 13px;
-          color: ${({ theme }) => theme.colors.neutral[700]};
+        gap: 4px;
+        .head-info {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .name {
+            font-size: 13px;
+            color: ${({ theme }) => theme.colors.neutral[700]};
+          }
+          span {
+            font-size: 11px;
+            color: ${({ theme }) => theme.colors.neutral[500]};
+          }
         }
         p {
           font-size: 12px;
           color: ${({ theme }) => theme.colors.neutral[600]};
         }
-        span {
-          font-size: 11px;
-          color: ${({ theme }) => theme.colors.neutral[500]};
-        }
       }
       .preview {
-        width: 50px;
+        width: 0px;
         height: 50px;
         border-radius: 8px;
         background-size: cover;
+        transition: all 0.2s;
+        background-size: cover;
       }
+      &:hover {
+        background-color: ${({ theme }) => theme.colors.neutral[200]};
+        cursor: pointer;
+        .preview {
+          width: 50px;
+        }
+      }
+    }
+  }
+`;
+
+export const ContainerGraphs = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IPropsTenant>`
+  display: flex;
+  flex-direction: column;
+  .row {
+    flex-wrap: wrap;
+    .box-dash {
+      height: auto;
+      flex: 1;
+      min-width: 400px;
+    }
+  }
+  .chart-dash {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    animation: fadeInUp 0.5s;
+    .tag {
+      background-color: ${({ theme }) => theme.colors.neutral[200]};
+      padding: 10px 15px;
+      font-size: 13px;
+      color: ${({ theme }) => theme.colors.neutral[700]};
+      border-radius: 100px;
+    }
+    .chart-padding {
+      padding: 0px 20px 20px 20px;
+      box-sizing: border-box;
     }
   }
 `;

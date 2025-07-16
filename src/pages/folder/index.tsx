@@ -156,7 +156,6 @@ export default function Folder() {
             sort: order.value,
             search: search
         });
-        console.log('response', response)
         const newBreadcrumb: IPropsBreadcrumb[] = response.item.breacrumb.map((item: IFolderBreadcrumb, key: number) => {
             return {
                 name: item.name,
@@ -321,7 +320,6 @@ export default function Folder() {
             const response = await downloadZipFromUrls(itemsDownload);
             setArchivesChecked([]);
             setLoadingActionArchive(false);
-            console.log('response', response)
         }
         if (type === 'move') {
             setModalMoveArchives(
@@ -345,12 +343,14 @@ export default function Folder() {
             <Toolbar>
                 <div className='toolbar-filters'>
                     <div className='left'>
-                        <div className='total'>
-                            <i>
-                                <IconFolder />
-                            </i>
-                            <span>{loadingFolder ? <Skeleton width={'8px'} height={'18px'} /> : <b>{folder.childrenCount.folders}</b>} Pastas</span>
-                        </div>
+                        {verifyPermission('folders_view') &&
+                            <div className='total'>
+                                <i>
+                                    <IconFolder />
+                                </i>
+                                <span>{loadingFolder ? <Skeleton width={'8px'} height={'18px'} /> : <b>{folder.childrenCount.folders}</b>} Pastas</span>
+                            </div>
+                        }
                         <div className='total'>
                             <i>
                                 <IconArchive />
