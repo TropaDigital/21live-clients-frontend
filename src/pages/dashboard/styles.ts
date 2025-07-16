@@ -451,12 +451,18 @@ export const ContainerOverflowCarrousel = styled.div.withConfig({
     gap: 20px;
     height: 100%;
     padding: 0px 0px 0px 0px;
+    @media (max-width: 400px) {
+      overflow: auto;
+    }
   }
   .bullets {
     display: flex;
     justify-content: center;
     margin: 25px 0px;
     gap: 8px;
+    @media (max-width: 400px) {
+      display: none;
+    }
     button {
       min-width: 25px;
       max-width: 10px;
