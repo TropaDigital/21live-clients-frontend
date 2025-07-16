@@ -7,7 +7,6 @@ import { FilesService } from '../../../../core/services/FilesService';
 import { VideoService } from '../../../../core/services/VideoService';
 import { LinkService } from '../../../../core/services/LinkService';
 import { useTenant } from '../../../../core/contexts/TenantContext';
-import { folder } from 'jszip';
 import { useParams } from 'react-router-dom';
 
 export interface IPropsBreadcrumb {
@@ -120,7 +119,7 @@ export const BreadCrumbAuthLayout = ({ data, onDelete }: {
                             e.preventDefault();
                             verifyPermission('folders_edit') && setIsOver(item.folder_id === null ? null : Number(item.folder_id));
                         }}
-                        onDragLeave={(e) => {
+                        onDragLeave={() => {
                             verifyPermission('folders_edit') && setIsOver(0);
                         }}
                     >

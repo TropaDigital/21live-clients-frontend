@@ -352,11 +352,9 @@ const MenuSidebarFolder = ({ opened, sortable, isDragging, icon, name, redirect,
     const pageParam = pathSegments.length > 3 ? '/' + pathSegments[3] : ''
     const isActive = page + pageParam === redirect;
 
-    const [isOver, setIsOver] = useState(false);
-
     return (
         <S.ContainerMenuSidebarFolder
-            drop={isOver}
+            drop={false}
             colorText={tenant?.colorsecond}
             colorBg={tenant?.colormain}
             color={tenant?.colorhigh}
