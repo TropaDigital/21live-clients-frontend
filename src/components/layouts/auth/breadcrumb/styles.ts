@@ -43,9 +43,14 @@ export const Container = styled.ul`
   li {
     display: flex;
     align-items: center;
+    border: 1px dashed transparent;
+    border-radius: 8px;
     .division {
       color: ${({ theme }) => theme.colors.neutral[700]};
       font-size: 13px;
+    }
+    &.over {
+      border: 1px dashed ${({ theme }) => theme.colors.neutral[700]};
     }
   }
   a {

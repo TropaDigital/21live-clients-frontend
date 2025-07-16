@@ -158,6 +158,7 @@ export default function Folder() {
         });
         const newBreadcrumb: IPropsBreadcrumb[] = response.item.breacrumb.map((item: IFolderBreadcrumb, key: number) => {
             return {
+                folder_id: item.folder_id === 0 ? null : item.folder_id,
                 name: item.name,
                 icon: item.name === 'Início' ? <IconHome /> : <IconFolder />,
                 redirect: item.name === 'Início' ? '/folders' : `/folders/${item.folder_id}`,
@@ -339,6 +340,7 @@ export default function Folder() {
         <S.Container ref={refPage}>
             <BreadCrumbAuthLayout
                 data={breadcrumb}
+                onDelete={(type, id) => handleOnRemoveChildren(type, Number(id))}
             />
             <Toolbar>
                 <div className='toolbar-filters'>
@@ -410,7 +412,7 @@ export default function Folder() {
                 </div>
             </Toolbar>
 
-            {!loadingFolder && folder.children.folders.length === 0 && folder.children.files.length === 0 && folder.children.videos.length === 0 && folder.children.links.length === 0 &&
+            {!showAddFolder && !loadingFolder && folder.children.folders.length === 0 && folder.children.files.length === 0 && folder.children.videos.length === 0 && folder.children.links.length === 0 &&
                 <div className='empty'>
                     <i>
                         <IconFolder />

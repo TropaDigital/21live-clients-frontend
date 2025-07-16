@@ -85,7 +85,6 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
 
         switch (type) {
             case 'folder':
-                // moverArquivo(fileId, novaPasta)
                 FoldersService.update({
                     folder_id: Number(id),
                     parent_id: Number(folderId),
@@ -177,7 +176,6 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
                     const id = e.dataTransfer.getData('id');
                     const DTO = e.dataTransfer.getData('DTO');
                     const folderId = item.folder_id;
-                    // Aqui você chama sua API/mutation para mover o item:
                     setIsOver(false);
                     verifyPermission('folders_edit') && handleMove(type, id, folderId, DTO);
                 }}

@@ -18,7 +18,7 @@ export const VideoService = {
   }: {
     video_id?: number;
     tenant_id: number;
-    folder_id: number;
+    folder_id: number | null;
     name: string;
     host: string;
     code: string;

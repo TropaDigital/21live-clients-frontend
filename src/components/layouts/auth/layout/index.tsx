@@ -354,23 +354,6 @@ const MenuSidebarFolder = ({ opened, sortable, isDragging, icon, name, redirect,
 
     const [isOver, setIsOver] = useState(false);
 
-    function handleDrop(type: string, id: string, folderId: string) {
-        switch (type) {
-            case 'file':
-                // moverArquivo(fileId, novaPasta)
-                alert('move arquivo')
-                alert(id)
-                alert(folderId)
-                break;
-            case 'video':
-                alert('move video')
-                break;
-            case 'link':
-                alert('move link')
-                break;
-        }
-    }
-
     return (
         <S.ContainerMenuSidebarFolder
             drop={isOver}
@@ -381,21 +364,6 @@ const MenuSidebarFolder = ({ opened, sortable, isDragging, icon, name, redirect,
             sortable={sortable}
             opened={opened}
             className={isDragging ? 'no-hover' : 'hover'}
-            onDragLeave={() => {
-                setIsOver(false)
-            }}
-            onDragOver={(e) => {
-                e.preventDefault()
-                sortable && setIsOver(true)
-            }}
-            onDrop={(e) => {
-                setIsOver(false)
-                const type = e.dataTransfer.getData('type');
-                const id = e.dataTransfer.getData('id');
-                const folderId = redirect;
-                // Aqui você chama sua API/mutation para mover o item:
-                sortable && handleDrop(type, id, folderId);
-            }}
 
         >
             <LinkSlug path={`/${redirect}`}>
