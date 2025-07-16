@@ -299,7 +299,7 @@ const CardPosts = () => {
                 <ModalDefault padding='0px' layout='center' title={preview.title} opened={preview.message_id ? true : false} onClose={() => setPreview({} as IDashPost)}>
                     <div className='preview-post'>
                         <div className='head-preview-post'>
-                            <img src={preview.thumb} />
+                            <img src={preview.path} />
                         </div>
                         <div className='msg' dangerouslySetInnerHTML={{ __html: preview.msg }} />
                     </div>
