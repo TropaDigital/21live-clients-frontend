@@ -22,7 +22,9 @@ export const Container = styled.div`
     flex-direction: column;
     box-sizing: border-box;
     height: 100%;
-
+    @media (max-width: 400px) {
+      border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
+    }
     .head {
       padding: 20px;
       display: flex;
@@ -50,6 +52,7 @@ export const Container = styled.div`
 
     &.transparent {
       background-color: transparent;
+      border: none;
       .head {
         padding: 0px 0px 20px 0px;
         i {
@@ -385,7 +388,7 @@ export const ContainerGraphs = styled.div.withConfig({
       height: auto;
       flex: 1;
       min-width: 350px;
-      @media(max-width: 400px){
+      @media (max-width: 400px) {
         min-width: 300px;
         width: 100%;
       }

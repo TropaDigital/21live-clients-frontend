@@ -772,6 +772,7 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
             <div ref={refOverflow} style={{ width: width }} className={`overflow ${width > 0 ? 'animate__animated animate__fadeInUp' : ''}`}>
                 {children}
             </div>
+            
             {pageCount > 1 &&
                 <div className="bullets">
                     {Array.from({ length: pageCount }).map((_, index) => (
