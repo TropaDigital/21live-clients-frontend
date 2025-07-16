@@ -168,7 +168,7 @@ const CardRecents = () => {
     const getData = async () => {
         setLoading(true);
         const response = await DashboardService.getRecents();
-        if (response.items) setData([...response.items])
+        if (response.data) setData([...response.data])
         setLoading(false)
     }
 

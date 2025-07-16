@@ -140,6 +140,7 @@ export const ContainerInfo = styled.div.withConfig({
   .card {
     display: flex;
     padding: 20px;
+    animation: fadeInUp 0.5s;
     background-color: ${({ theme }) => theme.colors.background.default};
     backdrop-filter: blur(10px);
     border-radius: 20px;
@@ -190,6 +191,7 @@ export const ContainerRecents = styled.div.withConfig({
     width: 50vw;
     display: flex;
     overflow: hidden;
+    animation: fadeInUp 0.5s;
     gap: 20px;
     height: 100%;
     padding: 0px 25px 25px 25px;
@@ -237,6 +239,7 @@ export const ContainerPosts = styled.div.withConfig({
     height: 100%;
     max-height: 360px;
     overflow: auto;
+    animation: fadeInUp 0.5s;
     padding: 0px 20px 20px 20px;
     box-sizing: border-box;
     display: flex;
