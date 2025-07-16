@@ -317,7 +317,7 @@ export default function Folder() {
                     url: item.url_path
                 }
             })
-            const response = await downloadZipFromUrls(itemsDownload);
+            await downloadZipFromUrls(itemsDownload);
             setArchivesChecked([]);
             setLoadingActionArchive(false);
         }
