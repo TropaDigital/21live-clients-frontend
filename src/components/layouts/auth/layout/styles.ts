@@ -355,6 +355,9 @@ export const ContainerMenuSidebarFolder = styled.div.withConfig({
       color: white;
       font-size: ${({ opened }) => (opened ? "15px" : "20px")};
       transition: all 0.2s;
+      i {
+        font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands", sans-serif !important;
+      }
     }
     .name {
       font-size: 14px;
