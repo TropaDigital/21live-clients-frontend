@@ -471,6 +471,7 @@ export const ContainerMenuProfile = styled.div`
         text-decoration: none;
         color: ${({ theme }) => theme.colors.neutral[600]};
         font-size: 14px;
+        cursor: pointer;
         &:hover {
           color: ${({ theme }) => theme.colors.neutral[800]};
         }

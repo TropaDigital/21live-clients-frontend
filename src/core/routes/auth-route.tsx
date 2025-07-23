@@ -37,12 +37,19 @@ export const AuthRoute = ({
     }
 
     const handleGetUserInfos = async () => {
-        setLoadingAuthLayout(true);
-        setPermissionLayout(false);
-        await getUserProfileRoles();
-        await getMenus();
-        setLoadingAuthLayout(false);
-        setPermissionLayout(true);
+        try {
+            setLoadingAuthLayout(true);
+            setPermissionLayout(false);
+            await getUserProfileRoles();
+            await getMenus();
+            setLoadingAuthLayout(false);
+            setPermissionLayout(true);
+        } catch (e: any) {
+            if (e.code === 401) {
+                setLoadingAuthLayout(false);
+                setPermissionLayout(false);
+            }
+        }
     }
 
 

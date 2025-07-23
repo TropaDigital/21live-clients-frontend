@@ -102,6 +102,7 @@ const CardInfos = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
             const response = await DashboardService.getInfo();
             setData({ ...response.data })
             setLoading(false)
+            onLoad();
         } catch (error) {
             setLoading(false);
             onLoad();
@@ -427,7 +428,7 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                     <i>
                                         <IconProfile />
                                     </i>
-                                    <p className='title-head'>Usuários mais ativos nos últimos 15 dias</p>
+                                    <p className='title-head'>Usuários mais ativos no periodo</p>
                                 </div>
 
                                 <div className='chart-dash'>
@@ -449,48 +450,46 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                 }
 
                 {/* Status Geral */}
-                {verifyPermission('dashboard_admin') &&
-                    <>
-                        {(loading || data?.statusFreq?.status.length > 0) &&
-                            <div className='box-dash'>
-                                <div className='head'>
-                                    <i>
-                                        <IconStatus />
-                                    </i>
-                                    <p className='title-head'>Status Geral</p>
-                                </div>
-
-                                <div className='chart-dash'>
-                                    {loading ? <Skeleton width='100%' height='300px' /> :
-                                        <div className='chart-padding'>
-                                            <PieChart
-                                                series={[
-                                                    {
-                                                        data: data?.statusFreq?.status.map((status, index) => {
-                                                            return {
-                                                                id: index,
-                                                                value: data?.statusFreq?.values[index],
-                                                                label: status,
-                                                                color: data?.statusFreq?.colors[index]
-                                                            }
-                                                        }),
-                                                        innerRadius: 30,
-                                                        outerRadius: 100,
-                                                        paddingAngle: 5,
-                                                        cornerRadius: 10,
-                                                        startAngle: -45,
-                                                    },
-                                                ]}
-                                                width={windowSize.width >= 500 ? 280 : 200}
-                                                height={windowSize.width >= 500 ? 280 : 200}
-                                            />
-                                        </div>
-                                    }
-                                </div>
+                <>
+                    {(loading || data?.statusFreq?.status.length > 0) &&
+                        <div className='box-dash'>
+                            <div className='head'>
+                                <i>
+                                    <IconStatus />
+                                </i>
+                                <p className='title-head'>Status Geral</p>
                             </div>
-                        }
-                    </>
-                }
+
+                            <div className='chart-dash'>
+                                {loading ? <Skeleton width='100%' height='300px' /> :
+                                    <div className='chart-padding'>
+                                        <PieChart
+                                            series={[
+                                                {
+                                                    data: data?.statusFreq?.status.map((status, index) => {
+                                                        return {
+                                                            id: index,
+                                                            value: data?.statusFreq?.values[index],
+                                                            label: status,
+                                                            color: data?.statusFreq?.colors[index]
+                                                        }
+                                                    }),
+                                                    innerRadius: 30,
+                                                    outerRadius: 100,
+                                                    paddingAngle: 5,
+                                                    cornerRadius: 10,
+                                                    startAngle: -45,
+                                                },
+                                            ]}
+                                            width={windowSize.width >= 500 ? 280 : 200}
+                                            height={windowSize.width >= 500 ? 280 : 200}
+                                        />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </>
 
                 {/* Unidades mais ativas */}
                 {verifyPermission('dashboard_admin') &&
@@ -561,7 +560,7 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                     <i>
                                         <IconDownload />
                                     </i>
-                                    <p className='title-head'>Downloads por Usuários nos últimos 15 dias</p>
+                                    <p className='title-head'>Downloads por Usuários no periodo</p>
                                 </div>
 
                                 <div className='chart-dash'>
@@ -772,7 +771,7 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
             <div ref={refOverflow} style={{ width: width }} className={`overflow ${width > 0 ? 'animate__animated animate__fadeInUp' : ''}`}>
                 {children}
             </div>
-            
+
             {pageCount > 1 &&
                 <div className="bullets">
                     {Array.from({ length: pageCount }).map((_, index) => (
