@@ -56,6 +56,7 @@ export const Container = styled.div.withConfig({
     color: ${({ colorText }) => colorText};
     position: relative;
     i {
+      font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands", sans-serif !important;
     }
     .load-icon {
       position: absolute;
