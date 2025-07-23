@@ -98,7 +98,7 @@ export const CardLink = ({ onDelete, onEdit, type, item }: IProps) => {
     const redirectLink = () => {
         if (item.type === 'internal') {
             if (item.target_type === 'folder') {
-                redirectSlug(`${item.target_id ? `/folders/${item.target_id}` : `/`}`)
+                redirectSlug(`${item.target_id ? `/folders/${item.target_id}` : `folders/`}`)
             } else {
                 window.open(`https://dev.21live.com.br/21panda/Files/Jobs/${item.target_id}`, "_blank")
             }

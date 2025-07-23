@@ -263,7 +263,8 @@ export default function Folder() {
 
     const handleSaveVideo = (type: string, item: IFolderVideo) => {
         if (type === 'new') {
-            if (String(item.folder_id) === id || !item.folder_id) {
+
+            if ((String(item.folder_id) === String(id))) {
                 const newVideo: IFolderVideo[] = [item];
                 folder.children.videos.map((row) => {
                     newVideo.push(row)
