@@ -292,12 +292,12 @@ export const ContainerPosts = styled.div.withConfig({
     flex-direction: column;
     gap: 15px;
     cursor: pointer;
+    width: 330px;
     .image {
       width: 330px;
-      height: 200px;
-      border-radius: 30px;
+      height: 115px;
+      border-radius: 20px;
       position: relative;
-
       .blur {
         width: 100%;
         height: 100%;
@@ -306,7 +306,7 @@ export const ContainerPosts = styled.div.withConfig({
         background-size: cover;
         transform: scale(0.7);
         margin-top: 20px;
-        border-radius: 30px;
+        border-radius: 20px;
         background-position: center;
         background-color: ${({ color }) => color};
       }
@@ -315,7 +315,7 @@ export const ContainerPosts = styled.div.withConfig({
         height: 100%;
         position: absolute;
         background-size: cover;
-        border-radius: 30px;
+        border-radius: 20px;
         background-position: center;
         display: flex;
         justify-content: flex-start;
@@ -361,9 +361,12 @@ export const ContainerPosts = styled.div.withConfig({
       flex-direction: column;
       gap: 5px;
       .title {
-        font-size: 17px;
+        font-size: 14px;
         color: ${({ theme }) => theme.colors.neutral[700]};
-        font-weight: 400;
+        font-weight: 500;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
       .user {
         font-size: 13px;

@@ -273,14 +273,14 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     {loading &&
                         <div className='post'>
                             <div className='image'>
-                                <Skeleton width='100%' height='100%' borderRadius='30px' />
+                                <Skeleton width='100%' height='100%' borderRadius='20px' />
                             </div>
                             <div className='infos'>
                                 <p className='title'>
                                     <Skeleton widthAuto height='23px' />
                                 </p>
                                 <div className='user'>
-                                    <Skeleton height='25px' width='25px' borderRadius='100px' />
+                                    <Skeleton height='30px' width='30px' borderRadius='100px' />
                                     <Skeleton widthAuto height='23px' />
                                 </div>
                             </div>
@@ -294,11 +294,11 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                             </div>
 
                             <div className='infos'>
-                                <p className='title'>
+                                <p className='title' data-tooltip-id="tooltip" data-tooltip-content={item.title}>
                                     {item.title}
                                 </p>
                                 <div className='user'>
-                                    <AvatarUser fontSize={13} size={25} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
+                                    <AvatarUser fontSize={13} size={30} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
                                     <span>{item.user.name}</span>
                                 </div>
                             </div>
