@@ -298,7 +298,6 @@ const DICT: Record<string, string> = {
   key: "chave",
   keyboard: "teclado",
   kiss: "beijo",
-  three: "três",
   kiwi: "kiwi",
   landmark: "marco",
   laptop: "laptop",
