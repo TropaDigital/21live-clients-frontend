@@ -215,7 +215,7 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
 
             <SelectDefault
                 iconFont={DTO.type}
-                label="Icone"
+                label="Tipo"
                 icon={<IconConfig />}
                 options={LIST_TYPE.map((item: any) => {
                     return {
@@ -235,7 +235,7 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
                         label="Icone"
                         options={LIST_ICONS.map((item: any) => {
                             return {
-                                name: item.icon,
+                                name: item.label,
                                 value: item.value,
                                 iconFont: item.value,
                             }
@@ -243,7 +243,7 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
                         onChange={(e) => onChangeDTO('icon', e.value)}
                         value={{
                             value: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.value ?? '',
-                            name: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.icon ?? '',
+                            name: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.label ?? '',
                         }}
                         key={`input-icon`}
                     />

@@ -226,11 +226,79 @@ const DICT: Record<string, string> = {
   info: "informação",
   italic: "itálico",
   jedi: "jedi",
-  joint: "baseado",
+  joint: "cigarro",
+  full: "cheio(a)",
+  empty: "vázio(a)",
+  half: "metade",
+  quarter: "um quarto",
+  quarters: "quartos",
+  bath: "banho",
+  systems: "sistemas",
+  listening: "audição",
+  allergies: "alergias",
+  carriage: "transporte",
+  vision: "visão",
+  usa: "USA",
+  checkered: "xadrez",
+  ball: "bola",
+  wink: "piscar",
+  beam: "feixe",
+  binoculars: "binóculos",
+  birthday: "aniversário",
+  cake: "bolo",
+  blender: "liquidificador",
+  broadcast: "transmissão",
+  tower: "torre",
+  burn: "fogo",
+  open: "aberto(a)",
+  tissue: "lenço",
+  register: "registrar",
+  day: "dia",
+  week: "semana",
+  group: "grupo",
+  loading: "carregando",
+  monster: "monstro",
+  moving: "andando",
+  hot: "quente",
+  fancy: "chique",
+  capsules: "cápsulas",
+  head: "cabeça",
+  side: "lado",
+  wizard: "mago",
+  chevron: "seta",
+  bulk: "volume",
+  crow: "corvo",
+  crutch: "muleta",
+  six: "seis",
+  five: "cinco",
+  four: "quatro",
+  three: "tres",
+  two: "dois",
+  one: "um",
+  democrat: 'democrata',
+  polygon: "polígono",
+  bill: "conta",
+  dolly: "carrinho",
+  dizzy: "tonto",
+  dot: "ponto",
+  dove: "pomba",
+  drafting: "desenho técnico",
+  edit: "editar",
+  drumstick: "baqueta",
+  bite: "mordida",
+  bread: "pão",
+  bible: "bíblia",
+  curve: "curva",
+  on: "ligado(a)",
+  off: "desligado(a)",
+  end: "final",
+  start: "início",
+  archway: "ponte",
   journal: "diário",
   key: "chave",
   keyboard: "teclado",
   kiss: "beijo",
+  three: "três",
   kiwi: "kiwi",
   landmark: "marco",
   laptop: "laptop",
@@ -411,7 +479,10 @@ const DICT: Record<string, string> = {
   stamp: "carimbo",
   star: "estrela",
   step: "passo",
+  scale: "escala",
+  style: "estilo",
   stethoscope: "estetoscópio",
+  balance: "balança",
   sticky: "nota adesiva",
   stop: "parar",
   stopwatch: "cronômetro",
@@ -514,14 +585,15 @@ const DICT: Record<string, string> = {
   xray: "raio-x",
   yen: "iene",
   yin: "yin",
-  yang: "yang"
+  yang: "yang",
 };
 
 /** Casos que você quer forçar um label específico */
 const EXCEPTIONS: Record<string, string> = {
   "address-book": "Livro de Endereços",
   "address-card": "Cartão de Endereço",
-  "american-sign-language-interpreting": "Interpretação de Língua de Sinais Americana",
+  "american-sign-language-interpreting":
+    "Interpretação de Língua de Sinais Americana",
   "arrow-alt-circle-down": "Seta alternativa para baixo (círculo)",
   "arrow-alt-circle-left": "Seta alternativa para a esquerda (círculo)",
   "arrow-alt-circle-right": "Seta alternativa para a direita (círculo)",
@@ -538,32 +610,35 @@ const EXCEPTIONS: Record<string, string> = {
 
 function capitalizeLabel(str: string) {
   return str
-    .replace(/\s+/g, ' ')
+    .replace(/\s+/g, " ")
     .trim()
-    .replace(/(^|\s)([a-záàâãéèêíïóôõöúçñ])([a-z]*)/gi, function (_, sep, first, rest) {
-      return sep + first.toUpperCase() + rest.toLowerCase();
-    })
-    .replace(/\bDe De\b/gi, 'de')
-    .replace(/\bPara Para\b/gi, 'para');
+    .replace(
+      /(^|\s)([a-záàâãéèêíïóôõöúçñ])([a-z]*)/gi,
+      function (_, sep, first, rest) {
+        return sep + first.toUpperCase() + rest.toLowerCase();
+      }
+    )
+    .replace(/\bDe De\b/gi, "de")
+    .replace(/\bPara Para\b/gi, "para");
 }
 
 function translateSlugToPtBr(slug: string): string {
   if (EXCEPTIONS[slug]) return EXCEPTIONS[slug];
 
-  const tokens = slug.split('-');
+  const tokens = slug.split("-");
   const translated = tokens
     .map((t) => {
-      const clean = t.replace(/\d+$/, '');
+      const clean = t.replace(/\d+$/, "");
       const numberMatch = t.match(/\d+$/);
       const translation = DICT[clean as keyof typeof DICT] ?? clean;
-      return translation + (numberMatch ? ` ${numberMatch[0]}` : '');
+      return translation + (numberMatch ? ` ${numberMatch[0]}` : "");
     })
-    .join(' ');
+    .join(" ");
 
   return capitalizeLabel(translated);
 }
 
-const RAW_LIST: Array<Omit<IconOption, 'label'>> = [
+const RAW_LIST: Array<Omit<IconOption, "label">> = [
   { value: "ad", icon: "ad" },
   { value: "address-book", icon: "address-book" },
   { value: "address-card", icon: "address-card" },
@@ -575,7 +650,10 @@ const RAW_LIST: Array<Omit<IconOption, 'label'>> = [
   { value: "align-right", icon: "align-right" },
   { value: "allergies", icon: "allergies" },
   { value: "ambulance", icon: "ambulance" },
-  { value: "american-sign-language-interpreting", icon: "american-sign-language-interpreting" },
+  {
+    value: "american-sign-language-interpreting",
+    icon: "american-sign-language-interpreting",
+  },
   { value: "anchor", icon: "anchor" },
   { value: "angle-double-down", icon: "angle-double-down" },
   { value: "angle-double-left", icon: "angle-double-left" },
@@ -1563,12 +1641,12 @@ const RAW_LIST: Array<Omit<IconOption, 'label'>> = [
   { value: "wrench", icon: "wrench" },
   { value: "x-ray", icon: "x-ray" },
   { value: "yen-sign", icon: "yen-sign" },
-  { value: "yin-yang", icon: "yin-yang" }
+  { value: "yin-yang", icon: "yin-yang" },
 ];
 
 export const LIST_ICONS: IconOption[] = RAW_LIST.map((i) => ({
   ...i,
-  label: translateSlugToPtBr(i.value)
-}));
+  label: translateSlugToPtBr(i.value),
+})).sort((a, b) => a.label.localeCompare(b.label));
 
 export default LIST_ICONS;
