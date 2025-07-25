@@ -79,7 +79,9 @@ const CardBanner = ({ onLoad }: { onLoad(): void }) => {
             }
             <div className='image'>
                 {loading &&
-                    <Skeleton width='100%' height='30vh' />
+                    <div style={{ aspectRatio: '4 / 1', width: '100%' }} >
+                        <Skeleton width='100%' height='100%' />
+                    </div>
                 }
                 {!loading && banner.urlFullPath &&
                     <a href={banner.fullLink} target='_blank'>
@@ -1039,7 +1041,8 @@ const LazyBlurImage = ({ src, alt }: { src: string, alt: string }) => {
             src={src}
             alt={alt}
             loaded={loaded}
-            onLoad={() => setLoaded(true)}
+            onLoadStart={() => setLoaded(true)}
+            onLoad={() => setTimeout(() => setLoaded(true), 0)}
             loading="lazy"
         />
     );

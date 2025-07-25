@@ -146,7 +146,7 @@ export const StyledImage = styled.img<{ loaded: boolean }>`
   object-fit: cover;
   object-position: center;
   transition: filter 0.3s ease-in-out;
-  filter: ${({ loaded }) => (loaded ? 'blur(0)' : 'blur(500px)')};
+  filter: ${({ loaded }) => (loaded ? 'blur(0)' : 'blur(20px)')};
 `;
 
 export const ContainerInfo = styled.div.withConfig({
