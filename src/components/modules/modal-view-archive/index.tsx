@@ -10,7 +10,6 @@ import { ButtonDefault } from "../../UI/form/button-default";
 import { IconDownload, IconFolder, IconMinus, IconPlus } from "../../../assets/icons";
 import { getFileTypeFromURL } from "../../../core/utils/files";
 import { useRedirect } from "../../../core/hooks/useRedirect";
-import { folder } from "jszip";
 
 export const ModalViewArchive = ({ item, folder_id, opened, onClose }: {
     item: IFolderFileItem,

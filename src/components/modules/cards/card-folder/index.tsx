@@ -13,7 +13,6 @@ import { IconLoadingBounce } from '../../../UI/form/button-default';
 import { useAuth } from '../../../../core/contexts/AuthContext';
 import { LinkService } from '../../../../core/services/LinkService';
 import { FilesService } from '../../../../core/services/FilesService';
-import { LinkSlug } from '../../../../core/utils/link-slug';
 
 interface IProps {
     type: 'card' | 'list'

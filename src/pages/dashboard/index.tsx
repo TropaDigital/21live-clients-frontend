@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from './styles';
 import { DashboardService } from '../../core/services/DashboardService';
-import { type ICourses, type IDashBanner, type IDashboardInfo, type IDashInfo, type IDashPost, type UnitStatusData } from '../../core/types/IDashboard';
+import { type IDashBanner, type IDashboardInfo, type IDashInfo, type IDashPost, type UnitStatusData } from '../../core/types/IDashboard';
 import { IconAnnouncement, IconArchive, IconArchiveMultiple, IconChevronDown, IconDownload, IconFolder, IconPencil, IconProfile, IconRefresh, IconSolicitation, IconStar, IconStatus, IconUnits } from '../../assets/icons';
 import { Skeleton } from '../../components/UI/loading/skeleton/styles';
 import { useTenant } from '../../core/contexts/TenantContext';

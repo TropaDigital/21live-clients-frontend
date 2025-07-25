@@ -1,4 +1,4 @@
-import type { IFolderFileItem, IFolderItem } from "./iFolder";
+import type { IFolderFileItem } from "./iFolder";
 import type { IUser } from "./iUser";
 
 export interface IDashBanner {
