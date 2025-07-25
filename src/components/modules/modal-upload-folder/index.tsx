@@ -206,9 +206,11 @@ export const ModalUploadFolder = ({
             }
 
             addAlert('success', 'Sucesso', 'Arquivos enviados com sucesso.');
+            onClose();
         } catch (error: any) {
             setLoadingSave(false);
-            addAlert('error', 'Ops', error.message);
+            console.log('error', error)
+            addAlert('error', 'Ops', 'Não foi possível enviar os arquivos. Tente novamente mais tarde.');
         } finally {
             setLoadingSave(false);
         }
@@ -235,9 +237,8 @@ export const ModalUploadFolder = ({
 
                     {loadingSave &&
                         <div className='loading-percent'>
-
                             <div className='center-loading'>
-                                <p>Criando <b>{files?.folders.length}</b> pastas</p>
+                                <p>Criando <b>{files?.folders.length}</b> pasta{files !== null && files?.folders.length > 1 ? 's' : ''}</p>
                                 <p>Fazendo upload de <b>{files?.files.length}</b> arquivos</p>
 
                                 <div className='progress-bar'>
@@ -245,7 +246,6 @@ export const ModalUploadFolder = ({
                                 </div>
                                 <p>{progressSizeText}</p>
                             </div>
-
                         </div>
                     }
 

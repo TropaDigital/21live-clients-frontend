@@ -14,7 +14,7 @@ export const Skeleton = styled.div.withConfig({
   animation: shimmer 1.2s ease-in-out infinite;
   height: ${({ height }) => height};
   min-height: ${({ height }) => height};
-  width: ${({ width, widthAuto }) =>
+  min-width: ${({ width, widthAuto }) =>
     widthAuto
       ? `${Math.floor(Math.random() * (100 - 30 + 1)) + 30}%`
       : width || "100%"};

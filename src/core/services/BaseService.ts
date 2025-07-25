@@ -20,7 +20,7 @@ export const BASE_URL_API = getBaseUrl();
 // Configuração global do Axios
 const BaseService = axios.create({
   baseURL: BASE_URL_API,
-  timeout: 10000, // 10 segundos
+  timeout: 60000,
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

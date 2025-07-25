@@ -13,6 +13,7 @@ import { IconLoadingBounce } from '../../../UI/form/button-default';
 import { useAuth } from '../../../../core/contexts/AuthContext';
 import { LinkService } from '../../../../core/services/LinkService';
 import { FilesService } from '../../../../core/services/FilesService';
+import { LinkSlug } from '../../../../core/utils/link-slug';
 
 interface IProps {
     type: 'card' | 'list'
@@ -152,15 +153,30 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
         setList([...newList])
     }, [role, item])
 
+    const [modalConfirmAccess, setModalConfirmAccess] = useState(false);
+    const [loadingAccess, setLoadingAccess] = useState(false);
+
     const handleChangeVisibility = async () => {
+        setLoadingAccess(true);
         const visibility = item.access === 'public' ? 'private' : 'public'
-        item.access = visibility;
-        setAccess(visibility)
         await FoldersService.update({ ...item, access: visibility })
+        setModalConfirmAccess(false)
+        item.access = visibility;
+        setAccess(visibility);
+        setLoadingAccess(false);
     }
 
     return (
         <>
+            <ModalConfirm
+                title='Anteção'
+                onConfirm={handleChangeVisibility}
+                onCancel={() => setModalConfirmAccess(false)}
+                opened={modalConfirmAccess}
+                description={access === 'public' ? 'Você deseja tornar essa pasta privada?' : 'Você deseja tornar essa pasta pública?'}
+                type='info'
+                loading={loadingAccess}
+            />
             <S.Container
                 className='card card-folder'
                 drop={isOver}
@@ -188,6 +204,9 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
                 colorBg={tenant?.colormain}
                 colorText={tenant?.colorsecond}
             >
+                {!editableName &&
+                    <div className='redirect-absolute' onClick={() => redirectSlug(`/folders/${item.folder_id}`)} />
+                }
                 <div className='head-item'>
 
                     <div className='icon' onClick={() => editableName ? {} : redirectSlug(`/folders/${item.folder_id}`)}>
@@ -197,7 +216,7 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
 
                     <div className='tools'>
                         {verifyPermission('folders_edit') &&
-                            <button onClick={handleChangeVisibility} className={`more star`}>
+                            <button data-tooltip-id="tooltip" data-tooltip-content={access === 'public' ? 'Marcar pasta como privada' : 'Marcar pasta como pública'} onClick={() => setModalConfirmAccess(true)} className={`more star`}>
                                 {access === 'public' ? <IconEye /> : <IconEyeClose />}
                             </button>
                         }

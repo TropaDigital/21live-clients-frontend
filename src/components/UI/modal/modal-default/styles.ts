@@ -89,13 +89,24 @@ export const Container = styled.div.withConfig({
       position: relative;
       z-index: 3;
       padding: ${({ paddingHeader }) => paddingHeader};
-      .title {
+      .head-title {
         flex: 1;
-        font-size: 18px;
-        font-weight: 600;
-        color: ${({ theme }) => theme.colors.neutral[700]};
-        margin: 0px;
-        padding: 0px;
+        .title {
+          flex: 1;
+          font-size: 18px;
+          font-weight: 600;
+          color: ${({ theme }) => theme.colors.neutral[700]};
+          margin: 0px;
+          padding: 0px;
+        }
+        .sub {
+          flex: 1;
+          font-size: 12px;
+          font-weight: 400;
+          color: ${({ theme }) => theme.colors.neutral[500]};
+          margin: 0px;
+          padding: 0px;
+        }
       }
       .close {
         background-color: transparent;

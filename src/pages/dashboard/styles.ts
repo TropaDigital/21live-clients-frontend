@@ -241,6 +241,9 @@ export const ContainerPosts = styled.div.withConfig({
         justify-content: flex-start;
         background-color: ${({ color }) => color};
         position: relative;
+        &.hidden {
+          display: none;
+        }
         span {
           background-color: rgba(0, 0, 0, 0.4);
           backdrop-filter: blur(10px);
@@ -265,8 +268,6 @@ export const ContainerPosts = styled.div.withConfig({
             height: 90px;
             border-radius: 100px;
             background-color: ${({ theme }) => theme.colors.background.default};
-            box-shadow: 0px 0px 30px 5px
-              ${({ theme }) => theme.colors.background.default};
             display: flex;
             align-items: center;
             justify-content: center;
@@ -290,13 +291,15 @@ export const ContainerPosts = styled.div.withConfig({
   .post {
     display: flex;
     flex-direction: column;
-    gap: 15px;
     cursor: pointer;
     width: 330px;
+    background-color: ${({ theme }) => theme.colors.background.default};
+    border-radius: 20px;
+    border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
     .image {
       width: 330px;
       height: 115px;
-      border-radius: 20px;
+      border-radius: 20px 20px 0px 0px;
       position: relative;
       .blur {
         width: 100%;
@@ -305,8 +308,8 @@ export const ContainerPosts = styled.div.withConfig({
         position: absolute;
         background-size: cover;
         transform: scale(0.7);
-        margin-top: 20px;
-        border-radius: 20px;
+        margin-top: -20px;
+        border-radius: 20px 20px 0px 0px;
         background-position: center;
         background-color: ${({ color }) => color};
       }
@@ -315,7 +318,7 @@ export const ContainerPosts = styled.div.withConfig({
         height: 100%;
         position: absolute;
         background-size: cover;
-        border-radius: 20px;
+        border-radius: 20px 20px 0px 0px;
         background-position: center;
         display: flex;
         justify-content: flex-start;
@@ -342,16 +345,18 @@ export const ContainerPosts = styled.div.withConfig({
           align-items: center;
           justify-content: center;
           i {
-            width: 90px;
-            height: 90px;
+            width: 50px;
+            height: 50px;
             border-radius: 100px;
             background-color: ${({ theme }) => theme.colors.background.default};
-            box-shadow: 0px 0px 30px 5px
-              ${({ theme }) => theme.colors.background.default};
             display: flex;
             align-items: center;
             justify-content: center;
             color: ${({ color }) => color};
+            svg {
+              width: 30px;
+              height: 30px;
+            }
           }
         }
       }
@@ -360,20 +365,28 @@ export const ContainerPosts = styled.div.withConfig({
       display: flex;
       flex-direction: column;
       gap: 5px;
+      padding: 15px;
       .title {
         font-size: 14px;
         color: ${({ theme }) => theme.colors.neutral[700]};
-        font-weight: 500;
+        font-weight: 600;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }
       .user {
+        width: 100%;
         font-size: 13px;
         display: flex;
         align-items: center;
         gap: 5px;
         color: ${({ theme }) => theme.colors.neutral[600]};
+        .name {
+          flex: 1;
+        }
+        .date {
+          font-size: 11px;
+        }
       }
     }
   }
@@ -416,6 +429,53 @@ export const ContainerGraphs = styled.div.withConfig({
     .chart-padding {
       padding: 0px 20px 20px 20px;
       box-sizing: border-box;
+    }
+  }
+  .courses-overflow {
+    width: 100%;
+    height: 300px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInUp 0.5s;
+    box-sizing: border-box;
+    padding-bottom: 15px;
+    .course {
+      width: 100%;
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 0px 15px;
+      box-sizing: border-box;
+      .percent {
+        min-width: 50px;
+      }
+      .icon {
+        display: flex;
+        background: ${({ color }) => color};
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        min-height: 30px;
+        border-radius: 10px;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 13px;
+        transition: all 0.2s;
+        i {
+          font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands",
+            sans-serif !important;
+        }
+      }
+      p {
+        flex: 1;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: 13px;
+        color: ${({ theme }) => theme.colors.neutral[700]};
+      }
     }
   }
 `;

@@ -28,8 +28,17 @@ export const Container = styled.div.withConfig({
   position: relative;
   flex-direction: ${({ type }) => (type === "card" ? "column" : "row")};
   gap: 15px;
+  position: relative;
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     width: 100%;
+  }
+  .redirect-absolute {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: pointer;
+    left: 0;
+    top: 0;
   }
   > input {
     width: 100%;

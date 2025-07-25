@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from './styles';
 import { DashboardService } from '../../core/services/DashboardService';
-import type { IDashBanner, IDashboardInfo, IDashInfo, IDashPost, UnitStatusData } from '../../core/types/IDashboard';
+import { type ICourses, type IDashBanner, type IDashboardInfo, type IDashInfo, type IDashPost, type UnitStatusData } from '../../core/types/IDashboard';
 import { IconAnnouncement, IconArchive, IconArchiveMultiple, IconChevronDown, IconDownload, IconFolder, IconPencil, IconProfile, IconRefresh, IconSolicitation, IconStar, IconStatus, IconUnits } from '../../assets/icons';
 import { Skeleton } from '../../components/UI/loading/skeleton/styles';
 import { useTenant } from '../../core/contexts/TenantContext';
@@ -12,9 +12,10 @@ import { ModalViewArchive } from '../../components/modules/modal-view-archive';
 import { AvatarUser } from '../../components/UI/avatar/avatar-user';
 import moment from 'moment';
 import { ButtonDefault } from '../../components/UI/form/button-default';
-import { BarChart, PieChart } from '@mui/x-charts';
+import { BarChart, Gauge, gaugeClasses, PieChart } from '@mui/x-charts';
 import { useAuth } from '../../core/contexts/AuthContext';
 import { ModalDefault } from '../../components/UI/modal/modal-default';
+import { theme } from '../../assets/theme/theme';
 
 export default function Home() {
 
@@ -203,6 +204,7 @@ const CardRecents = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     item={modalViewArchive}
                     opened={modalViewArchive.file_id ? true : false}
                     onClose={() => setModalViewArchive({} as IFolderFileItem)}
+                    folder_id={modalViewArchive.folder_id}
                 />
 
                 <RenderCarrousel refCard={refCard} data={data}>
@@ -260,10 +262,12 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     <p className='title-head'>Publicações</p>
                 </div>
 
-                <ModalDefault padding='0px' layout='center' title={preview.title} opened={preview.message_id ? true : false} onClose={() => setPreview({} as IDashPost)}>
+                <ModalDefault padding='0px' layout='center' title={preview.title} subTitle={moment(preview.created).format('DD/MM/YYYY HH:mm')} opened={preview.message_id ? true : false} onClose={() => setPreview({} as IDashPost)}>
                     <div className='preview-post'>
                         <div className='head-preview-post'>
-                            <RenderImage image={preview.path} created={preview.created} />
+                            {preview.path &&
+                                <RenderImage image={preview.path} />
+                            }
                         </div>
                         <div className='msg' dangerouslySetInnerHTML={{ __html: preview.msg }} />
                     </div>
@@ -273,7 +277,7 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     {loading &&
                         <div className='post'>
                             <div className='image'>
-                                <Skeleton width='100%' height='100%' borderRadius='20px' />
+                                <Skeleton width='100%' height='100%' borderRadius='20px 20px 0px 0px' />
                             </div>
                             <div className='infos'>
                                 <p className='title'>
@@ -289,8 +293,8 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     {data.map((item) =>
                         <div ref={refCard} className='post' onClick={() => setPreview(item)}>
                             <div className='image'>
-                                <div className='blur' style={{ backgroundImage: `url(${item.path})` }} />
-                                <RenderImage image={item.path} created={item.created} />
+                                {/**<div className='blur' style={{ backgroundImage: `url(${item.path})` }} />*/}
+                                <RenderImage image={item.path} />
                             </div>
 
                             <div className='infos'>
@@ -299,7 +303,8 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                 </p>
                                 <div className='user'>
                                     <AvatarUser fontSize={13} size={30} name={item.user?.name ?? 'Sistema'} image={item.user.avatar} />
-                                    <span>{item.user.name}</span>
+                                    <span className='name'>{item.user.name}</span>
+                                    <span className='date'>{moment(item.created).format('DD/MM/YYYY HH:mm')}</span>
                                 </div>
                             </div>
                         </div>
@@ -317,6 +322,9 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
     const { tenant } = useTenant();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<IDashboardInfo>({} as IDashboardInfo)
+
+    const [modalViewArchive, setModalViewArchive] = useState<IFolderFileItem>({} as IFolderFileItem);
+    const refCard = useRef<HTMLDivElement>(null);
 
     const getData = async () => {
         try {
@@ -415,10 +423,47 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
     }, []);
 
     return (
-        <S.ContainerGraphs>
+        <S.ContainerGraphs color={tenant?.colorhigh}>
+
+            {/* Usuarios mais ativos nos ultimos 15 dias */}
+            {verifyPermission('dashboard_user') &&
+                <>
+                    {(loading || data.lastDownloads !== null) &&
+                        <S.ContainerRecents style={{ marginBottom: 25 }} colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
+                            <div className='box-dash transparent'>
+                                <div className='head'>
+                                    <i>
+                                        <IconDownload />
+                                    </i>
+                                    <p className='title-head'>Últimos Arquivos Baixados</p>
+                                </div>
+
+                                <ModalViewArchive
+                                    item={modalViewArchive}
+                                    opened={modalViewArchive.file_id ? true : false}
+                                    onClose={() => setModalViewArchive({} as IFolderFileItem)}
+                                    folder_id={modalViewArchive.folder_id}
+                                />
+
+                                <RenderCarrousel refCard={refCard} data={data?.lastDownloads ?? []}>
+                                    {loading && <CardArchiveLoading type={'card'} quantity={10} />}
+                                    {!loading && data.lastDownloads?.map((item) =>
+                                        <CardArchive
+                                            ref={refCard}
+                                            type={'card'}
+                                            key={`folder-archive-${item.file_id}`}
+                                            item={item}
+                                            onView={() => setModalViewArchive(item)}
+                                        />
+                                    )}
+                                </RenderCarrousel>
+                            </div>
+                        </S.ContainerRecents>
+                    }
+                </>
+            }
 
             <div className='row'>
-
                 {/* Usuarios mais ativos nos ultimos 15 dias */}
                 {verifyPermission('dashboard_admin') &&
                     <>
@@ -446,6 +491,160 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                 </div>
                             </div>
                         }
+                    </>
+                }
+
+                {verifyPermission('dashboard_user') &&
+                    <>
+                        {(loading || data?.courses && (data?.courses?.completed?.length > 0 || data?.courses?.ongoing.length > 0 || data?.courses?.notstarted.length > 0)) && (
+                            <div className='box-dash'>
+                                <div className='head'>
+                                    <i>
+                                        <IconStar />
+                                    </i>
+                                    <p className='title-head'>Andamento dos cursos</p>
+                                </div>
+
+                                <div className='chart-dash'>
+                                    {loading ? (
+                                        <Skeleton width='100%' height='300px' />
+                                    ) : (
+                                        <div className='courses-overflow'>
+                                            {data.courses?.completed.map((course, index) =>
+                                                <div className='course' key={`course-completed-${index}`}>
+                                                    <Gauge
+                                                        width={50} height={50} value={course.progress}
+                                                        sx={() => ({
+                                                            [`& .${gaugeClasses.valueText}`]: {
+                                                                fontSize: 10,
+                                                            },
+                                                            [`& .${gaugeClasses.valueArc}`]: {
+                                                                fill: theme.colors.success[500],
+                                                            },
+                                                            [`& .${gaugeClasses.referenceArc}`]: {
+                                                                fill: theme.colors.neutral[300],
+                                                            },
+                                                        })}
+                                                    />
+                                                    <div className='icon'>
+                                                        <i className={`fa fa-${course.icon}`}></i>
+                                                    </div>
+                                                    <p>{course.name}</p>
+                                                </div>
+                                            )}
+                                            {data.courses?.ongoing.map((course, index) =>
+                                                <div className='course' key={`course-ongoing-${index}`}>
+                                                    <div className='percent'>
+                                                        <Gauge
+                                                            width={50} height={50} value={course.progress}
+                                                            sx={() => ({
+                                                                [`& .${gaugeClasses.valueText}`]: {
+                                                                    fontSize: 10,
+                                                                },
+                                                                [`& .${gaugeClasses.valueArc}`]: {
+                                                                    fill: theme.colors.warning[500],
+                                                                },
+                                                                [`& .${gaugeClasses.referenceArc}`]: {
+                                                                    fill: theme.colors.neutral[300],
+                                                                },
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    <div className='icon'>
+                                                        <i className={`fa fa-${course.icon}`}></i>
+                                                    </div>
+                                                    <p>{course.name}</p>
+                                                </div>
+                                            )}
+                                            {data.courses?.notstarted.map((course, index) =>
+                                                <div className='course' key={`course-notstarted-${index}`}>
+                                                    <Gauge
+                                                        width={50} height={50} value={course.progress}
+                                                        sx={() => ({
+                                                            [`& .${gaugeClasses.valueText}`]: {
+                                                                fontSize: 10,
+                                                            },
+                                                            [`& .${gaugeClasses.valueArc}`]: {
+                                                                fill: theme.colors.neutral[300],
+                                                            },
+                                                            [`& .${gaugeClasses.referenceArc}`]: {
+                                                                fill: theme.colors.neutral[300],
+                                                            },
+                                                        })}
+                                                    />
+                                                    <div className='icon'>
+                                                        <i className={`fa fa-${course.icon}`}></i>
+                                                    </div>
+                                                    <p>{course.name}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                }
+
+                {/* Cursos Geral */}
+                {verifyPermission('dashboard_user') &&
+                    <>
+                        {(loading || (data?.courses) && (
+                            data?.courses?.completed.length > 0 ||
+                            data?.courses?.ongoing.length > 0 ||
+                            data?.courses?.notstarted.length > 0
+                        )) && (
+                                <div className='box-dash'>
+                                    <div className='head'>
+                                        <i>
+                                            <IconStatus />
+                                        </i>
+                                        <p className='title-head'>Status dos cursos</p>
+                                    </div>
+
+                                    <div className='chart-dash'>
+                                        {loading ? (
+                                            <Skeleton width='100%' height='300px' />
+                                        ) : (
+                                            <div className='chart-padding'>
+                                                <PieChart
+                                                    series={[
+                                                        {
+                                                            data: [
+                                                                {
+                                                                    id: 0,
+                                                                    value: data?.courses?.completed?.length ?? 0,
+                                                                    label: 'Concluídos',
+                                                                    color: '#4caf50',
+                                                                },
+                                                                {
+                                                                    id: 1,
+                                                                    value: data?.courses?.ongoing?.length ?? 0,
+                                                                    label: 'Em andamento',
+                                                                    color: '#ff9800',
+                                                                },
+                                                                {
+                                                                    id: 2,
+                                                                    value: data?.courses?.notstarted?.length ?? 0,
+                                                                    label: 'Não iniciados',
+                                                                    color: '#f44336',
+                                                                },
+                                                            ],
+                                                            innerRadius: 30,
+                                                            outerRadius: 100,
+                                                            paddingAngle: 5,
+                                                            cornerRadius: 10,
+                                                            startAngle: -45,
+                                                        },
+                                                    ]}
+                                                    width={windowSize.width >= 500 ? 280 : 200}
+                                                    height={windowSize.width >= 500 ? 280 : 200}
+                                                />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                     </>
                 }
 
@@ -564,6 +763,13 @@ const CardGraphs = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                                 </div>
 
                                 <div className='chart-dash'>
+
+                                    {!loading &&
+                                        <span className='tag'>
+                                            Total de downloads: <b>{data?.userDownloads?.total}</b>
+                                        </span>
+                                    }
+
                                     {loading ? <Skeleton width='100%' height='300px' /> :
                                         <div className='chart-padding'>
                                             <BarChart
@@ -732,7 +938,9 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
         const itemsPerPage = Math.floor(containerWidth / cardWidth);
         const totalPages = Math.ceil(data.length / itemsPerPage);
 
-        setPageCount(totalPages);
+        if (parseInt(String(totalPages)) > 0) {
+            setPageCount(totalPages);
+        }
 
     }, [data, refParent.current, refCard.current, width]);
 
@@ -787,7 +995,7 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
     )
 }
 
-const RenderImage = ({ image, created }: { image: string; created: string }) => {
+const RenderImage = ({ image }: { image: string; }) => {
 
     const [imageExist, setImageExist] = useState(false);
 
@@ -803,8 +1011,7 @@ const RenderImage = ({ image, created }: { image: string; created: string }) => 
     }, [image])
 
     return (
-        <div className='thumb' style={{ backgroundImage: `url(${image})` }}>
-            <span>{moment(created).format('DD/MM/YYYY HH:mm')}</span>
+        <div className={`thumb ${!imageExist ? 'hidden' : 'visible'}`} style={{ backgroundImage: `url(${image})` }}>
             {!imageExist &&
                 <div className='no-image'>
                     <i>

@@ -250,7 +250,7 @@ const RenderTabInfo = ({ DTO, onChangeDTO }: {
                 label="Icone"
                 options={LIST_ICONS.map((item: any) => {
                     return {
-                        name: item.icon,
+                        name: item.label,
                         value: item.value,
                         iconFont: item.value,
                     }
@@ -258,7 +258,7 @@ const RenderTabInfo = ({ DTO, onChangeDTO }: {
                 onChange={(e) => onChangeDTO('icon', e.value)}
                 value={{
                     value: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.value ?? '',
-                    name: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.icon ?? '',
+                    name: LIST_ICONS.filter((obj: any) => obj.value === DTO.icon)[0]?.label ?? '',
                 }}
             />
             <SelectDefault

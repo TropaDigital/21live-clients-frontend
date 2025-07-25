@@ -89,12 +89,12 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
                                 value: item.value
                             }
                         }))}>
-                            <IconCheckboxOn />
+                            <IconCheckboxOff />
                         </button>
                     }
                     {selecteds.length > 0 &&
                         <button data-tooltip-id="tooltip" data-tooltip-content="Desmarcar todos" onClick={() => onChange([])}>
-                            <IconCheckboxOff />
+                            <IconCheckboxOn />
                         </button>
                     }
 

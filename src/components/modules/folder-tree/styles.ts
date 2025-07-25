@@ -34,6 +34,9 @@ export const ItemWrapper = styled.div.withConfig({
       justify-content: center;
       color: ${({ theme }) => theme.colors.background.default};
       background-color: ${({ color }) => color};
+      i {
+        font-family: "Font Awesome 5 Free", "Font Awesome 5 Brands", sans-serif !important;
+      }
     }
     span {
       color: ${({ theme }) => theme.colors.neutral[700]};

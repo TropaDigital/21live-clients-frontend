@@ -404,11 +404,13 @@ export default function Folder() {
                             ]}
                         />
 
-                        <SubmenuSelect whiteSpace={"nowrap"} position='right' submenu={optionsButtonAdd}>
-                            <ButtonDefault iconPosition='right' variant="success" icon={<IconPlus />}>
-                                Adicionar
-                            </ButtonDefault>
-                        </SubmenuSelect>
+                        {optionsButtonAdd.length > 0 &&
+                            <SubmenuSelect whiteSpace={"nowrap"} position='right' submenu={optionsButtonAdd}>
+                                <ButtonDefault iconPosition='right' variant="success" icon={<IconPlus />}>
+                                    Adicionar
+                                </ButtonDefault>
+                            </SubmenuSelect>
+                        }
                     </div>
                 </div>
             </Toolbar>

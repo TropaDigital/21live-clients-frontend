@@ -1,3 +1,4 @@
+import type { IFolderFileItem, IFolderItem } from "./iFolder";
 import type { IUser } from "./iUser";
 
 export interface IDashBanner {
@@ -195,8 +196,12 @@ export interface IDashboardInfo {
   mode: string;
   hour: number;
   statusFreq: IStatusFreq;
-  lastDownloads: any;
-  courses: any;
+  lastDownloads: IFolderFileItem[] | null;
+  courses: null | {
+    completed: CourseItem[];
+    ongoing: CourseItem[];
+    notstarted: CourseItem[];
+  };
   userAccess: IUserAccess;
   unitStatus: IUnitStatus;
   unitTickets: IUnitTickets;
@@ -217,3 +222,27 @@ export type UnitStatusData = {
     }
   >;
 };
+
+export interface CourseItem {
+  folder_id: number;
+  tenant_id: number;
+  parent_id: number | null;
+  name: string;
+  icon: string;
+  menulink: number;
+  freedown: number;
+  course: number;
+  order: number;
+  access: string;
+  listOrder: string;
+  progress: number;
+  completed: string | null;
+  created: string;
+  updated: string;
+}
+
+export interface ICourses {
+  completed: CourseItem[];
+  ongoing: CourseItem[];
+  notstarted: CourseItem[];
+}

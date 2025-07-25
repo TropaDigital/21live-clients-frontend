@@ -292,7 +292,7 @@ export const InputUpload: React.FC<InputUploadAdvancedProps> = ({
                                                 <IconArchive />
                                             </i>
                                             <div className="infos-file">
-                                                <span className="name">{file.name}</span>
+                                                <span className="name" data-tooltip-place="left" data-tooltip-id="tooltip" data-tooltip-content={file.name}>{file.name}</span>
                                                 <span className="size">{formatSize(file.size)}</span>
                                             </div>
                                             <button

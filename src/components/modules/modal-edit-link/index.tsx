@@ -165,12 +165,12 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
 
     const LIST_TYPE = [
         {
-            name: 'Link interno',
-            value: 'internal',
-        },
-        {
             name: 'Link externo',
             value: 'external',
+        },
+        {
+            name: 'Link interno',
+            value: 'internal',
         }
     ]
 
@@ -179,10 +179,13 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
             name: 'Pasta',
             value: 'folder',
         },
+        /**
+         * 
         {
             name: 'Job',
             value: 'job',
         }
+         */
     ]
 
     const VALUE_TYPE = {
@@ -197,7 +200,7 @@ const RenderTabInfo = ({ loading, tree, DTO, onChangeDTO, onChangeType }: {
 
     useEffect(() => {
         if (!DTO.type && DTO.opened) {
-            onChangeType('internal', 'folder')
+            onChangeType('external', 'folder')
         }
     }, [DTO])
 

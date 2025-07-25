@@ -8,12 +8,23 @@ interface IProps {
     paddingHeader?: string;
     onClose?(): void;
     title?: string;
+    subTitle?: string;
     children: ReactNode;
     zIndex?: number;
     layout: 'left' | 'center' | 'bottom' | 'top' | 'right'
 }
 
-export const ModalDefault = ({ zIndex = 10, padding = "10px 40px 40px 40px", paddingHeader = "40px 40px 0px 40px", layout = 'center', title, onClose, children, opened }: IProps) => {
+export const ModalDefault = ({
+    zIndex = 10,
+    padding = "10px 40px 40px 40px",
+    paddingHeader = "40px 40px 0px 40px",
+    layout = 'center',
+    title,
+    subTitle,
+    onClose,
+    children,
+    opened
+}: IProps) => {
 
     const refBox = useRef<any>(null)
 
@@ -27,15 +38,22 @@ export const ModalDefault = ({ zIndex = 10, padding = "10px 40px 40px 40px", pad
         <S.Container zIndex={zIndex} paddingHeader={paddingHeader} padding={padding} layout={layout} opened={opened}>
 
             <button className='outside' onClick={handleOnClose} />
-            
+
             {opened &&
                 <div ref={refBox} className='box'>
 
                     <div className='head-box'>
                         {title &&
-                            <p className='title'>
-                                {title}
-                            </p>
+                            <div className='head-title'>
+                                <p className='title'>
+                                    {title}
+                                </p>
+                                {subTitle &&
+                                    <p className='sub'>
+                                        {subTitle}
+                                    </p>
+                                }
+                            </div>
                         }
 
                         {onClose &&

@@ -126,12 +126,14 @@ export const Container = styled.div`
               display: flex;
               flex-direction: column;
               flex: 1;
+              width: calc(100% - 100px);
               .name {
                 font-size: 13px;
                 text-align: left;
                 white-space: nowrap;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                width: 100%;
                 flex: 1;
               }
               .size {
