@@ -22,7 +22,7 @@ export default function AuthLayout() {
     const { tenant } = useTenant();
     const { handleRefreshToken, verifyPermission } = useAuth();
 
-    const { pathname } = useLocation();
+    //const { pathname } = useLocation();
     const { timeLeft } = useSessionTimer();
 
     const { redirectSlug } = useRedirect();
