@@ -101,8 +101,12 @@ export const ModalEditArchive = ({
             const path: any = files?.files[0].file ?? null;
             DTO.path = path;
 
+            const thumb: any = filesThumb?.files[0].file ?? null;
+            DTO.thumb = thumb;
+
             DTO.tenant_id = tenant?.tenant_id ?? 0;
             const response = await FilesService.set({ ...DTO })
+
             onSave(DTO.file_id ? 'update' : 'new', response.item);
             setDTOEdit(false);
             onClose();
