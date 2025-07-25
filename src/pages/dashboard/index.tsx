@@ -266,7 +266,7 @@ const CardPosts = ({ start, onLoad }: { start: boolean, onLoad(): void }) => {
                     <div className='preview-post'>
                         <div className='head-preview-post'>
                             {preview.path &&
-                                <RenderImage image={preview.path} />
+                                <RenderImage isBg={false} image={preview.path} />
                             }
                         </div>
                         <div className='msg' dangerouslySetInnerHTML={{ __html: preview.msg }} />
@@ -995,7 +995,7 @@ const RenderCarrousel = ({ children, data, refCard }: { children: React.ReactNod
     )
 }
 
-const RenderImage = ({ image }: { image: string; }) => {
+const RenderImage = ({ image, isBg = true }: { image: string; isBg?: boolean }) => {
 
     const [imageExist, setImageExist] = useState(false);
 
@@ -1011,13 +1011,16 @@ const RenderImage = ({ image }: { image: string; }) => {
     }, [image])
 
     return (
-        <div className={`thumb ${!imageExist ? 'hidden' : 'visible'}`} style={{ backgroundImage: `url(${image})` }}>
-            {!imageExist &&
+        <div className={`thumb ${!imageExist ? 'hidden' : 'visible'}`} style={{ backgroundImage: `url(${isBg ? image : ''})` }}>
+
+            {!imageExist ?
                 <div className='no-image'>
                     <i>
                         <IconAnnouncement />
                     </i>
                 </div>
+                :
+                !isBg && <img src={image} alt="Imagem da Publicação" />
             }
         </div>
     )
@@ -1026,6 +1029,10 @@ const RenderImage = ({ image }: { image: string; }) => {
 const LazyBlurImage = ({ src, alt }: { src: string, alt: string }) => {
 
     const [loaded, setLoaded] = useState(false);
+
+    useEffect(() => {
+        setLoaded(false)
+    }, [src])
 
     return (
         <S.StyledImage

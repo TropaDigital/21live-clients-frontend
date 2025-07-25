@@ -141,9 +141,12 @@ export const ContainerBanners = styled.div.withConfig({
 
 export const StyledImage = styled.img<{ loaded: boolean }>`
   width: 100%;
-  height: auto;
+  aspect-ratio: 4 / 1;
+  background-image: url(${({ src }) => src});
+  object-fit: cover;
+  object-position: center;
   transition: filter 0.3s ease-in-out;
-  filter: ${({ loaded }) => (loaded ? "blur(0)" : "blur(10px)")};
+  filter: ${({ loaded }) => (loaded ? 'blur(0)' : 'blur(500px)')};
 `;
 
 export const ContainerInfo = styled.div.withConfig({
@@ -232,7 +235,7 @@ export const ContainerPosts = styled.div.withConfig({
       align-items: center;
       .thumb {
         width: 100%;
-        height: 200px;
+        max-height: 50vh;
         background-size: auto 100%;
         background-position: center;
         background-repeat: no-repeat;
@@ -277,14 +280,14 @@ export const ContainerPosts = styled.div.withConfig({
       }
       img {
         max-width: 100%;
-        max-height: 20vh;
+        max-height: 60vh;
       }
     }
     .msg {
       padding: 20px;
       display: flex;
       flex-direction: column;
-      max-height: 50vh;
+      max-height: 35vh;
       overflow: auto;
     }
   }
