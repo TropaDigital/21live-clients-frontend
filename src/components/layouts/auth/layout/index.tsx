@@ -69,10 +69,12 @@ export default function AuthLayout() {
     }, [isResizing]);
 
     useEffect(() => {
+        console.log('timeLeft', timeLeft);
         if (timeLeft <= 180) {
+            alert('renova o token')
             handleRefreshToken();
         }
-    }, [pathname]);
+    }, [timeLeft]);
 
     useClickOutside(menuRef, () => {
         if (isMobile) {
