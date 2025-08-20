@@ -1,7 +1,12 @@
+import type { IOrganization } from "./IOrganization";
+import type { ITenant } from "./iTenants";
+
 export interface IUser {
   user_id: number;
   tenant_slug: string;
   tenant_id: number;
+  tenants?: ITenant[];
+  organizations?: IOrganization[];
   username: string;
   name: string;
   email: string;
@@ -14,7 +19,11 @@ export interface IUser {
   updated: string;
   deleted: string | null; // DateTime ou null se não deletado
   role?: IUserRole;
+  role_title?: string;
+  role_id?: number;
   permissions?: string[];
+  organization_id?: number;
+  organization_name?: string;
 }
 
 export interface IUserRole {

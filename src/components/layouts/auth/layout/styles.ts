@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { theme } from "../../../../assets/theme/theme";
 
-export const Container = styled.div`
+interface IProps {
+  opened: boolean;
+  isMobile: boolean;
+}
+
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["opened", "isMobile"].includes(prop),
+})<IProps>`
   background-color: ${({ theme }) => theme.colors.background.surface};
   min-height: 100vh;
   @media (max-width: 400px) {
@@ -70,7 +77,12 @@ export const Container = styled.div`
     > section {
       flex: 1;
       max-height: calc(100vh - 70px);
-      max-width: 100vw;
+      max-width: ${({ opened, isMobile }) =>
+        opened && !isMobile
+          ? `calc(100vw - 280px)`
+          : isMobile
+          ? `100vw`
+          : `calc(100vw - 90px)`};
       box-sizing: border-box;
       display: flex;
       flex-direction: column;

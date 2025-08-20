@@ -14,10 +14,16 @@ import { IconEnvelope, IconPassword, IconWarning } from "../../assets/icons";
 import * as S from "./styles";
 import { getSlug } from "../../core/utils/params-location";
 import { LoadingMain } from "../../components/UI/loading/loading-main";
+import { useLocation } from "react-router-dom";
 
 export default function Login() {
 
     const slug = getSlug();
+
+    const location = useLocation();
+    const params = new URLSearchParams(location.search);
+    const redirect = params.get('redirect');
+
     const { tenant, getTenant, loadingTenant } = useTenant();
     const { handleLogin } = useAuth();
     const { redirectSlug } = useRedirect();
@@ -42,7 +48,7 @@ export default function Login() {
             setLoading(true);
             const response = await UserService.login(slug, DTO.username, DTO.password);
             handleLogin(response.token, response.user)
-            redirectSlug('/');
+            redirectSlug(redirect ? redirect.replace(`/${slug}/`, '') : '/');
         } catch (error: any) {
             setError('Login ou senha incorretos.')
             setLoading(false);

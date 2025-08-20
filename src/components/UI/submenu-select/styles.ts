@@ -45,8 +45,16 @@ export const Container = styled.div.withConfig({
     padding: 0px;
     font-weight: 500;
   }
+  .description {
+    font-size: 11px;
+    color: ${({ theme }) => theme.colors.neutral[500]};
+    margin: 0px;
+    padding: 0px;
+    font-weight: 400;
+  }
   .row {
     display: flex;
+    gap: 10px;
   }
   .content-button {
     flex: 1;
@@ -55,9 +63,9 @@ export const Container = styled.div.withConfig({
     box-sizing: border-box;
   }
   ul {
-    position: absolute;
     z-index: 99;
     list-style: none;
+    inset-inline-end: 0;
     padding: 0px;
     margin: 0px;
     min-width: 120px;
@@ -133,6 +141,11 @@ export const Container = styled.div.withConfig({
         width: 100%;
         &:hover {
           background-color: ${({ theme }) => theme.colors.neutral[200]};
+        }
+        &.required {
+          background-color: ${({ theme }) => theme.colors.neutral[500]};
+          color: ${({ theme }) => theme.colors.background.default};
+          cursor: not-allowed;
         }
         .icon-svg {
           width: 20px;

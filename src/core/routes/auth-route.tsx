@@ -52,7 +52,6 @@ export const AuthRoute = ({
         }
     }
 
-
     useEffect(() => {
         if (loadingAuthLayout === false && loadingTenant === false) {
             setLoadingMain(false)
@@ -70,11 +69,11 @@ export const AuthRoute = ({
         } else if (user?.tenant_slug && user?.tenant_slug === slug) {
             handleGetUserInfos();
         }
-    }, [isLogged, user, slug])
+    }, [isLogged, user?.tenant_slug, slug])
 
 
     if (!permissionLayout && loadingAuthLayout === false) {
-        return <Navigate to={`/${slug}/login`} replace />
+        return <Navigate to={`/${slug}/login?redirect=${window.location.pathname}`} replace />
     }
 
     return <>

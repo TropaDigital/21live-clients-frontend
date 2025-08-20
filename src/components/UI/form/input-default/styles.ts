@@ -11,6 +11,13 @@ export const Container = styled.label`
     padding: 0px;
     font-weight: 500;
   }
+  .description {
+    font-size: 11px;
+    color: ${({ theme }) => theme.colors.neutral[500]};
+    margin: 0px;
+    padding: 0px;
+    font-weight: 400;
+  }
   .input {
     background-color: ${({ theme }) => theme.colors.background.default};
     display: flex;
@@ -42,6 +49,9 @@ export const Container = styled.label`
         height: 20px;
         width: 20px;
       }
+    }
+    &.disabled {
+      background-color: ${({ theme }) => theme.colors.neutral[200]};
     }
   }
 `;

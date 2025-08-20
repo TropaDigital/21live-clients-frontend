@@ -16,10 +16,10 @@ export const AvatarUser = ({ name, image, size = 30, fontSize = 11 }: { name: st
     }, [image])
 
     return (
-        <S.Container style={{ width: size, height: size }}>
+        <S.Container style={{ minWidth: size, minHeight: size, width: size, height: size }}>
             {!imageExist &&
                 <div className='name' style={{ fontSize, backgroundColor: tenant?.colormain, color: tenant?.colorsecond }}>
-                    {name.slice(0, 2)}
+                    {name ? name.slice(0, 2) : null}
                 </div>
             }
             {imageExist &&

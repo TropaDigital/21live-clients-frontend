@@ -14,6 +14,11 @@ interface TenantContextType {
     tenant: ITenant | null;
     setTenant(tenant: ITenant | null): void;
 
+    //tenants
+    getTenants(): void;
+    tenants: ITenant[];
+    loadingTenants: boolean;
+
     //organization
     getOrganizations(): void;
     organizations: IOrganization[];
@@ -45,11 +50,14 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     const [loadingTenant, setLoadingTenant] = useState(true)
     const [tenant, setTenant] = useState<ITenant | null>(null);
 
+    const [tenants, setTenants] = useState<ITenant[]>([])
+    const [loadingTenants, setLoadingTenants] = useState(false);
+
     const [organizations, setOrganizations] = useState<IOrganization[]>([])
-    const [loadingOrganization, setLoadingOrganization] = useState(true);
+    const [loadingOrganization, setLoadingOrganization] = useState(false);
 
     const [organizationsGroup, setOrganizationsGroup] = useState<IOrganizationGroup[]>([])
-    const [loadingOrganizatonsGroup, setLoadingOrganizationsGroup] = useState(true)
+    const [loadingOrganizatonsGroup, setLoadingOrganizationsGroup] = useState(false)
 
     const [users, setUsers] = useState<IUser[]>([])
     const [loadingUsers, setLoadingUsers] = useState(true);
@@ -79,12 +87,23 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
         }
     }, [tenant])
 
+    const getTenants = async () => {
+        try {
+            setLoadingTenants(true);
+            //setTenants([]);
+            const response = await TenantService.get();
+            setTenants([...response.items])
+            setLoadingTenants(false);
+        } catch (error: any) {
+            setLoadingTenants(false);
+        }
+    }
+
     const getOrganizations = async () => {
         try {
             setLoadingOrganization(true);
-            setOrganizations([]);
-            const totalPerPage = 2000;
-            const response = await OrganizationService.get(1, totalPerPage);
+            //setOrganizations([]);
+            const response = await OrganizationService.get();
             setOrganizations([...response.items])
             setLoadingOrganization(false);
         } catch (error: any) {
@@ -121,6 +140,9 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
             setTenant,
             tenant,
             loadingTenant,
+            getTenants,
+            tenants,
+            loadingTenants,
             getOrganizations,
             organizations,
             loadingOrganization,

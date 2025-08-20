@@ -90,7 +90,7 @@ export default function AuthLayout() {
     }, [searchQuery])
 
     return (
-        <S.Container>
+        <S.Container isMobile={isMobile} opened={siderbarToggle}>
 
             <S.ContainerSidebar
                 colorText={tenant?.colorsecond}
@@ -265,9 +265,15 @@ const MenuProfile = () => {
     const [opened, setOpened] = useState(false)
     const refSubmenu = useRef<any>(null);
 
+    const { pathname } = useLocation();
+
     useClickOutside(refSubmenu, () => {
         setOpened(false);
     });
+
+    useEffect(() => {
+        setOpened(false)
+    }, [pathname])
 
     return (
         <S.ContainerMenuProfile>
@@ -290,7 +296,7 @@ const MenuProfile = () => {
                 </li>
 
                 <li>
-                    <LinkSlug path={"/settings"}>
+                    <LinkSlug path={"/settings/profile"}>
                         <i>
                             <IconConfig />
                         </i>

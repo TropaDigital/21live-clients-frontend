@@ -1,0 +1,205 @@
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
+//core hooks
+import { useAuth } from '../../../core/contexts/AuthContext'
+import { useRedirect } from '../../../core/hooks/useRedirect'
+
+//services types
+import { TicketService } from '../../../core/services/TicketService'
+import type { ITicketCat } from '../../../core/types/ITckets'
+
+//components
+import { TableDefault } from '../../../components/UI/table/table-default'
+import { ButtonDefault } from '../../../components/UI/form/button-default'
+import { type ISubmenuSelect } from '../../../components/UI/submenu-select'
+import { ModalConfirm } from '../../../components/UI/modal/modal-confirm'
+import { BtnsActionTable } from '../../../components/UI/table/btns-action'
+import { FormTicketCat } from '../../../components/modules/form-ticket-cat'
+
+//styles
+import * as S from './styles'
+import { IconPencil, IconPlus, IconTag, IconTrash } from '../../../assets/icons'
+
+const CONFIG_PAGE_EDIT = {
+    title: 'Categorias de Solicitações',
+    name: 'Categoria de Solicitação',
+    url: 'ticket-cats',
+    button_new: 'Nova Categoria',
+    permission_add: 'ticket_cats_add',
+    permission_edit: 'ticket_cats_edit',
+    permission_remove: 'ticket_cats_delete',
+    icon_breadcrumb: <IconTag />,
+    FormEdit: FormTicketCat,
+}
+
+export default function SettingsTicketsCats({ addBreadCrumb }: { addBreadCrumb(icon: any, name: string, redirect: string): void }) {
+
+    const { verifyPermission } = useAuth();
+    const { id } = useParams();
+    const { redirectSlug } = useRedirect();
+
+    const TABLE_HEAD = [
+        {
+            name: 'ID',
+            value: 'ticket_cat_id',
+            width: 10,
+        },
+        {
+            name: 'Titulo',
+            value: 'title',
+            order: true
+        },
+        {
+            name: '',
+            value: '',
+            width: 80,
+        }
+    ]
+
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<ITicketCat[]>([])
+
+    const [loadingDelete, setLoadingDelete] = useState(false)
+    const [DTODelete, setDTODelete] = useState<number | null>(null)
+
+    const [search, setSearch] = useState('');
+    const [order, setOrder] = useState('-created')
+    const [pagination, setPagination] = useState({
+        page: 1,
+        limit: 10,
+        total: 0,
+        total_show: 0,
+    })
+
+    const getData = async (page: number, limit: number, search: string, order: string) => {
+        setLoading(true);
+        const response = await TicketService.getCats(pagination.page, pagination.limit, search, order)
+        setPagination({ page, limit, total: response.total, total_show: response.items.length })
+        setData([...response.items]);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        getData(pagination.page, pagination.limit, search, order);
+    }, [pagination.page, pagination.limit, search, order])
+
+    const handleSaveEdit = (item: ITicketCat) => {
+        setData([...data.map((row) => {
+            return row.ticket_cat_id === item.ticket_cat_id ? { ...row, ...item } : row
+        })])
+        addBreadCrumb(CONFIG_PAGE_EDIT.icon_breadcrumb, item.title, `/settings/${CONFIG_PAGE_EDIT.url}/${item.ticket_cat_id}`);
+    }
+
+    const handleSaveNew = () => {
+        getData(pagination.page, pagination.limit, search, order);
+        redirectSlug(`/settings/${CONFIG_PAGE_EDIT.url}`)
+    }
+
+    const handleDelete = async () => {
+        setLoadingDelete(true);
+        await TicketService.deleteCat(Number(DTODelete));
+        getData(pagination.page, pagination.limit, search, order);
+        setDTODelete(null)
+        setLoadingDelete(false);
+    }
+
+    return (
+        <S.Container>
+
+            {(id && id !== 'new') &&
+                <CONFIG_PAGE_EDIT.FormEdit
+                    onSubmit={handleSaveEdit}
+                    onLoad={(item) => addBreadCrumb(CONFIG_PAGE_EDIT.icon_breadcrumb, item.title, `/settings/${CONFIG_PAGE_EDIT.url}/${item.ticket_cat_id}`)}
+                    id={Number(id)}
+                />
+            }
+
+            {id === 'new' &&
+                <CONFIG_PAGE_EDIT.FormEdit
+                    onSubmit={handleSaveNew}
+                    onLoad={(item) => addBreadCrumb(CONFIG_PAGE_EDIT.icon_breadcrumb, item.title, `/settings/${CONFIG_PAGE_EDIT.url}/${item.ticket_cat_id}`)}
+                    id={null}
+                />
+            }
+
+            {!id &&
+                <div className='list'>
+                    <div className='head-setting'>
+                        <h1>{CONFIG_PAGE_EDIT.title}</h1>
+                        <div className='buttons'>
+                            {verifyPermission(CONFIG_PAGE_EDIT.permission_add) &&
+                                <ButtonDefault onClick={() => redirectSlug(`/settings/${CONFIG_PAGE_EDIT.url}/new`)} icon={<IconPlus />}>{CONFIG_PAGE_EDIT.button_new}</ButtonDefault>
+                            }
+                        </div>
+                    </div>
+                    <ModalConfirm
+                        title="Atenção"
+                        description={`Você deseja realmente arquivar ${CONFIG_PAGE_EDIT.name}?`}
+                        type="danger"
+                        opened={DTODelete ? true : false}
+                        onCancel={() => setDTODelete(null)}
+                        onConfirm={handleDelete}
+                        loading={loadingDelete}
+                    />
+                    <TableDefault
+                        thead={TABLE_HEAD}
+                        onSearch={(value) => setSearch(value)}
+                        onSort={(value) => setOrder(value)}
+                        onPaginate={(page) => setPagination((prev) => ({ ...prev, page }))}
+                        onLimit={(limit) => setPagination((prev) => ({ ...prev, limit }))}
+                        download={CONFIG_PAGE_EDIT.name}
+                        getDataDownload={() => TicketService.getCats(pagination.page, 99999999, search, order)}
+                        order={order}
+                        loading={loading}
+                        pagination={pagination}
+                        tbody={
+                            <tbody>
+                                {data.map((row, index) =>
+                                    <RenderTD onDelete={setDTODelete} key={`td-row-${row.ticket_cat_id}-${index}`} row={row} />
+                                )}
+                            </tbody>
+                        }
+                    />
+                </div>
+            }
+
+        </S.Container>
+    )
+}
+
+const RenderTD = ({ row, onDelete }: { row: ITicketCat, onDelete(id: number): void }) => {
+
+    const { redirectSlug } = useRedirect();
+
+    const submenu: ISubmenuSelect[] = [
+        {
+            name: 'Editar',
+            icon: <IconPencil />,
+            onClick: () => redirectSlug(`settings/${CONFIG_PAGE_EDIT.url}/${row.ticket_cat_id}`),
+            permission: CONFIG_PAGE_EDIT.permission_edit,
+        },
+        {
+            name: 'Remover',
+            icon: <IconTrash />,
+            onClick: () => onDelete(row.ticket_cat_id),
+            permission: CONFIG_PAGE_EDIT.permission_remove
+        }
+    ]
+
+    return (
+        <tr key={`tr-${row.ticket_cat_id}`}>
+            <td>
+                <span className='td-id'>
+                    #{row.ticket_cat_id}
+                </span>
+            </td>
+            <td>
+                {row.title}
+            </td>
+            <td>
+                <BtnsActionTable submenu={submenu} />
+            </td>
+        </tr>
+    )
+}

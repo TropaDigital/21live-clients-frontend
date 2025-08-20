@@ -65,6 +65,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             role: response.item.role,
             permissions: response.item.permissions
         })
+        window.localStorage.setItem(STORAGE_USER, JSON.stringify({ ...user, ...response.item }));
+        setUser({ ...user, ...response.item })
         setLoadingProfile(false);
     }
 

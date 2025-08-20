@@ -4,7 +4,7 @@ import { SelectDefault } from '../../UI/form/select-default'
 import { ModalDefault } from '../../UI/modal/modal-default'
 
 import type { IFolder } from '../../../core/types/iFolder'
-import { IconEye, IconEyeClose, IconHome, IconProfile, IconSort, IconTextRename } from '../../../assets/icons'
+import { IconEye, IconEyeClose, IconHome, IconProfile, IconSort, IconTextRename, IconUnits } from '../../../assets/icons'
 import { LIST_ICONS } from '../../../core/constants/icons'
 import { LIST_ORDER_FOLDER } from '../../../core/constants/order'
 import { InputCheckbox } from '../../UI/form/input-checkbox'
@@ -363,7 +363,7 @@ const RenderTabPermission = ({ loading, DTO, onChangeDTO }: {
             <SelectMultiple
                 search={true}
                 loading={loadingOrganizatonsGroup || loading}
-                icon={<IconHome />}
+                icon={<IconUnits />}
                 label="Grupos de Unidades"
                 options={LIST_ORGANIZATIONS_GROUP}
                 onChange={(e) => onChangeDTO('organizationsGroup', e)}

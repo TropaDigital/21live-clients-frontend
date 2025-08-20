@@ -26,7 +26,7 @@ export const AvatarTenant = ({ name, color, colorBg, colorText, image, size = 's
             <div className='name'>
                 <span>
                     {!imageExist &&
-                        name.slice(0, 3)
+                        name ? name.slice(0, 3) : ''
                     }
                 </span>
             </div>

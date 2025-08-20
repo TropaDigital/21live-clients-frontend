@@ -5,6 +5,8 @@ import AuthLayout from '../../components/layouts/auth/layout'
 import { AuthRoute } from './auth-route'
 import { ModalExpireToken } from '../../components/modules/modal-expire-token'
 import IndexPermission from '../../pages/index-permission'
+import Settings from '../../pages/settings'
+import { PreviewFormFields } from '../../pages/settings/ticket-forms/preview-form'
 
 const Home = lazy(() => import('../../pages/home'))
 const Favorites = lazy(() => import('../../pages/favorites'))
@@ -23,6 +25,10 @@ export const routes = [
     {
         path: '/:slug/login',
         element: <Login />
+    },
+    {
+        path: '/:slug/ticket-form-preview/:id',
+        element: <PreviewFormFields />
     },
     {
         path: '/:slug',
@@ -55,7 +61,15 @@ export const routes = [
             {
                 path: 'dashboard',
                 element: <Dashboard />,
-            }
+            },
+            {
+                path: 'settings/:menu',
+                element: <Settings />,
+            },
+            {
+                path: 'settings/:menu/:id',
+                element: <Settings />,
+            },
         ]
     },
     {

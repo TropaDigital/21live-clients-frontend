@@ -78,3 +78,58 @@ export const ContainerProgressBar = styled.div`
   margin-bottom: -20px;
   overflow: hidden;
 `;
+
+interface IPropsSuccess {
+  opened: boolean;
+}
+export const ContainerAlertSuccess = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["opened"].includes(prop),
+})<IPropsSuccess>`
+  position: fixed;
+  bottom: 30px;
+  left: 0;
+  z-index: 9999999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+  opacity: ${({ opened }) => (opened ? "1" : "0")};
+  visibility: ${({ opened }) => (opened ? "visible" : "hidden")};
+  animation: ${({ opened }) => (opened ? "fadeInUp .5s" : "fadeOutDown .5s")};
+  transition: all 0.5s;
+  .box-alert {
+    display: flex;
+    background-color: ${({ theme }) => theme.colors.success[600]};
+    border-radius: 100px;
+    padding: 15px 15px;
+    align-items: center;
+    gap: 10px;
+    i {
+      color: ${({ theme }) => theme.colors.success[600]};
+      display: flex;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      background-color: ${({ theme }) => theme.colors.background.default};
+      border-radius: 100px;
+      svg {
+        width: 25px;
+        height: 25px;
+      }
+    }
+    .title {
+      font-size: 15px;
+      font-weight: 500;
+      color: ${({ theme }) => theme.colors.background.surface};
+      padding-right: 25px;
+    }
+    .description {
+      font-size: 12px;
+      font-weight: 200;
+      color: ${({ theme }) => theme.colors.background.default};
+      padding-right: 25px;
+    }
+  }
+`;

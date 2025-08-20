@@ -18,12 +18,14 @@ const FILE_ACCEPTED_EXTENSIONS = [
 type ErrorMap = Record<string, string>;
 
 export interface UploadResult {
-    files: {
-        file: File;
-        folder: string;
-    }[];
+    files: IFileInputUpload[];
     folders: string[];
 };
+
+export interface IFileInputUpload {
+    file: File;
+    folder: string;
+}
 
 type InputUploadAdvancedProps = {
     value?: UploadResult | null;
@@ -32,6 +34,7 @@ type InputUploadAdvancedProps = {
     typeFile: 'file' | 'folder';
     multiple?: boolean;
     maxSizeMB?: number;
+    disabled?: boolean;
     onChange: (data: UploadResult | null) => void;
 };
 
@@ -39,6 +42,7 @@ type FolderMap = Record<string, File[]>;
 
 export const InputUpload: React.FC<InputUploadAdvancedProps> = ({
     value,
+    disabled,
     label = 'Selecionar arquivo(s)',
     accept,
     typeFile = 'file',
@@ -253,7 +257,7 @@ export const InputUpload: React.FC<InputUploadAdvancedProps> = ({
                 <p className="maxsize">{maxSizeMB} MB</p>
             </div>
 
-            <ButtonDefault type="button" onClick={triggerInput}>
+            <ButtonDefault disabled={disabled} type="button" onClick={triggerInput}>
                 Escolher {typeFile === 'file' ? `Arquivo${multiple ? 's' : ''}` : `Pasta`}
             </ButtonDefault>
 

@@ -19,30 +19,50 @@ export type IPropsTypeModalAlert = 'error' | 'success' | 'info'
 export const ModalAlert = ({ title, description, type, opened, onConfirm, duration }: IProps) => {
 
     return (
-        <ModalDefault padding='0px' zIndex={15} layout='center' opened={opened} onClose={onConfirm}>
-            <S.Container type={type}>
+        <>
+            {type === 'success' ?
+                <S.ContainerAlertSuccess opened={opened}>
 
-                <div className='item-padding'>
-                    <i className='icon'>
-                        {type === 'success' ?
+                    <div className='box-alert' onClick={onConfirm}>
+                        <i>
                             <IconCheck />
-                            :
-                            <IconWarning />
-                        }
-                    </i>
-                    <div className='texts'>
-                        <p className='title-confirm'>{title}</p>
-                        <p className='description-confirm'>
-                            {description}
-                        </p>
+                        </i>
+                        <div className='text'>
+                            <p className='title'>{title}</p>
+                            <p className='description'>{description}</p>
+                        </div>
                     </div>
-                    <div className='foot-buttons'>
-                        <ButtonDefault flex={true} onClick={onConfirm}>Confirmar</ButtonDefault>
-                    </div>
-                </div>
-                <ProgressBar onComplete={onConfirm} duration={duration} />
-            </S.Container>
-        </ModalDefault>
+
+                    {opened &&
+                        <div style={{ display: 'none' }}>
+                            <ProgressBar onComplete={onConfirm} duration={duration} />
+                        </div>
+                    }
+
+                </S.ContainerAlertSuccess>
+                :
+                <ModalDefault padding='0px' zIndex={15} layout='center' opened={opened} onClose={onConfirm}>
+                    <S.Container type={type}>
+
+                        <div className='item-padding'>
+                            <i className='icon'>
+                                <IconWarning />
+                            </i>
+                            <div className='texts'>
+                                <p className='title-confirm'>{title}</p>
+                                <p className='description-confirm'>
+                                    {description}
+                                </p>
+                            </div>
+                            <div className='foot-buttons'>
+                                <ButtonDefault flex={true} onClick={onConfirm}>Confirmar</ButtonDefault>
+                            </div>
+                        </div>
+                        <ProgressBar onComplete={onConfirm} duration={duration} />
+                    </S.Container>
+                </ModalDefault>
+            }
+        </>
     )
 }
 

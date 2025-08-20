@@ -10,6 +10,8 @@ interface IProps {
     children?: ReactNode;
     childrenRight?: ReactNode;
     label?: string;
+    disabled?: boolean;
+    description?: string;
     position?: 'left' | 'right'
     onSelected?(): void
     closeOnSelected?: boolean;
@@ -23,10 +25,13 @@ export interface ISubmenuSelect {
     icon?: ReactNode;
     iconFont?: string;
     onClick(name: string): void;
+    required?: boolean
+    permission?: string;
 }
 
 export const SubmenuSelect = ({
     label,
+    description,
     loading = false,
     onSelected,
     closeOnSelected = true,
@@ -90,7 +95,6 @@ export const SubmenuSelect = ({
         if (onSelected) onSelected();
     }
 
-
     return (
         <S.Container
 
@@ -110,12 +114,13 @@ export const SubmenuSelect = ({
         >
 
             {label && <p className='label'>{label}</p>}
+            {description && <p className='description'>{description}</p>}
 
             <div ref={refMenu} className='row'>
                 <div className='content-button' onClick={handleOpenMenu}>
                     {children ? children : search ?
                         <input /> :
-                        <button>
+                        <button type='button'>
                             <span>{button}</span>
                         </button>
                     }
@@ -127,14 +132,14 @@ export const SubmenuSelect = ({
                 <ul ref={refSubmenu}>
                     {submenu.length === 0 &&
                         <li>
-                            <button>
+                            <button type='button'>
                                 <i></i>
                                 <span>Nenhum registro encontrado.</span>
                             </button>
                         </li>}
                     {submenu.map((item, key) =>
                         <li key={`sub-select-${item.name}-${key}`}>
-                            <button onClick={() => handleOnClick({
+                            <button className={`${item.required ? 'required' : 'normal'}`} type='button' onClick={() => item.required !== true && handleOnClick({
                                 onClick: () => item.onClick(item.name),
                             })}>
                                 <i className='icon-svg'>

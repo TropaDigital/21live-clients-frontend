@@ -20,7 +20,7 @@ interface IProps {
 
 export const Container = styled.button.withConfig({
   shouldForwardProp: (prop) =>
-    !["color", "colorBg", "colorText", "variant"].includes(prop),
+    !["color", "colorBg", "colorText", "variant", "flex"].includes(prop),
 })<IProps>`
   display: flex;
   align-items: center;
@@ -91,6 +91,9 @@ export const Container = styled.button.withConfig({
     }
   }};
 
+  &:disabled {
+    cursor: not-allowed;
+  }
   &:after {
     width: 100%;
     height: 100%;
@@ -108,6 +111,7 @@ export const Container = styled.button.withConfig({
     z-index: 2;
     height: 100%;
     white-space: nowrap;
+    padding: 0px 10px;
     svg {
       max-width: 20px;
       max-height: 20px;

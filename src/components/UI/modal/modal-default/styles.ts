@@ -10,7 +10,7 @@ interface IProps {
 
 export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["opened", "layout", "padding", "paddingHeader"].includes(prop),
+    !["opened", "layout", "padding", "paddingHeader", "zIndex"].includes(prop),
 })<IProps>`
   width: 100%;
   height: 100%;

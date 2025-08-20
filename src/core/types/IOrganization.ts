@@ -2,6 +2,7 @@ export interface IOrganization {
   organization_id: number;
   tenant_id: number;
   country_id: number;
+  state_id: number;
   city_id: number;
   name: string;
   address: string;
@@ -17,6 +18,11 @@ export interface IOrganization {
   created: string;
   updated: string;
   deleted: string | null;
+  images: {
+    logo: string | null;
+    logo_b: string | null;
+    logo_w: string | null;
+  };
 }
 
 export interface OrganizationResponse {
@@ -32,4 +38,5 @@ export interface IOrganizationGroup {
   tenant_id: number;
   title: string;
   updated: string;
+  organizations: number[];
 }

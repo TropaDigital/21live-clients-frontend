@@ -10,6 +10,7 @@ export interface ITenant {
   downlimit: boolean;
   customApproval: boolean;
   register: boolean;
+  register_asAnon: boolean;
   register_validate: boolean;
   register_setOrganization: boolean;
   jobs: boolean;
@@ -27,16 +28,23 @@ export interface ITenant {
   tickets_color: string; // Cor no formato HEX
   tickets_btn: string; // Cor no formato HEX
   tickets_userview: boolean;
+  allow_hour_limit: boolean;
+  asaas_id: string | number;
+  termset: boolean;
   tickets_deadline: number; // Número de horas (0 = sem prazo)
   tickets_hourlimitreached: null | any; // Substitua por tipo específico se conhecido
   cookiejar: boolean;
   privacyterms: null | string; // Assumindo que pode ser string ou null
   type: string;
+  parent_name: string;
   user_limit: number;
   created: string; // Data no formato ISO (YYYY-MM-DD HH:MM:SS)
   updated: string; // Data no formato ISO (YYYY-MM-DD HH:MM:SS)
   deleted: null | string; // Data no formato ISO ou null
   tickets_defaultfields: number;
+  parents?: ITenant[];
+  parent_id: number | null;
+  children: ITenant[];
   images: {
     logo: string; // URL da imagem
     bg_login: string; // URL da imagem

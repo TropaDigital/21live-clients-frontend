@@ -17,6 +17,7 @@ import { VideoService } from '../../../core/services/VideoService'
 import { useAlert } from '../../../core/contexts/AlertContext'
 import { useTenant } from '../../../core/contexts/TenantContext'
 import { InputTags } from '../../UI/form/input-tags'
+import { CardHelp } from '../../UI/card-help'
 
 
 export const ModalEditVideo = ({
@@ -255,6 +256,13 @@ const RenderTabInfo = ({ item, DTO, onChangeDTO, onChangeHost }: {
                 placeholder='Digite as tags separando por virgula'
                 icon={<IconTag />}
             />
+
+            <CardHelp title='Para que servem as tags?'>
+                <li>
+                    <p>Use as tags para organizar e facilitar a busca dos vídeos dentro do sistema. Elas funcionam como palavras-chave: quanto mais precisas, mais fácil será encontrar esse material depois.</p>
+                </li>
+            </CardHelp>
+
         </div>
     )
 }

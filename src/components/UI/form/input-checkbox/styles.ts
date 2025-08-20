@@ -4,11 +4,12 @@ interface IProps {
   checked: boolean;
   color?: string;
   colorText?: string;
+  disabled?: boolean;
 }
 
 export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["color", "colorText", "checked"].includes(prop),
+    !["color", "colorText", "checked", "disabled"].includes(prop),
 })<IProps>`
   display: flex;
   align-items: center;
@@ -26,7 +27,8 @@ export const Container = styled.div.withConfig({
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+    opacity: ${({ disabled }) => (disabled ? "0.2" : "1")};
     i {
       color: ${({ colorText }) => colorText};
       display: ${({ checked }) => (checked ? "flex" : "none")};

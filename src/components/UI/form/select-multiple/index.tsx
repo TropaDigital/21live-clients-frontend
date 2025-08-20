@@ -21,6 +21,7 @@ export interface IOptionSelect {
     name: string;
     avatar?: string;
     iconFont?: string;
+    required?: boolean;
 }
 
 export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, search, icon, iconFont, selecteds, options, onChange }: IProps) => {
@@ -49,6 +50,7 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
             icon: selecteds.filter((obj) => obj.value === item.value).length ? <IconCheck /> : null,
             avatar: item.avatar,
             iconFont: item.iconFont,
+            required: item.required,
             onClick: () => onChangeInternal({
                 name: item.name,
                 value: item.value,
@@ -71,7 +73,7 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
     };
 
     const selectedsJoin = selecteds.map(item => item.name || '').filter(Boolean).join(', ');
-    const placeholder = selectedsJoin === '' ? label : selectedsJoin
+    const placeholder = selectedsJoin === '' ? label ? label : 'Nenhuma opção selecionada' : selectedsJoin
 
     return (
         <SubmenuSelect
@@ -80,10 +82,10 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
             closeOnSelected={false}
             position={position}
             submenu={optionsInternal}
-            childrenRight={(optionsInternal.length > 0 && !loading) &&
+            childrenRight={(!loading) &&
                 <S.ContainerRightOptions>
                     {optionsInternal.length !== selecteds.length &&
-                        <button data-tooltip-id="tooltip" data-tooltip-content="Marcar todos" onClick={() => onChange(options.map((item) => {
+                        <button type='button' data-tooltip-id="tooltip" data-tooltip-content="Marcar todos" onClick={() => onChange(options.map((item) => {
                             return {
                                 name: item.name,
                                 value: item.value
@@ -93,13 +95,13 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
                         </button>
                     }
                     {selecteds.length > 0 &&
-                        <button data-tooltip-id="tooltip" data-tooltip-content="Desmarcar todos" onClick={() => onChange([])}>
+                        <button type='button' data-tooltip-id="tooltip" data-tooltip-content="Desmarcar todos" onClick={() => onChange(options.filter((obj) => obj.required === true))}>
                             <IconCheckboxOn />
                         </button>
                     }
 
-                    {!loading &&
-                        <button data-tooltip-id="tooltip" data-tooltip-content="Atualizar" onClick={() => onRefresh && onRefresh()}>
+                    {!loading && onRefresh &&
+                        <button type='button' data-tooltip-id="tooltip" data-tooltip-content="Atualizar" onClick={() => onRefresh && onRefresh()}>
                             <IconRefresh />
                         </button>
                     }
