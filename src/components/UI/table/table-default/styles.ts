@@ -1,6 +1,15 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
+interface IProps {
+  color?: string;
+  colorBg?: string;
+  colorText?: string;
+}
+
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IProps>`
   background-color: ${({ theme }) => theme.colors.background.default};
   border-radius: 16px;
   border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
@@ -109,12 +118,13 @@ export const Container = styled.div`
           gap: 5px;
         }
         .td-id {
-          background-color: ${({ theme }) => theme.colors.neutral[200]};
+          background-color: ${({ colorBg }) => colorBg};
+          color: white;
           border-radius: 100px;
           padding: 6px 12px;
           font-size: 10px;
           margin: 5px 0px;
-          display: flex;
+          display: inline-block;
         }
         .bullet {
           width: 20px;

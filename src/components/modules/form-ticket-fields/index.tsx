@@ -1,4 +1,4 @@
-import {  useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTenant } from '../../../core/contexts/TenantContext';
 import { useAlert } from '../../../core/contexts/AlertContext';
@@ -9,7 +9,7 @@ import type { ITicketCat, ITicketField } from '../../../core/types/ITckets';
 import type { IMedia } from '../../../core/types/IMedia';
 import type { IOptionSelect } from '../../UI/form/select-multiple';
 
-import { IconButtonRadio, IconCheck, IconHeight, IconInput, IconMovePoints, IconPlus, IconSelect, IconSelectMultiple, IconTextarea, IconTrash, IconWidth } from '../../../assets/icons';
+import { IconButtonRadio, IconCheck, IconHeight, IconInput, IconMovePoints, IconPencil, IconPlus, IconSelect, IconSelectMultiple, IconTextarea, IconTrash, IconWidth } from '../../../assets/icons';
 import { ButtonDefault } from '../../UI/form/button-default';
 import { InputDefault } from '../../UI/form/input-default';
 
@@ -188,7 +188,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
 
     const handleSaveField = (field: ITicketField) => {
         let newFields = [];
-        if (field.ticketcat_field_id) {
+        if (dataFields.filter((obj) => obj.ticketcat_field_id === field.ticketcat_field_id).length > 0) {
             newFields = dataFields.map((item) => item.ticketcat_field_id === field.ticketcat_field_id ? field : item)
         } else {
             newFields = [...dataFields, field];
@@ -432,9 +432,14 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                     <div className={`${admin ? 'editable-fields' : 'inputs'}`}>
 
                         {admin &&
-                            <div className='head-area'>
-                                <h2>Campos Customizaveis</h2>
-                                <p>Adicione, edite e reordene campos personalizados para o formulário.</p>
+                            <div className='head-area row-head'>
+                                <div className='icon-head'>
+                                    <IconPencil />
+                                </div>
+                                <div className='title'>
+                                    <h2>Campos Customizaveis</h2>
+                                    <p>Adicione, edite e reordene campos personalizados para o formulário.</p>
+                                </div>
                             </div>
                         }
 

@@ -5,6 +5,7 @@ import { Skeleton } from '../../loading/skeleton/styles';
 import * as S from './styles'
 import { SelectDefault } from '../../form/select-default';
 import { generateCSVandExcel } from '../../../../core/utils/download';
+import { useTenant } from '../../../../core/contexts/TenantContext';
 
 interface IProps<T> {
     onSearch?(search: string): void;
@@ -120,9 +121,10 @@ export const TableDefault = <T,>({
         setLoadingDownload('');
     }
 
-    return (
-        <S.Container>
+    const { tenant } = useTenant();
 
+    return (
+        <S.Container colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
 
             <div className='head-table'>
                 {onSearch &&
@@ -185,7 +187,7 @@ export const TableDefault = <T,>({
                         <tbody>
                             <tr>
                                 <td colSpan={thead.length}>
-                                    <div style={{padding: '20px 10px'}}>
+                                    <div style={{ padding: '20px 10px' }}>
                                         Nenhum registro encontrado.
                                     </div>
                                 </td>

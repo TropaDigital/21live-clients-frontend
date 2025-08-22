@@ -1,8 +1,24 @@
 import styled from "styled-components";
 
-export const Container = styled.div`
+interface IProps {
+  color?: string;
+  colorBg?: string;
+  colorText?: string;
+}
+
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) =>
+    !["color", "colorBg", "colorText"].includes(prop),
+})<IProps>`
   min-height: 100%;
   width: 100%;
+  .breadcrumb {
+    li {
+      i {
+        color: ${({ colorBg }) => colorBg};
+      }
+    }
+  }
   .content-settings {
     min-height: calc(100% - 59px);
     display: flex;
@@ -38,6 +54,7 @@ export const Container = styled.div`
             }
             i {
               display: flex;
+              color: ${({ colorBg }) => colorBg};
               svg {
                 width: 20px;
                 height: 20px;

@@ -17,10 +17,12 @@ import SettingsMediaCats from './media-cats/list';
 
 import * as S from './styles';
 import { IconConfig, IconHome, IconImage, IconPencil, IconProfile, IconStatus, IconTag, IconTenant, IconUnits, IconUsers } from '../../assets/icons';
+import { useTenant } from '../../core/contexts/TenantContext';
 
 export default function Settings() {
 
     const { menu, id } = useParams();
+    const { tenant } = useTenant();
 
     const [dataBreadCrumb, setDataBreadCrumb] = useState([
         { icon: <IconConfig />, name: 'Configurações', redirect: `/settings/${menu}` }
@@ -120,7 +122,7 @@ export default function Settings() {
     }, [menu, dataBreadCrumbDetail])
 
     return (
-        <S.Container>
+        <S.Container color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
 
             <BreadCrumbAuthLayout
                 data={dataBreadCrumb}

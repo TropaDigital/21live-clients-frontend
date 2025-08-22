@@ -50,6 +50,20 @@ export const Container = styled.div.withConfig({
       display: flex;
     }
   }
+  .row-head {
+    display: flex;
+    gap: 10px;
+    .icon-head {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: ${({ colorBg }) => colorBg};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+  }
   .editable-fields {
     background-image: radial-gradient(#ccc 1px, transparent 1px);
     background-size: 20px 20px;

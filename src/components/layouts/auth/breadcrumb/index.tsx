@@ -101,7 +101,7 @@ export const BreadCrumbAuthLayout = ({ data, onDelete }: {
     }
 
     return (
-        <S.Container>
+        <S.Container className='breadcrumb'>
             <div className='overflow'>
                 {items.map((item, key) =>
                     <li
