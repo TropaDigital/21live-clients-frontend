@@ -22,10 +22,10 @@ import * as S from './styles'
 import { IconPencil, IconPlus, IconTag, IconTrash } from '../../../assets/icons'
 
 const CONFIG_PAGE_EDIT = {
-    title: 'Categorias de Solicitações',
-    name: 'Categoria de Solicitação',
-    url: 'ticket-cats',
-    button_new: 'Nova Categoria',
+    title: 'Formularios',
+    name: 'Formulario',
+    url: 'ticket-forms',
+    button_new: 'Novo Formulário',
     permission_add: 'ticket_cats_add',
     permission_edit: 'ticket_cats_edit',
     permission_remove: 'ticket_cats_delete',
@@ -33,7 +33,7 @@ const CONFIG_PAGE_EDIT = {
     FormEdit: FormTicketCat,
 }
 
-export default function SettingsTicketsCats({ addBreadCrumb }: { addBreadCrumb(icon: any, name: string, redirect: string): void }) {
+export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(icon: any, name: string, redirect: string): void }) {
 
     const { verifyPermission } = useAuth();
     const { id } = useParams();

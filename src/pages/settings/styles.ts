@@ -59,7 +59,7 @@ export const Container = styled.div`
     section {
       flex: 1;
       min-height: calc(100% - 59px);
-      max-width: calc(100% - 280px);
+      max-width: calc(100% - 260px);
       .label-checkbox {
         box-sizing: border-box;
         display: flex;

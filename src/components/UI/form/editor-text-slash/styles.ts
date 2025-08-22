@@ -608,6 +608,26 @@ interface IPropsStatic {
   disabled?: boolean;
 }
 
+export const ContainerEditorStaticLabel = styled.div<IPropsStatic>`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  .label {
+    font-size: 13px;
+    color: ${({ theme }) => theme.colors.neutral[700]};
+    margin: 0px;
+    padding: 0px;
+    font-weight: 500;
+  }
+  .description {
+    font-size: 11px;
+    color: ${({ theme }) => theme.colors.neutral[500]};
+    margin: 0px;
+    padding: 0px;
+    font-weight: 400;
+  }
+`;
+
 export const ContainerEditorStatic = styled.div<IPropsStatic>`
   border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
   padding: 20px;

@@ -10,14 +10,13 @@ import SettingsListUsers from './users/list';
 import SettingsListOrganizations from './organizations/list';
 import SettingsListGroupOrganizations from './group-organizations/list';
 import SettingsListTenants from './tenants/list';
-import SettingsTicketsCats from './ticket-cats/list';
+import SettingsTicketsForms from './ticket-forms/list';
 import SettingsTicketsStatus from './ticket-status/list';
 import SettingsMedias from './medias/list';
 import SettingsMediaCats from './media-cats/list';
 
 import * as S from './styles';
 import { IconConfig, IconHome, IconImage, IconPencil, IconProfile, IconStatus, IconTag, IconTenant, IconUnits, IconUsers } from '../../assets/icons';
-import SettingsTicketsForms from './ticket-forms';
 
 export default function Settings() {
 
@@ -71,10 +70,10 @@ export default function Settings() {
             cat: 'geral',
         },
         {
-            name: 'Categorias de Solicitações',
-            icon: <IconTag />,
-            redirect: '/settings/ticket-cats',
-            render: <SettingsTicketsCats addBreadCrumb={addBreadCrumb} />,
+            name: 'Formularios',
+            icon: <IconPencil />,
+            redirect: '/settings/ticket-forms',
+            render: <SettingsTicketsForms addBreadCrumb={addBreadCrumb} />,
             cat: 'solicitations',
         },
         {
@@ -82,13 +81,6 @@ export default function Settings() {
             icon: <IconStatus />,
             redirect: '/settings/ticket-status',
             render: <SettingsTicketsStatus addBreadCrumb={addBreadCrumb} />,
-            cat: 'solicitations',
-        },
-        {
-            name: 'Formularios',
-            icon: <IconPencil />,
-            redirect: '/settings/ticket-forms',
-            render: <SettingsTicketsForms addBreadCrumb={addBreadCrumb} />,
             cat: 'solicitations',
         },
         {

@@ -223,6 +223,7 @@ export const TicketService = {
     };
 
     let response;
+
     if (id) {
       response = await BaseService.put(`/${tenant}/API/TicketCatFields/${id}`, {
         ...payload,

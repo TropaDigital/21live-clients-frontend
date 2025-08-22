@@ -8,7 +8,7 @@ import { ButtonDefault } from '../button-default';
 import * as S from './styles';
 import React, { useEffect, useRef, useState } from 'react';
 
-const FILE_ACCEPTED_EXTENSIONS = [
+export const FILE_ACCEPTED_EXTENSIONS = [
     '.jpg', '.png', '.bmp', '.gif', '.pdf', '.avi', '.mp3', '.mp4', '.mov',
     '.doc', '.docx', '.ppt', '.pptx', '.ppsm', '.ppsx', '.xls', '.xlsx',
     '.psd', '.ai', '.cdr', '.zip', '.rar', '.indd', '.txt', '.ttf', '.otf',

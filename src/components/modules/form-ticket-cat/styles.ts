@@ -6,7 +6,7 @@ interface IProps {
   colorText?: string;
 }
 
-export const Container = styled.form.withConfig({
+export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
     !["color", "colorBg", "colorText"].includes(prop),
 })<IProps>`

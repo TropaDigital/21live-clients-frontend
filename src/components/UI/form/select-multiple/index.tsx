@@ -6,6 +6,7 @@ import { IconCheck, IconCheckboxOff, IconCheckboxOn, IconChevronDown, IconLoadin
 interface IProps {
     loading?: boolean;
     label?: string;
+    description?: string;
     search?: boolean;
     icon?: ReactNode;
     iconFont?: string;
@@ -24,7 +25,7 @@ export interface IOptionSelect {
     required?: boolean;
 }
 
-export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, search, icon, iconFont, selecteds, options, onChange }: IProps) => {
+export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, description, search, icon, iconFont, selecteds, options, onChange }: IProps) => {
 
     const [optionsInternal, setOptionsInternal] = useState<ISubmenuSelect[]>([]);
     const [fullOptions, setFullOptions] = useState<ISubmenuSelect[]>([]);
@@ -78,6 +79,7 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
     return (
         <SubmenuSelect
             label={label}
+            description={description}
             loading={loading}
             closeOnSelected={false}
             position={position}
@@ -132,6 +134,6 @@ export const SelectMultiple = ({ onRefresh, position = 'left', loading, label, s
                     </i>
                 </div>
             </S.Container>
-        </SubmenuSelect>
+        </SubmenuSelect >
     )
 }

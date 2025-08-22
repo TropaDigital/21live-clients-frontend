@@ -37,7 +37,7 @@ export const ModalDefault = ({
     return (
         <S.Container zIndex={zIndex} paddingHeader={paddingHeader} padding={padding} layout={layout} opened={opened}>
 
-            <button className='outside' onClick={handleOnClose} />
+            <button type='button' className='outside' onClick={handleOnClose} />
 
             {opened &&
                 <div ref={refBox} className='box'>
