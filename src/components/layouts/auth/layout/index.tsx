@@ -19,6 +19,7 @@ import { useRedirect } from "../../../../core/hooks/useRedirect";
 
 export default function AuthLayout() {
 
+    const { user } = useAuth();
     const { tenant } = useTenant();
     const { handleRefreshToken, verifyPermission } = useAuth();
 
@@ -128,10 +129,10 @@ export default function AuthLayout() {
                         <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Favoritos" icon={<IconStar />} redirect="folders/bookmarks" />
                     }
                     {verifyPermission('tickets_view') &&
-                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Solicitações" icon={<IconSolicitation />} redirect="Tickets" total={33} />
+                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Solicitações" icon={<IconSolicitation />} redirect="Tickets" total={user?.notifications.interactions} />
                     }
                     {verifyPermission('tickets_view') &&
-                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Aprovações" icon={<IconLike />} redirect="Tickets" total={21} />
+                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Aprovações" icon={<IconLike />} redirect="Tickets" total={user?.notifications.approval} />
                     }
                 </ul>
 
@@ -339,11 +340,11 @@ const MenuSidebarDefault = ({ opened, icon, name, redirect, total }: { opened: b
                     {icon}
                 </div>
                 <span className="name">{name}</span>
-                {total &&
+                {total && total > 0 ?
                     <div className="total">
                         {total}
                     </div>
-                }
+                    : null}
             </LinkSlug>
         </S.ContainerMenuSidebarButton>
     )

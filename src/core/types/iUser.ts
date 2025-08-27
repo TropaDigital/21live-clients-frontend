@@ -24,6 +24,10 @@ export interface IUser {
   permissions?: string[];
   organization_id?: number;
   organization_name?: string;
+  notifications: {
+    approval: number;
+    interactions: number;
+  };
 }
 
 export interface IUserRole {
