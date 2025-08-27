@@ -113,7 +113,7 @@ export default function Settings() {
             redirect: '/settings/media-cats',
             render: <SettingsMediaCats addBreadCrumb={addBreadCrumb} />,
             cat: 'parts',
-            permission: 'medias_cats_view'
+            permission: 'media_cats_view'
         },
     ]
 
