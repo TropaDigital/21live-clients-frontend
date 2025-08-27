@@ -32,7 +32,7 @@ export const Container = styled.div.withConfig({
       background-color: ${({ theme }) => theme.colors.background.default};
       border-right: 1px solid ${({ theme }) => theme.colors.neutral[300]};
       position: ${({ isMobile }) => (isMobile ? "absolute" : "relative")};
-      z-index: 10;
+      z-index: 2;
       ul {
         padding: ${({ menuOpened }) =>
           menuOpened ? "20px 30px" : "20px 10px"};
@@ -98,8 +98,14 @@ export const Container = styled.div.withConfig({
       flex: 1;
       min-height: calc(100% - 59px);
       padding-left: ${({ isMobile }) => (isMobile ? "60px" : "0px")};
-      max-width: ${({ menuOpened }) =>
-        menuOpened ? "calc(100% - 260px)" : "calc(100% - 60px)"};
+      max-width: ${({ isMobile, menuOpened }) =>
+        isMobile && menuOpened
+          ? "calc(100% - 60px)"
+          : !isMobile && !menuOpened
+          ? "calc(100% - 60px)"
+          : isMobile && !menuOpened
+          ? "calc(100% - 60px)"
+          : "calc(100% - 260px)"};
       .label-checkbox {
         box-sizing: border-box;
         display: flex;
