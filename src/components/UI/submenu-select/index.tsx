@@ -27,6 +27,7 @@ export interface ISubmenuSelect {
     onClick(name: string): void;
     required?: boolean
     permission?: string;
+    jobs?: boolean;
 }
 
 export const SubmenuSelect = ({

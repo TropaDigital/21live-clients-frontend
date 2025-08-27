@@ -89,6 +89,13 @@ export const TicketService = {
     );
     return response.data;
   },
+  duplicateCat: async (id: number, tenants: number[]) => {
+    const tenant = getSlug();
+    const response = await BaseService.post(`/${tenant}/API/TicketCats/export/${id}`, {
+      tenants: tenants,
+    });
+    return response.data;
+  },
 
   getStatus: async (
     page?: number,

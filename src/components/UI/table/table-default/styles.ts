@@ -54,6 +54,16 @@ export const Container = styled.div.withConfig({
       gap: 15px;
     }
   }
+  @media (max-width: 600px) {
+    flex-direction: column;
+    .buttons {
+      display: none !important;
+    }
+    .search {
+      width: 100%;
+      height: 40px;
+    }
+  }
   .overflow-table {
     max-width: 100%;
     overflow-x: auto;

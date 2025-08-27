@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 import { LinkSlug } from '../../core/utils/link-slug';
@@ -16,13 +16,21 @@ import SettingsMedias from './medias/list';
 import SettingsMediaCats from './media-cats/list';
 
 import * as S from './styles';
-import { IconConfig, IconHome, IconImage, IconPencil, IconProfile, IconStatus, IconTag, IconTenant, IconUnits, IconUsers } from '../../assets/icons';
+import { IconConfig, IconHamburger, IconHome, IconImage, IconPencil, IconProfile, IconStatus, IconTag, IconTenant, IconUnits, IconUsers } from '../../assets/icons';
 import { useTenant } from '../../core/contexts/TenantContext';
+import { useAuth } from '../../core/contexts/AuthContext';
 
 export default function Settings() {
 
     const { menu, id } = useParams();
     const { tenant } = useTenant();
+    const { verifyPermission } = useAuth();
+
+    const { pathname } = useLocation();
+    const { params } = useParams();
+
+    const [menuOpened, setMenuOpened] = useState(true);
+    const isMobile = window.innerWidth < 600 ? true : false;
 
     const [dataBreadCrumb, setDataBreadCrumb] = useState([
         { icon: <IconConfig />, name: 'Configurações', redirect: `/settings/${menu}` }
@@ -49,6 +57,7 @@ export default function Settings() {
             redirect: '/settings/users',
             render: <SettingsListUsers addBreadCrumb={addBreadCrumb} />,
             cat: 'geral',
+            permission: 'users_view'
         },
         {
             name: 'Unidades',
@@ -56,6 +65,7 @@ export default function Settings() {
             redirect: '/settings/organizations',
             render: <SettingsListOrganizations addBreadCrumb={addBreadCrumb} />,
             cat: 'geral',
+            permission: 'organizations_view'
         },
         {
             name: 'Grupos de Unidades',
@@ -63,6 +73,7 @@ export default function Settings() {
             redirect: '/settings/organizations-group',
             render: <SettingsListGroupOrganizations addBreadCrumb={addBreadCrumb} />,
             cat: 'geral',
+            permission: 'orggroups_view'
         },
         {
             name: 'Instâncias',
@@ -70,6 +81,7 @@ export default function Settings() {
             redirect: '/settings/tenants',
             render: <SettingsListTenants addBreadCrumb={addBreadCrumb} />,
             cat: 'geral',
+            permission: 'tenants_view'
         },
         {
             name: 'Formularios',
@@ -77,6 +89,7 @@ export default function Settings() {
             redirect: '/settings/ticket-forms',
             render: <SettingsTicketsForms addBreadCrumb={addBreadCrumb} />,
             cat: 'solicitations',
+            permission: 'ticket_cats_view'
         },
         {
             name: 'Status de Solicitações',
@@ -84,6 +97,7 @@ export default function Settings() {
             redirect: '/settings/ticket-status',
             render: <SettingsTicketsStatus addBreadCrumb={addBreadCrumb} />,
             cat: 'solicitations',
+            permission: 'ticket_status_view'
         },
         {
             name: 'Formato de Peça',
@@ -91,6 +105,7 @@ export default function Settings() {
             redirect: '/settings/medias',
             render: <SettingsMedias addBreadCrumb={addBreadCrumb} />,
             cat: 'parts',
+            permission: 'medias_view'
         },
         {
             name: 'Categoria de Formatos',
@@ -98,6 +113,7 @@ export default function Settings() {
             redirect: '/settings/media-cats',
             render: <SettingsMediaCats addBreadCrumb={addBreadCrumb} />,
             cat: 'parts',
+            permission: 'medias_cats_view'
         },
     ]
 
@@ -121,8 +137,18 @@ export default function Settings() {
         }
     }, [menu, dataBreadCrumbDetail])
 
+    useEffect(() => {
+        if (isMobile) {
+            setMenuOpened(false)
+        }
+    }, [params, pathname, isMobile])
+
+    const LIST_MENUS_GERAL = MENUS_GERAL.filter((obj) => obj.cat === 'geral').filter((obj) => obj.permission && verifyPermission(obj.permission));
+    const LIST_MENUS_TICKETS = MENUS_GERAL.filter((obj) => obj.cat === 'solicitations').filter((obj) => obj.permission && verifyPermission(obj.permission));
+    const LIST_MENUS_PART = MENUS_GERAL.filter((obj) => obj.cat === 'parts').filter((obj) => obj.permission && verifyPermission(obj.permission));
+
     return (
-        <S.Container color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
+        <S.Container isMobile={isMobile} menuOpened={menuOpened} color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
 
             <BreadCrumbAuthLayout
                 data={dataBreadCrumb}
@@ -131,8 +157,13 @@ export default function Settings() {
             <div className='content-settings'>
                 <nav>
                     <ul>
+                        <li className='menu-toggle'>
+                            <button onClick={() => setMenuOpened(!menuOpened)}>
+                                <IconHamburger />
+                            </button>
+                        </li>
                         {MENUS_GERAL.filter((obj) => obj.cat === 'my').map((item, index) => (
-                            <li className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
+                            <li data-tooltip-id="tooltip" data-tooltip-content={!menuOpened ? item.name : undefined} className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
                                 <LinkSlug path={item.redirect}>
                                     <i>
                                         {item.icon}
@@ -141,11 +172,13 @@ export default function Settings() {
                                 </LinkSlug>
                             </li>
                         ))}
-                        <li>
-                            <h4>Gerais</h4>
-                        </li>
-                        {MENUS_GERAL.filter((obj) => obj.cat === 'geral').map((item, index) => (
-                            <li className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
+                        {LIST_MENUS_GERAL.length > 0 &&
+                            <li>
+                                <h4>Gerais</h4>
+                            </li>
+                        }
+                        {LIST_MENUS_GERAL.map((item, index) => (
+                            <li data-tooltip-id="tooltip" data-tooltip-content={!menuOpened ? item.name : undefined} className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
                                 <LinkSlug path={item.redirect}>
                                     <i>
                                         {item.icon}
@@ -154,11 +187,13 @@ export default function Settings() {
                                 </LinkSlug>
                             </li>
                         ))}
-                        <li>
-                            <h4>Solicitações</h4>
-                        </li>
-                        {MENUS_GERAL.filter((obj) => obj.cat === 'solicitations').map((item, index) => (
-                            <li className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
+                        {LIST_MENUS_TICKETS.length > 0 &&
+                            <li>
+                                <h4>Solicitações</h4>
+                            </li>
+                        }
+                        {LIST_MENUS_TICKETS.map((item, index) => (
+                            <li data-tooltip-id="tooltip" data-tooltip-content={!menuOpened ? item.name : undefined} className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
                                 <LinkSlug path={item.redirect}>
                                     <i>
                                         {item.icon}
@@ -167,11 +202,14 @@ export default function Settings() {
                                 </LinkSlug>
                             </li>
                         ))}
-                        <li>
-                            <h4>Peças</h4>
-                        </li>
-                        {MENUS_GERAL.filter((obj) => obj.cat === 'parts').map((item, index) => (
-                            <li className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
+
+                        {LIST_MENUS_PART.length > 0 &&
+                            <li>
+                                <h4>Peças</h4>
+                            </li>
+                        }
+                        {LIST_MENUS_PART.map((item, index) => (
+                            <li data-tooltip-id="tooltip" data-tooltip-content={!menuOpened ? item.name : undefined} className={`${item.redirect === `/settings/${menu}` ? 'active' : 'normal'}`} key={`sub-${index}`}>
                                 <LinkSlug path={item.redirect}>
                                     <i>
                                         {item.icon}

@@ -303,8 +303,6 @@ export const FormUserProfile = ({ admin, id, onSubmit, onLoad }: IProps) => {
         return LIST_ALL_ORGANIZATIONS.find((obj) => obj.organization_id === id)
     }
 
-    console.log('tenantsUser', tenantsUser)
-    console.log('dataTenants', dataTenants)
     //get info unique tenant
     const getTenantById = (id: number) => {
         console.log('getTenantById:', id)

@@ -19,7 +19,14 @@ import { FormTicketCat } from '../../../components/modules/form-ticket-cat'
 
 //styles
 import * as S from './styles'
-import { IconPencil, IconPlus, IconTag, IconTrash } from '../../../assets/icons'
+import { IconClone, IconHome, IconPencil, IconPlus, IconTag, IconTrash } from '../../../assets/icons'
+import { ModalDefault } from '../../../components/UI/modal/modal-default'
+import { useTenant } from '../../../core/contexts/TenantContext'
+import type { ITenant } from '../../../core/types/iTenants'
+import { TenantService } from '../../../core/services/TenantService'
+import { SelectMultiple, type IOptionSelect } from '../../../components/UI/form/select-multiple'
+import { CardTenant } from '../../../components/modules/cards/card-tenant'
+import { useAlert } from '../../../core/contexts/AlertContext'
 
 const CONFIG_PAGE_EDIT = {
     title: 'Formularios',
@@ -35,6 +42,8 @@ const CONFIG_PAGE_EDIT = {
 
 export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(icon: any, name: string, redirect: string): void }) {
 
+    const { addAlert } = useAlert();
+    const { tenant } = useTenant();
     const { verifyPermission } = useAuth();
     const { id } = useParams();
     const { redirectSlug } = useRedirect();
@@ -56,6 +65,14 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
             width: 80,
         }
     ]
+
+    const [loadingTenantChildren, setLoadingTenantChildren] = useState(false);
+    const [tenantsChildren, setTenantsChildren] = useState<ITenant[]>([])
+
+    const [modalDuplicate, setModalDuplicate] = useState(false)
+    const [loadingSubmitDuplicate, setLoadingSubmitDuplicate] = useState(false);
+    const [DTOModalDuplicate, setDTOModalDuplicate] = useState<ITicketCat>({} as ITicketCat);
+    const [DTOListModalDuplicate, setDTOListModalDuplicate] = useState<IOptionSelect[]>([]);
 
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<ITicketCat[]>([])
@@ -80,8 +97,16 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
         setLoading(false);
     }
 
+    const getTenantsChildren = async () => {
+        setLoadingTenantChildren(true);
+        const response = await TenantService.getById(tenant?.tenant_id ?? 0);
+        setTenantsChildren([...response.item.children])
+        setLoadingTenantChildren(false);
+    }
+
     useEffect(() => {
         getData(pagination.page, pagination.limit, search, order);
+        getTenantsChildren();
     }, [pagination.page, pagination.limit, search, order])
 
     const handleSaveEdit = (item: ITicketCat) => {
@@ -104,8 +129,103 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
         setLoadingDelete(false);
     }
 
+    const handleSubmitDuplicate = async () => {
+        try {
+            setLoadingSubmitDuplicate(true);
+            await TicketService.duplicateCat(DTOModalDuplicate.ticket_cat_id, DTOListModalDuplicate.map((row) => {
+                return Number(row.value)
+            }))
+            addAlert('success', 'Sucesso', 'Alterações realizadas com sucesso.');
+            setModalDuplicate(false);
+            setDTOListModalDuplicate([])
+            setLoadingSubmitDuplicate(false)
+        } catch (error) {
+            setLoadingSubmitDuplicate(false)
+        }
+    }
+
+    //tenants
+    const LIST_TENANTS = tenantsChildren.map((item) => {
+        return {
+            name: item.name,
+            value: String(item.tenant_id)
+        }
+    })
+
+    //get info unique tenant
+    const getTenantById = (id: number) => {
+        return tenantsChildren.find((obj) => obj.tenant_id === id)
+    }
+
+    const onCloseModalDuplicate = () => {
+        setModalDuplicate(false);
+        setDTOListModalDuplicate([])
+    }
+
     return (
         <S.Container>
+
+            <ModalDefault layout='center' opened={modalDuplicate} title='Clonar Formulário' onClose={onCloseModalDuplicate}>
+
+                <div className='search-tenant'>
+                    {(verifyPermission(CONFIG_PAGE_EDIT.permission_edit)) &&
+                        <SelectMultiple
+                            search={true}
+                            loading={loadingTenantChildren}
+                            icon={<IconHome />}
+                            options={LIST_TENANTS}
+                            onChange={(e) => setDTOListModalDuplicate([...e])}
+                            selecteds={DTOListModalDuplicate}
+                            position='left'
+                        />
+                    }
+                </div>
+                <div className='list-tenants'>
+                    {loading &&
+                        <CardTenant
+                            name={''}
+                            logo={''}
+                            created={''}
+                            loading={true}
+                        />
+                    }
+                    {DTOListModalDuplicate.map((item) =>
+                        <CardTenant
+                            name={getTenantById(Number(item.value))?.name}
+                            logo={getTenantById(Number(item.value))?.images?.touch ?? ''}
+                            created={getTenantById(Number(item.value))?.created}
+                            color={`#${getTenantById(Number(item.value))?.colorhigh}`}
+                            colorBg={`#${getTenantById(Number(item.value))?.colormain}`}
+                            colorText={`#${getTenantById(Number(item.value))?.colorsecond}`}
+                            onRemove={() => setDTOListModalDuplicate([...DTOListModalDuplicate.filter((obj) => obj.value !== item.value)])}
+                            loading={loading}
+                        />
+                    )}
+                </div>
+                {DTOListModalDuplicate.length > 0 &&
+                    <div className="buttons-modal-internal">
+                        <div>
+                            <ButtonDefault
+                                type='button'
+                                variant="lightWhite"
+                                onClick={() => onCloseModalDuplicate()}
+                            >
+                                Cancelar
+                            </ButtonDefault>
+                            <ButtonDefault
+                                type='button'
+                                variant="primary"
+                                loading={loadingSubmitDuplicate}
+                                onClick={() => {
+                                    handleSubmitDuplicate();
+                                }}
+                            >
+                                Confirmar
+                            </ButtonDefault>
+                        </div>
+                    </div>
+                }
+            </ModalDefault>
 
             {(id && id !== 'new') &&
                 <CONFIG_PAGE_EDIT.FormEdit
@@ -156,7 +276,15 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
                         tbody={
                             <tbody>
                                 {data.map((row, index) =>
-                                    <RenderTD onDelete={setDTODelete} key={`td-row-${row.ticket_cat_id}-${index}`} row={row} />
+                                    <RenderTD
+                                        key={`td-row-${row.ticket_cat_id}-${index}`}
+                                        onDuplicate={() => {
+                                            setModalDuplicate(true);
+                                            setDTOModalDuplicate({ ...row })
+                                        }}
+                                        onDelete={setDTODelete}
+                                        row={row}
+                                    />
                                 )}
                             </tbody>
                         }
@@ -168,11 +296,18 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
     )
 }
 
-const RenderTD = ({ row, onDelete }: { row: ITicketCat, onDelete(id: number): void }) => {
+const RenderTD = ({ row, onDelete, onDuplicate }: { row: ITicketCat, onDuplicate(): void; onDelete(id: number): void }) => {
 
     const { redirectSlug } = useRedirect();
 
     const submenu: ISubmenuSelect[] = [
+        {
+            name: 'Clonar',
+            icon: <IconClone />,
+            onClick: () => onDuplicate(),
+            permission: CONFIG_PAGE_EDIT.permission_edit,
+            jobs: true,
+        },
         {
             name: 'Editar',
             icon: <IconPencil />,
@@ -198,7 +333,9 @@ const RenderTD = ({ row, onDelete }: { row: ITicketCat, onDelete(id: number): vo
                 {row.title}
             </td>
             <td>
-                <BtnsActionTable submenu={submenu} />
+                {row.tenant_id !== 0 &&
+                    <BtnsActionTable submenu={submenu} />
+                }
             </td>
         </tr>
     )

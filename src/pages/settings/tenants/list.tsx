@@ -146,7 +146,7 @@ export default function SettingsListTenants({ addBreadCrumb }: { addBreadCrumb(i
                     <div className='head-setting'>
                         <h1>{CONFIG_PAGE_EDIT.title}</h1>
                         <div className='buttons'>
-                            <ButtonDefault onClick={() => setShowTree(true)} variant='lightWhite' icon={<IconTree />}>Estrutura de Árvore</ButtonDefault>
+                            <ButtonDefault onClick={() => setShowTree(true)} variant='light' icon={<IconTree />}>Estrutura de Árvore</ButtonDefault>
                             {verifyPermission(CONFIG_PAGE_EDIT.permission_add) &&
                                 <ButtonDefault onClick={() => redirectSlug(`/settings/${CONFIG_PAGE_EDIT.url}/new`)} icon={<IconPlus />}>{CONFIG_PAGE_EDIT.button_new}</ButtonDefault>
                             }
