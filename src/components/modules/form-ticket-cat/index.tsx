@@ -239,6 +239,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     loading={loading}
                                     onChange={(bol) => setData((prev) => ({ ...prev, use_title: bol }))}
                                 />
+                                <p>Selecione esta opção caso deseje o campo fixo 'Título' no formulário da solicitação.</p>
                             </div>
                             <div className='label-checkbox'>
                                 <InputCheckbox

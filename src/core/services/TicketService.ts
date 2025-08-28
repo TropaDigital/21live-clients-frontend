@@ -1,3 +1,4 @@
+import type { ITicketCat } from "../types/ITckets";
 import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
 
@@ -20,6 +21,20 @@ export const TicketService = {
         limit ?? 999999
       }${querySearch}${queryOrder}${queryDeleted}`
     );
+
+    if (response.data.items && page) {
+      response.data.items = response.data.items.map(
+        (item: ITicketCat, index: number) => {
+
+          const order = index + 1;
+          return {
+            ...item,
+            ordem: page > 1 ? 10 * (page - 1) + order : order,
+          };
+        }
+      );
+    }
+
     return response.data;
   },
   getCatById: async (id: number) => {
@@ -91,9 +106,12 @@ export const TicketService = {
   },
   duplicateCat: async (id: number, tenants: number[]) => {
     const tenant = getSlug();
-    const response = await BaseService.post(`/${tenant}/API/TicketCats/export/${id}`, {
-      tenants: tenants,
-    });
+    const response = await BaseService.post(
+      `/${tenant}/API/TicketCats/export/${id}`,
+      {
+        tenants: tenants,
+      }
+    );
     return response.data;
   },
 

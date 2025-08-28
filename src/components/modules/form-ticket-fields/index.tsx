@@ -69,7 +69,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     const [showModalRemove, setShowModalRemove] = useState(false);
 
     const [showModalEdit, setShowModalEdit] = useState(modal === 'new' ? true : false);
-    const [DTOModal, setDTOModal] = useState<ITicketField>({ ordem: 1 } as ITicketField);
+    const [DTOModal, setDTOModal] = useState<ITicketField>({ ordem: 1, type: 'input' } as ITicketField);
 
 
     const handleChangeDTO = (name: string, value: string) => {
@@ -166,7 +166,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                 }
                 redirectSlug(`settings/ticket-forms/${response.item.ticket_cat_id}?modal=new`)
             }
-            setDTOModal({ ordem: dataFields.length + 1 } as ITicketField);
+            setDTOModal({ ordem: dataFields.length + 1, type: 'input' } as ITicketField);
             setShowModalEdit(true);
             setLoadingNew(false);
         } catch (error: any) {
@@ -556,12 +556,12 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
             icon: <IconInput />,
         },
         {
-            name: 'Campo de Texto',
+            name: 'Caixa de Texto',
             value: 'textarea',
             icon: <IconTextarea />,
         },
         {
-            name: 'Selecionável',
+            name: 'Selecionar',
             value: 'select',
             icon: <IconSelect />,
         },
@@ -619,6 +619,33 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
 
             <div className='form'>
 
+                <div className='inputs-edit'>
+                    {/**
+                     * 
+                    <InputDefault
+                        label='Nome do Campo'
+                        description='Nome do campo que será exibido quando o usuário responder o formulário'
+                        value={data?.name || ''}
+                        onChange={(e) => handleChange('name', e.target.value)}
+                    />
+                     */}
+                    <InputDefault
+                        label='Pergunta'
+                        description='Texto que será exibido como pergunta para o usuário'
+                        value={data?.label || ''}
+                        onChange={(e) => {
+                            handleChange('label', e.target.value);
+                            handleChange('name', e.target.value);
+                        }}
+                    />
+                    <InputDefault
+                        label='Descrição'
+                        description='Se desejar adicione uma descrição...'
+                        value={data?.description || ''}
+                        onChange={(e) => handleChange('description', e.target.value)}
+                    />
+                </div>
+
                 <div className='types-input'>
                     {TYPES.map((type) => (
                         <div onClick={() => handleChange('type', type.value)} key={type.value} className={`type ${data?.type === type.value ? 'active' : ''}`}>
@@ -626,28 +653,6 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
                             <span>{type.name}</span>
                         </div>
                     ))}
-                </div>
-
-
-                <div className='inputs-edit'>
-                    <InputDefault
-                        label='Nome do Campo'
-                        description='Título do campo dentro da solicitação realizada'
-                        value={data?.name || ''}
-                        onChange={(e) => handleChange('name', e.target.value)}
-                    />
-                    <InputDefault
-                        label='Título do Campo'
-                        description='Texto que aparece como título na hora de preencher a solicitação'
-                        value={data?.label || ''}
-                        onChange={(e) => handleChange('label', e.target.value)}
-                    />
-                    <InputDefault
-                        label='Descrição'
-                        description='Mostra um texto cinza abaixo do título'
-                        value={data?.description || ''}
-                        onChange={(e) => handleChange('description', e.target.value)}
-                    />
                 </div>
 
                 {(data.type === 'select' || data.type === 'selmultiple') &&

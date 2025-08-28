@@ -203,7 +203,7 @@ export const ContainerEditable = styled.div.withConfig({
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      padding: 30px 30px 0px 30px;
+      padding: 0px 30px 30px 30px;
       .type {
         width: calc(50% - 5px);
         box-sizing: border-box;

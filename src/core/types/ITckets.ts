@@ -5,6 +5,7 @@ export interface ITicketCat {
   setas_default: boolean;
   use_title: boolean;
   default_fields: boolean;
+  ordem: number;
   allow_files: boolean;
   use_media: boolean;
   default_media_id: number | null;

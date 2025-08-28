@@ -50,8 +50,8 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
 
     const TABLE_HEAD = [
         {
-            name: 'ID',
-            value: 'ticket_cat_id',
+            name: 'Ordem',
+            value: 'ordem',
             width: 10,
         },
         {
@@ -326,7 +326,7 @@ const RenderTD = ({ row, onDelete, onDuplicate }: { row: ITicketCat, onDuplicate
         <tr key={`tr-${row.ticket_cat_id}`}>
             <td>
                 <span className='td-id'>
-                    #{row.ticket_cat_id}
+                    #{row.ordem}
                 </span>
             </td>
             <td>
