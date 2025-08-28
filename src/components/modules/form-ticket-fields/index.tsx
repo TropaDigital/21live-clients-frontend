@@ -145,7 +145,6 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     }
 
     const handleModalAdd = async () => {
-
         try {
             setLoadingNew(true);
             if (!data.title && !id) throw new Error('Você precisa inserir um titulo ao formulario antes de adicionar campos.');
@@ -162,6 +161,9 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                     default_media_id: data.default_media_id,
                     jobs: data.jobs,
                 });
+                if (onSubmit) {
+                    onSubmit(response.item);
+                }
                 redirectSlug(`settings/ticket-forms/${response.item.ticket_cat_id}?modal=new`)
             }
             setDTOModal({ ordem: dataFields.length + 1 } as ITicketField);

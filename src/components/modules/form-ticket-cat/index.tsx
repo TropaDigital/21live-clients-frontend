@@ -178,6 +178,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                     data={data}
                     dataFields={dataFields}
                     dataMedias={dataMedias}
+                    onSubmit={onSubmit}
                     onChangeField={(dataField: ITicketField) => console.log(dataField)}
                     onChangeFields={(dataFields: ITicketField[]) => {
                         setDataFields(dataFields);
