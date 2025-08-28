@@ -8,7 +8,7 @@ import { MediaService } from '../../../core/services/MediaService';
 import type { ITicketCat, ITicketField } from '../../../core/types/ITckets';
 import type { IMedia } from '../../../core/types/IMedia';
 
-import { IconCheck, IconTextRename } from '../../../assets/icons';
+import { IconCheck } from '../../../assets/icons';
 import { ButtonDefault } from '../../UI/form/button-default';
 import { InputDefault } from '../../UI/form/input-default';
 
