@@ -71,6 +71,11 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     const [showModalEdit, setShowModalEdit] = useState(modal === 'new' ? true : false);
     const [DTOModal, setDTOModal] = useState<ITicketField>({ ordem: 1, type: 'input' } as ITicketField);
 
+    useEffect(() => {
+        if (modal === 'new') {
+            redirectSlug(`settings/ticket-forms/${id}`)
+        }
+    }, [modal])
 
     const handleChangeDTO = (name: string, value: string) => {
         setDTO((prev: any) => ({ ...prev, [name]: value }))

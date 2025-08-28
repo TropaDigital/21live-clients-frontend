@@ -162,7 +162,6 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                 label='Titulo do Formulário'
                                 value={data?.title || ''}
                                 onChange={(e) => setData({ ...data, title: e.target.value })}
-                                icon={<IconTextRename />}
                                 loading={loading}
                             />
                         </div>
