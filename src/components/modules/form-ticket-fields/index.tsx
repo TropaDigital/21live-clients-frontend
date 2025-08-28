@@ -69,7 +69,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     const [showModalRemove, setShowModalRemove] = useState(false);
 
     const [showModalEdit, setShowModalEdit] = useState(modal === 'new' ? true : false);
-    const [DTOModal, setDTOModal] = useState<ITicketField>({} as ITicketField);
+    const [DTOModal, setDTOModal] = useState<ITicketField>({ ordem: 1 } as ITicketField);
 
 
     const handleChangeDTO = (name: string, value: string) => {
@@ -79,8 +79,6 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     const handleChangeDTOField = (name: string, value: string) => {
         setDTOFields((prev: any) => ({ ...prev, [name]: value }))
     }
-
-    console.log('DTOFields', DTOFields);
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
