@@ -25,7 +25,6 @@ interface IProps {
 }
 
 interface IPropsEdit extends ITicketCat {
-
 }
 
 export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
@@ -159,7 +158,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                     <div className='inputs'>
                         <div className='column-input'>
                             <InputDefault
-                                label='Titulo do Formulário'
+                                label='Nome do Formulário'
                                 value={data?.title || ''}
                                 onChange={(e) => setData({ ...data, title: e.target.value })}
                                 loading={loading}

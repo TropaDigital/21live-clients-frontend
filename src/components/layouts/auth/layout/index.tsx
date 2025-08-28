@@ -161,7 +161,7 @@ export default function AuthLayout() {
                         <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Digite sua pesquisa e pressione enter" />
                     </form>
                     <div className="right">
-                        <MenuProfile />
+                        <MenuProfile setSideBar={(bol) => isMobile ? setSidebarToggleMobile(bol) : setSidebarToggle(bol)} />
                     </div>
                 </header>
                 <section id="overflow-page">
@@ -260,7 +260,7 @@ const RenderMenusFolder = ({ isMobile, siderbarToggle }: { isMobile: boolean; si
         )
 }
 
-const MenuProfile = () => {
+const MenuProfile = ({ setSideBar }: { setSideBar(bol: boolean): void }) => {
 
     const { user, handleLogout } = useAuth();
     const [opened, setOpened] = useState(false)
@@ -296,7 +296,7 @@ const MenuProfile = () => {
                     </LinkSlug>
                 </li>
 
-                <li>
+                <li onClick={() => setSideBar(false)}>
                     <LinkSlug path={"/settings/profile"}>
                         <i>
                             <IconConfig />

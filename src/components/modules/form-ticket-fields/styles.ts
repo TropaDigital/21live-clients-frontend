@@ -254,6 +254,16 @@ export const ContainerEditable = styled.div.withConfig({
       .option {
         display: flex;
         gap: 10px;
+        .remove {
+          display: none;
+          width: 40px;
+        }
+        &:hover {
+          .remove {
+            display: flex;
+            animation: zoomIn .5s;
+          }
+        }
         .sortable {
           height: 40px;
           width: 40px;

@@ -100,7 +100,7 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
     const getTenantsChildren = async () => {
         setLoadingTenantChildren(true);
         const response = await TenantService.getById(tenant?.tenant_id ?? 0);
-        setTenantsChildren([...response.item.children])
+        setTenantsChildren([response.item, ...response.item.children])
         setLoadingTenantChildren(false);
     }
 
@@ -129,12 +129,39 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
         setLoadingDelete(false);
     }
 
-    const handleSubmitDuplicate = async () => {
+    const handleSubmitDuplicate = async (ticket_cat_id?: number, ids?: number[]) => {
         try {
             setLoadingSubmitDuplicate(true);
-            await TicketService.duplicateCat(DTOModalDuplicate.ticket_cat_id, DTOListModalDuplicate.map((row) => {
+            const response = await TicketService.duplicateCat(ticket_cat_id ? ticket_cat_id : DTOModalDuplicate.ticket_cat_id, ids ? ids : DTOListModalDuplicate.map((row) => {
                 return Number(row.value)
             }))
+
+            const findInMyTenant = response.items.filter((obj: ITicketCat) => obj.tenant_id === tenant?.tenant_id)
+
+            if (findInMyTenant.length > 0) {
+
+                const myForm = findInMyTenant[0];
+
+                myForm.ordem = 1;
+                myForm.title = myForm.title + ' Cópia';
+                myForm.use_title = myForm.use_title === 1 ? true : false;
+                myForm.setas_default = myForm.setas_default === 1 ? true : false;
+                myForm.default_fields = myForm.default_fields === 1 ? true : false;
+                myForm.allow_files = myForm.allow_files === 1 ? true : false;
+                myForm.use_media = myForm.use_media === 1 ? true : false;
+                myForm.jobs = myForm.jobs === 1 ? true : false;
+                myForm.id = myForm.ticket_cat_id;
+
+                await TicketService.setCat({ ...myForm })
+
+                const newData = [myForm]
+                data.forEach((item) => {
+                    item.ordem++;
+                    newData.push(item)
+                })
+                setData([...newData])
+            }
+
             addAlert('success', 'Sucesso', 'Alterações realizadas com sucesso.');
             setModalDuplicate(false);
             setDTOListModalDuplicate([])
@@ -162,13 +189,25 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
         setDTOListModalDuplicate([])
     }
 
+    const handleDuplicate = async (item: ITicketCat) => {
+        if (tenant?.jobs) {
+            setModalDuplicate(true);
+            setDTOModalDuplicate({ ...item })
+        } else {
+            setLoading(true);
+            setDTOModalDuplicate({ ...item })
+            await handleSubmitDuplicate(item.ticket_cat_id, [tenant?.tenant_id ?? 0]);
+            setLoading(false)
+        }
+    }
+
     return (
         <S.Container>
 
             <ModalDefault layout='center' opened={modalDuplicate} title='Clonar Formulário' onClose={onCloseModalDuplicate}>
 
                 <div className='search-tenant'>
-                    {(verifyPermission(CONFIG_PAGE_EDIT.permission_edit)) &&
+                    {(verifyPermission(CONFIG_PAGE_EDIT.permission_add)) &&
                         <SelectMultiple
                             search={true}
                             loading={loadingTenantChildren}
@@ -278,10 +317,7 @@ export default function SettingsTicketsForms({ addBreadCrumb }: { addBreadCrumb(
                                 {data.map((row, index) =>
                                     <RenderTD
                                         key={`td-row-${row.ticket_cat_id}-${index}`}
-                                        onDuplicate={() => {
-                                            setModalDuplicate(true);
-                                            setDTOModalDuplicate({ ...row })
-                                        }}
+                                        onDuplicate={() => handleDuplicate(row)}
                                         onDelete={setDTODelete}
                                         row={row}
                                     />
@@ -302,11 +338,10 @@ const RenderTD = ({ row, onDelete, onDuplicate }: { row: ITicketCat, onDuplicate
 
     const submenu: ISubmenuSelect[] = [
         {
-            name: 'Clonar',
+            name: 'Clonar Formulário',
             icon: <IconClone />,
             onClick: () => onDuplicate(),
-            permission: CONFIG_PAGE_EDIT.permission_edit,
-            jobs: true,
+            permission: CONFIG_PAGE_EDIT.permission_add,
         },
         {
             name: 'Editar',

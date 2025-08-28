@@ -594,8 +594,10 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
     }
 
     const handleAddOption = () => {
-        data.options.push(`Opção ${data.options.length + 1}`);
-        setData((prev) => ({ ...prev, options: [...data.options] }));
+        setTimeout(() => {
+            data.options.push(`Opção ${data.options.length + 1}`);
+            setData((prev) => ({ ...prev, options: [...data.options] }));
+        }, 100)
     }
 
     const handleOnSave = async () => {
@@ -693,18 +695,21 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
                                         }}
                                         autoFocus={indice === data.options.length - 1}
                                         icon={data.type === 'select' ? <IconButtonRadio /> : <IconCheck />}
+                                        onKeyDownCapture={(e) => e.key === 'Tab' ? handleAddOption() : undefined}
                                     />
-                                    <ButtonDefault
-                                        icon={<IconTrash />}
-                                        onClick={() => {
-                                            const newOptions = [...data.options];
-                                            newOptions.splice(indice, 1);
-                                            setData((prev) => ({ ...prev, options: newOptions }));
-                                        }}
-                                        variant="danger"
-                                        type='button'
-                                        data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Remover opção'}
-                                    />
+                                    <div className='remove'>
+                                        <ButtonDefault
+                                            icon={<IconTrash />}
+                                            onClick={() => {
+                                                const newOptions = [...data.options];
+                                                newOptions.splice(indice, 1);
+                                                setData((prev) => ({ ...prev, options: newOptions }));
+                                            }}
+                                            variant="danger"
+                                            type='button'
+                                            data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Remover opção'}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </ReactSortable>
