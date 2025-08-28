@@ -24,7 +24,7 @@ import { RenderField } from './render-field';
 import { ModalConfirm } from '../../UI/modal/modal-confirm';
 import { ModalDefault } from '../../UI/modal/modal-default';
 import { useRedirect } from '../../../core/hooks/useRedirect';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 interface IProps {
     id: number | null;
@@ -574,6 +574,7 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
     const { tenant } = useTenant();
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [data, setData] = useState<ITicketField>({ ...field });
+    const { id } = useParams();
 
     useEffect(() => {
         field.options = field.options ?? [];
@@ -597,6 +598,7 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
             if (!data.label) throw new Error('Digite um título para o campo');
             if (!data.name) throw new Error('Digite um nome para o campo');
             if ((data.type === 'select' || data.type === 'selmultiple') && data.options.length === 0) throw new Error('Adicione ao menos uma opção para o campo');
+            data.ticket_cat_id = Number(id)
             data.tenant_id = tenant?.tenant_id ?? 0;
             const response = await TicketService.setField({ id: field.ticketcat_field_id, ...data });
             onSubmit(response.item)
