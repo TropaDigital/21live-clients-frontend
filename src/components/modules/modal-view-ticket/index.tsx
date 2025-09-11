@@ -379,7 +379,7 @@ export const ModalViewTicket = ({ id }: IProps) => {
                         />
 
                         <div className='conversation'>
-                            {tabSelected === TABS[0] &&
+                            {tabSelected === TABS[1] &&
                                 <div className='tab-approve' ref={listRef}>
 
                                     <div className='list-cards'>
@@ -402,7 +402,7 @@ export const ModalViewTicket = ({ id }: IProps) => {
                                 </div>
                             }
 
-                            {tabSelected === TABS[1] &&
+                            {tabSelected === TABS[0] &&
                                 <div className='list-overflow' ref={listRef}>
                                     {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
                                         <CommentTicket
