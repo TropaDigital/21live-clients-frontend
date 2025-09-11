@@ -6,6 +6,6 @@ export const Container = styled.span`
     padding: 5px 15px;
     border-radius: 100px;
     font-size: 11px;
-
+    white-space: nowrap;
   }
 `;

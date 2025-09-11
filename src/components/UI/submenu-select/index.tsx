@@ -24,7 +24,8 @@ export interface ISubmenuSelect {
     avatar?: string;
     icon?: ReactNode;
     iconFont?: string;
-    onClick(name: string): void;
+    onClick?(name: string): void;
+    path?: string;
     required?: boolean
     permission?: string;
     jobs?: boolean;
@@ -141,7 +142,7 @@ export const SubmenuSelect = ({
                     {submenu.map((item, key) =>
                         <li key={`sub-select-${item.name}-${key}`}>
                             <button className={`${item.required ? 'required' : 'normal'}`} type='button' onClick={() => item.required !== true && handleOnClick({
-                                onClick: () => item.onClick(item.name),
+                                onClick: () => item.onClick && item.onClick(item.name),
                             })}>
                                 <i className='icon-svg'>
                                     {item.icon}

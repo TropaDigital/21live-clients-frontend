@@ -200,6 +200,8 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                 <div className='tab'>
                     <div className='inputs'>
                         <div className='column-input'>
+                            {/**
+                             * 
                             {tenant?.jobs &&
                                 <div className='label-checkbox'>
                                     <InputCheckbox
@@ -210,6 +212,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     />
                                 </div>
                             }
+                             */}
                             <div className='label-checkbox'>
                                 <InputCheckbox
                                     label='Habilitar Categoria Padrão'
@@ -232,7 +235,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                             }
                             <div className='label-checkbox'>
                                 <InputCheckbox
-                                    label='Habilitar Campo Título'
+                                    label='Habilitar Título Personalizado'
                                     checked={data.use_title}
                                     loading={loading}
                                     onChange={(bol) => setData((prev) => ({ ...prev, use_title: bol }))}
@@ -250,7 +253,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                             </div>
                             <div className='label-checkbox'>
                                 <InputCheckbox
-                                    label='Habilitar Envio de Imagens de Referência'
+                                    label='Habilitar Envio de Arquivos de Referência'
                                     checked={data.allow_files}
                                     loading={loading}
                                     onChange={(bol) => setData((prev) => ({ ...prev, allow_files: bol }))}

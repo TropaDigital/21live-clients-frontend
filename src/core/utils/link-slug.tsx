@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 
-export const LinkSlug = ({ path, children }: { path: string, children: any }) => {
+export const LinkSlug = ({ path, children, ...rest }: { path: string, children: any }) => {
   const { slug } = useParams<{ slug?: string }>();
 
   const finalPath =
@@ -11,6 +11,6 @@ export const LinkSlug = ({ path, children }: { path: string, children: any }) =>
       : path;
 
   return (
-    <Link to={finalPath}>{children}</Link>
+    <Link {...rest} to={finalPath}>{children}</Link>
   )
 };

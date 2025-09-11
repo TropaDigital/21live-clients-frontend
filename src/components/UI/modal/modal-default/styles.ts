@@ -6,11 +6,19 @@ interface IProps {
   padding: string;
   paddingHeader: string;
   zIndex: number;
+  maxWidth: string;
 }
 
 export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) =>
-    !["opened", "layout", "padding", "paddingHeader", "zIndex"].includes(prop),
+    ![
+      "opened",
+      "layout",
+      "maxWidth",
+      "padding",
+      "paddingHeader",
+      "zIndex",
+    ].includes(prop),
 })<IProps>`
   width: 100%;
   height: 100%;
@@ -77,7 +85,7 @@ export const Container = styled.div.withConfig({
     box-sizing: border-box;
     min-width: ${({ layout }) =>
       layout === "left" || layout === "right" ? "380px" : "300px"};
-    max-width: 90%;
+    max-width: ${({ maxWidth }) => maxWidth};
     display: flex;
     flex-direction: column;
     z-index: 3;

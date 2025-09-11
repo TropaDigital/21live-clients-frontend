@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import moment from "moment";
 import { decodeToken } from "react-jwt";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -64,28 +63,27 @@ export function useSessionTimer(): SessionTimerState {
   useEffect(() => {
     if (token) {
       const myDecodedToken: any = decodeToken(token);
-      setExpiresAt(myDecodedToken.expires);
+      if (myDecodedToken?.exp) {
+        setExpiresAt(String(myDecodedToken.exp * 1000));
+      }
     }
   }, [token]);
 
   useEffect(() => {
     if (!expiresAt) return;
 
-    const expiryTime = moment(expiresAt, "YYYY-MM-DD HH:mm:ss")
-      .toDate()
-      .getTime();
-    const initialDiff = Math.floor((expiryTime - new Date().getTime()) / 1000);
+    const expiryTime = Number(expiresAt); // já está em ms
+    const initialDiff = Math.floor((expiryTime - Date.now()) / 1000);
     initialTimeRef.current = initialDiff;
 
     const update = () => {
       setState(calculateState(expiryTime));
     };
 
-    update(); // primeira execução imediata
+    update(); // primeira execução
 
     const interval = setInterval(update, 1000);
 
-    // Adiciona listener para revalidar quando voltar para a aba
     const handleVisibilityChange = () => {
       if (!document.hidden) update();
     };

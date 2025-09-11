@@ -9,7 +9,7 @@ import { STORAGE_TOKEN, STORAGE_USER } from '../../../core/constants';
 
 export const ModalExpireToken = () => {
 
-    const { isExpired, countdown, percentage, showWarningModal } = useSessionTimer();
+    const { isExpired, countdown, percentage, showWarningModal, timeLeft } = useSessionTimer();
     const { tenant } = useTenant();
     const { token, setIsLogged, handleRefreshToken } = useAuth();
 
@@ -47,57 +47,60 @@ export const ModalExpireToken = () => {
     }
 
     return (
-        <S.Container
-            colorBg={tenant?.colormain}
-            color={tenant?.colorhigh}
-            colorText={tenant?.colorsecond}
-            opened={modalOpened}
-        >
+        <>
+            {timeLeft}
+            <S.Container
+                colorBg={tenant?.colormain}
+                color={tenant?.colorhigh}
+                colorText={tenant?.colorsecond}
+                opened={modalOpened}
+            >
 
-            {showWarningModal &&
-                <div className='box'>
-                    <div className='head'>
-                        <p className='title'>Alguem ai?</p>
-                        <p className='description'>Parece que você está inativo. Sua sessão irá expirar em breve, deseja continuar?</p>
-                    </div>
+                {showWarningModal &&
+                    <div className='box'>
+                        <div className='head'>
+                            <p className='title'>Alguem ai?</p>
+                            <p className='description'>Parece que você está inativo. Sua sessão irá expirar em breve, deseja continuar?</p>
+                        </div>
 
-                    <div className='coutdown'>
-                        <IconClock />
-                        <b>{countdown}</b>
-                    </div>
+                        <div className='coutdown'>
+                            <IconClock />
+                            <b>{countdown}</b>
+                        </div>
 
-                    <div className='bar-percentage'>
+                        <div className='bar-percentage'>
 
-                        <div className='bar'>
-                            <div className='percentage' style={{ width: `${percentage}%` }}>
-                                <div className='solid' />
-                                <div className='linear' />
+                            <div className='bar'>
+                                <div className='percentage' style={{ width: `${percentage}%` }}>
+                                    <div className='solid' />
+                                    <div className='linear' />
+                                </div>
                             </div>
+                            <div className='limit'>
+                                <IconLogout />
+                            </div>
+
                         </div>
-                        <div className='limit'>
-                            <IconLogout />
+                        <ButtonDefault loading={loadingRefresh} onClick={handleRenewToken} variant="dark">Continuar navegando</ButtonDefault>
+                    </div>
+                }
+
+                {isExpired &&
+                    <div className='box'>
+                        <div className='head'>
+                            <p className='title'>Sessão expirada</p>
+                            <p className='description'>Por segurança, sua sessão foi encerrada após um período de inatividade. Faça login novamente para continuar.</p>
                         </div>
-
+                        <ButtonDefault onClick={() => {
+                            window.location.reload();
+                        }}
+                            variant="dark">
+                            Fazer login
+                        </ButtonDefault>
                     </div>
-                    <ButtonDefault loading={loadingRefresh} onClick={handleRenewToken} variant="dark">Continuar navegando</ButtonDefault>
-                </div>
-            }
+                }
 
-            {isExpired &&
-                <div className='box'>
-                    <div className='head'>
-                        <p className='title'>Sessão expirada</p>
-                        <p className='description'>Por segurança, sua sessão foi encerrada após um período de inatividade. Faça login novamente para continuar.</p>
-                    </div>
-                    <ButtonDefault onClick={() => {
-                        window.location.reload();
-                    }}
-                        variant="dark">
-                        Fazer login
-                    </ButtonDefault>
-                </div>
-            }
-
-        </S.Container>
+            </S.Container>
+        </>
     )
 }

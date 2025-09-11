@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   gap: 5px;
-  button {
+  button, a {
     background-color: ${({ theme }) => theme.colors.neutral[200]};
     border-radius: 8px;
     width: 35px;

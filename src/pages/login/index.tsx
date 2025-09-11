@@ -46,7 +46,7 @@ export default function Login() {
         try {
             e.preventDefault();
             setLoading(true);
-            const response = await UserService.login(slug, DTO.username, DTO.password);
+            const response = await UserService.login(slug, DTO.username, DTO.password, rememberLogin);
             handleLogin(response.token, response.user)
             redirectSlug(redirect ? redirect.replace(`/${slug}/`, '') : '/');
         } catch (error: any) {

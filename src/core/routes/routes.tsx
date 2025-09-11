@@ -6,6 +6,7 @@ import { AuthRoute } from './auth-route'
 import { ModalExpireToken } from '../../components/modules/modal-expire-token'
 import IndexPermission from '../../pages/index-permission'
 import Settings from '../../pages/settings'
+import Tickets from '../../pages/tickets/list'
 
 const Home = lazy(() => import('../../pages/home'))
 const Favorites = lazy(() => import('../../pages/favorites'))
@@ -64,6 +65,14 @@ export const routes = [
             {
                 path: 'settings/:menu/:id',
                 element: <Settings />,
+            },
+            {
+                path: 'tickets',
+                element: <Tickets />,
+            },
+            {
+                path: 'tickets/:id',
+                element: <Tickets />,
             },
         ]
     },

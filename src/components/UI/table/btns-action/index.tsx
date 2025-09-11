@@ -3,6 +3,7 @@ import { useAuth } from '../../../../core/contexts/AuthContext';
 import { type ISubmenuSelect } from '../../submenu-select';
 import * as S from './styles'
 import { useTenant } from '../../../../core/contexts/TenantContext';
+import { LinkSlug } from '../../../../core/utils/link-slug';
 
 interface IProps {
     submenu: ISubmenuSelect[]
@@ -32,15 +33,26 @@ export const BtnsActionTable = ({ submenu }: IProps) => {
     return (
         <S.Container>
             {options.map((item) =>
-                <button
-                    data-tooltip-place="top"
-                    data-tooltip-id="tooltip"
-                    data-tooltip-content={item.name}
-                    onClick={item.onClick ? () => item.onClick(item.name) : undefined}
-                    type='button'
-                >
-                    {item.icon}
-                </button>
+
+                item.onClick ?
+                    <button
+                        data-tooltip-place="top"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={item.name}
+                        onClick={item.onClick ? () => item.onClick && item.onClick(item.name) : undefined}
+                        type='button'
+                    >
+                        {item.icon}
+                    </button>
+                    :
+                    <LinkSlug
+                        data-tooltip-place="top"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={item.name}
+                        path={item.path ?? ''}
+                    >
+                        {item.icon}
+                    </LinkSlug>
             )}
         </S.Container>
 

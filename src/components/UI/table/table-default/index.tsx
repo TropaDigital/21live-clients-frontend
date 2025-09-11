@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { IconCSV, IconExcel, IconSearch, IconSortOrder } from '../../../../assets/icons';
+import { IconCheck, IconCSV, IconExcel, IconEye, IconSearch, IconSortOrder } from '../../../../assets/icons';
 import { ButtonDefault } from '../../form/button-default';
 import { Skeleton } from '../../loading/skeleton/styles';
 import * as S from './styles'
 import { SelectDefault } from '../../form/select-default';
 import { generateCSVandExcel } from '../../../../core/utils/download';
 import { useTenant } from '../../../../core/contexts/TenantContext';
+import { SubmenuSelect } from '../../submenu-select';
 
 interface IProps<T> {
     onSearch?(search: string): void;
@@ -13,6 +14,8 @@ interface IProps<T> {
     onPaginate?(page: number): void;
     onLimit?(limit: number): void;
     getDataDownload: () => Promise<GetResponse<T>>;
+    setTheadShow?(head: ITHead[]): void;
+    theadShow?: ITHead[];
     thead: ITHead[];
     tbody: React.ReactNode;
     download?: string;
@@ -31,7 +34,7 @@ export interface GetResponse<T> {
     total: number;
 }
 
-interface ITHead {
+export interface ITHead {
     name: string,
     value: string;
     order?: boolean;
@@ -41,6 +44,8 @@ interface ITHead {
 export const TableDefault = <T,>({
     onSearch,
     getDataDownload,
+    setTheadShow,
+    theadShow,
     download,
     onPaginate,
     onLimit,
@@ -123,6 +128,20 @@ export const TableDefault = <T,>({
 
     const { tenant } = useTenant();
 
+    const handleToggleHead = (item: ITHead) => {
+
+        if (setTheadShow && theadShow) {
+            const find = theadShow.filter((obj) => obj.name === item.name)
+            if (find.length > 0) {
+                setTheadShow([...theadShow.filter((obj) => obj.name !== item.name)])
+            } else {
+                theadShow.push(item)
+                setTheadShow([...theadShow])
+            }
+        }
+
+    }
+
     return (
         <S.Container colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
 
@@ -133,37 +152,76 @@ export const TableDefault = <T,>({
                         <button type='button'><IconSearch /></button>
                     </div>
                 }
-                {(download) &&
-                    <div className='buttons'>
-                        <ButtonDefault loading={loadingDownload === 'EXCEL' ? true : false} variant='success' icon={<IconExcel />} onClick={() => handleDownload('EXCEL')}>
-                            Exportar EXCEL
-                        </ButtonDefault>
-                        <ButtonDefault disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='light' icon={<IconCSV />} onClick={() => handleDownload('CSV')}>
-                            Exportar CSV
-                        </ButtonDefault>
-                    </div>
-                }
+
+
+                <div className='buttons'>
+                    {setTheadShow && theadShow &&
+                        <>
+                            <SubmenuSelect
+                                whiteSpace={'nowrap'}
+                                closeOnSelected={false}
+                                submenu={thead.filter((obj) => obj.name).map((item) => {
+                                    return {
+                                        name: item.name,
+                                        onClick: () => handleToggleHead(item),
+                                        icon: theadShow.filter((obj) => obj.name === item.name).length ? <IconCheck /> : null
+                                    }
+                                })}
+                            >
+                                <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
+                                    <IconEye />
+                                </ButtonDefault>
+                            </SubmenuSelect>
+                        </>
+                    }
+                    {(download) &&
+                        <>
+                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant='success' icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
+                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar CSV" disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='light' icon={<IconCSV />} onClick={() => handleDownload('CSV')} />
+                        </>
+                    }
+                </div>
             </div>
 
             <div className='overflow-table'>
                 <table>
                     <thead>
-                        <tr>
-                            {thead.map((th, index) =>
-                                <th style={{ width: th.width ?? 'auto' }} key={`th-${index}-${th.value}`}>
-                                    <div className='th-flex'>
-                                        <span>
-                                            {th.name}
-                                        </span>
-                                        {th.order &&
-                                            <button onClick={() => (onSort && th.order === true) ? onSort(th.value === order ? `-${th.value}` : th.value) : null}>
-                                                <IconSortOrder sort={`-${th.value}` === order ? 'asc' : th.value === order ? 'desc' : 'all'} />
-                                            </button>
-                                        }
-                                    </div>
-                                </th>
-                            )}
-                        </tr>
+
+                        {(theadShow && setTheadShow) ?
+                            <tr>
+                                {thead.map((th, index) => theadShow.filter((obj) => obj.name === th.name).length > 0 &&
+                                    <th style={{ width: th.width ?? 'auto' }} key={`th-${index}-${th.value}`}>
+                                        <div className='th-flex'>
+                                            <span>
+                                                {th.name}
+                                            </span>
+                                            {th.order &&
+                                                <button onClick={() => (onSort && th.order === true) ? onSort(th.value === order ? `-${th.value}` : th.value) : null}>
+                                                    <IconSortOrder sort={`-${th.value}` === order ? 'asc' : th.value === order ? 'desc' : 'all'} />
+                                                </button>
+                                            }
+                                        </div>
+                                    </th>
+                                )}
+                            </tr>
+                            :
+                            <tr>
+                                {thead.map((th, index) =>
+                                    <th style={{ width: th.width ?? 'auto' }} key={`th-${index}-${th.value}`}>
+                                        <div className='th-flex'>
+                                            <span>
+                                                {th.name}
+                                            </span>
+                                            {th.order &&
+                                                <button onClick={() => (onSort && th.order === true) ? onSort(th.value === order ? `-${th.value}` : th.value) : null}>
+                                                    <IconSortOrder sort={`-${th.value}` === order ? 'asc' : th.value === order ? 'desc' : 'all'} />
+                                                </button>
+                                            }
+                                        </div>
+                                    </th>
+                                )}
+                            </tr>
+                        }
                     </thead>
 
                     {loading &&
@@ -246,4 +304,12 @@ export const TableDefault = <T,>({
 
         </S.Container >
     )
+}
+
+export const TDViewByHead = ({ thead, nameTH, children }: { thead: any[], nameTH: string; children: React.ReactNode }) => {
+    return thead.filter((obj) => obj.name === nameTH).length > 0 ? (
+        <td>
+            {children}
+        </td>
+    ) : null
 }

@@ -2,10 +2,16 @@ import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
 
 export const UserService = {
-  login: async (tenant: string, username: string, password: string) => {
+  login: async (
+    tenant: string,
+    username: string,
+    password: string,
+    remember: boolean
+  ) => {
     const response = await BaseService.post(`/${tenant}/API/Auth/login`, {
       username,
       password,
+      persistent: remember,
     });
     return response.data;
   },

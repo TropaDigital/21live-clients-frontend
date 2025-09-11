@@ -129,10 +129,10 @@ export default function AuthLayout() {
                         <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Favoritos" icon={<IconStar />} redirect="folders/bookmarks" />
                     }
                     {verifyPermission('tickets_view') &&
-                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Solicitações" icon={<IconSolicitation />} redirect="Tickets" total={user?.notifications.interactions} />
+                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Solicitações" icon={<IconSolicitation />} redirect="tickets" total={user?.notifications.interactions} />
                     }
                     {verifyPermission('tickets_view') &&
-                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Aprovações" icon={<IconLike />} redirect="Tickets" total={user?.notifications.approval} />
+                        <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Aprovações" icon={<IconLike />} redirect="approval" total={user?.notifications.approval} />
                     }
                 </ul>
 

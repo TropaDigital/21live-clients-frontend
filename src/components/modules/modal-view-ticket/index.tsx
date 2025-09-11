@@ -1,0 +1,501 @@
+import { useEffect, useRef, useState } from 'react';
+import * as S from './styles'
+import { ModalDefault } from '../../UI/modal/modal-default'
+import type { ITicketDetail, ITicketFile, ITicketInteraction, ITicketStatus } from '../../../core/types/ITckets';
+import { useRedirect } from '../../../core/hooks/useRedirect';
+import { TabsDefault } from '../../UI/tabs-default';
+import { TicketService } from '../../../core/services/TicketService';
+import { AvatarUser } from '../../UI/avatar/avatar-user';
+import { BadgeSimpleColor } from '../../UI/badge/badge-simple-color';
+import moment from 'moment';
+import { IconCheck, IconEye, IconHistory, IconHome, IconImage, IconPencil, IconRefresh } from '../../../assets/icons';
+import { ModalViewArchive } from '../modal-view-archive';
+import { useTenant } from '../../../core/contexts/TenantContext';
+import { InputSendTicket } from '../chat/ticket/input-send';
+import { CommentTicket } from '../chat/ticket/comment';
+import { useAuth } from '../../../core/contexts/AuthContext';
+import { Skeleton } from '../../UI/loading/skeleton/styles';
+import { SubmenuSelect } from '../../UI/submenu-select';
+import { IconListBullet } from '../../UI/form/editor-text-slash/icons';
+import { CardOrganization } from '../cards/card-organization';
+import { CardTicketApprove } from '../chat/ticket/card-ticket-approve';
+
+interface IProps {
+    id: string | undefined;
+}
+
+interface IPreviewFile {
+    name: string;
+    path: string;
+}
+
+export const ModalViewTicket = ({ id }: IProps) => {
+
+    const { tenant } = useTenant();
+    const { user } = useAuth();
+    const { redirectSlug } = useRedirect();
+
+    const [opened, setOpened] = useState(false);
+
+    const listRef = useRef<HTMLDivElement>(null);
+
+    const [loadingInteractions, setLoadingInteractions] = useState(true)
+
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<ITicketDetail>({} as ITicketDetail);
+
+    const [reply, setReply] = useState<ITicketInteraction | null>(null)
+
+    const [loadingStatus, setLoadingStatus] = useState(false);
+    const [dataStatus, setDataStatus] = useState<ITicketStatus[]>([])
+
+    const [dataInteractions, setDataInteractions] = useState<ITicketInteraction[]>([])
+    const [dataFiles, setDataFiles] = useState<ITicketFile[]>([])
+
+    const [previewFile, setPreviewFile] = useState<IPreviewFile | null>(null)
+
+    const TABS = ['Interações', 'Aprovações']
+    const [tabSelected, setTabSelected] = useState(TABS[0])
+
+    console.log('loadingStatus', loadingStatus)
+
+    const TABS_INFOS = [
+        {
+            name: 'form',
+            label: 'Solicitação',
+            icon: <IconPencil />,
+            visible: data.fields?.length > 0 || loading ? true : false
+        },
+        {
+            name: 'organization',
+            label: 'Unidade',
+            icon: <IconHome />,
+            visible: data.organization_id || loading ? true : false
+        },
+        {
+            name: 'reference',
+            label: 'Referências',
+            icon: <IconImage />,
+            visible: dataFiles.length > 0 || loading ? true : false
+        },
+        {
+            name: 'materials',
+            label: 'Materiais',
+            icon: <IconListBullet />,
+            visible: true,
+        },
+        {
+            name: 'history',
+            label: 'Historico',
+            icon: <IconHistory />,
+            visible: true,
+        }
+    ]
+
+    const [tabInfoSelected, setTabInfoSelected] = useState(TABS_INFOS[0].name)
+
+    useEffect(() => {
+        setTabSelected(TABS[0])
+        setTabInfoSelected(TABS_INFOS.filter((obj) => obj.visible === true)[0].name)
+    }, [id, loading])
+
+
+    const getData = async () => {
+        setLoading(true);
+        setLoadingInteractions(true);
+        setLoadingStatus(true);
+        const response = await TicketService.getById(Number(id))
+        const responseFiles = await TicketService.getFiles(Number(id))
+        setData({ ...response.item })
+        setDataFiles([...responseFiles.items])
+        setLoading(false);
+
+        const responseInteractions = await TicketService.getInteractions(Number(id))
+        setDataInteractions([...responseInteractions.items])
+        setLoadingInteractions(false);
+
+        const responseStatus = await TicketService.getStatus();
+        setDataStatus([...responseStatus.items])
+        setLoadingStatus(false);
+    }
+
+    useEffect(() => {
+        setOpened(id ? true : false)
+        if (id) getData();
+    }, [id])
+
+    const dataInteractionsFilter = dataInteractions;
+    const dataApprovesFilter = dataInteractions.filter((obj) => obj.status && !obj.reply_id);
+
+    useEffect(() => {
+        if (listRef.current) {
+            listRef.current.scrollTop = listRef.current.scrollHeight;
+        }
+    }, [dataInteractionsFilter, dataApprovesFilter, id]);
+
+    const handleChangeStatus = async (status: ITicketStatus) => {
+        console.log('status', status)
+    }
+
+    /*
+    const handleVote = async (type: 'pass' | 'fail', reply_id: number) => {
+        const payload: any = {
+            ticket_id: id,
+            user_id: user?.user_id,
+            message: 'teste',
+            status: type,
+            reply_id,
+        };
+
+        await TicketService.setInteraction(payload)
+    }
+    */
+
+    return (
+        <ModalDefault
+            padding='0px'
+            paddingHeader='20px 40px 20px 40px'
+            title={`#${id} ${loading ? '' : data?.title}`}
+            layout={"center"}
+            onClose={() => redirectSlug(`/tickets`)}
+            opened={opened}
+            maxWidth='100%'
+        >
+
+            <ModalViewArchive opened={previewFile ? true : false} onClose={() => setPreviewFile(null)} item={{
+                _pk: '',
+                _table: '',
+                aws: true,
+                cmyk: true,
+                created: '',
+                customizable: false,
+                dpi: 320,
+                file_id: 0,
+                folder_id: 0,
+                name: previewFile?.name ?? '',
+                path: previewFile?.path ?? '',
+                publishable: false,
+                social_caption: '',
+                social_hashtags: '',
+                tags: '',
+                tenant_id: 0,
+                thumb: previewFile?.path ?? '',
+                thumbnail: previewFile?.path ?? '',
+                updated: '',
+                url_inline: previewFile?.path ?? '',
+                url_path: previewFile?.path ?? '',
+                user_id: 0,
+            }} />
+
+            <S.Container color={tenant?.colorhigh ?? ''}>
+
+                <div className='infos pd-right'>
+
+                    <div className='item-text'>
+
+                        <div className='label'>
+                            <b>Formulário:</b>
+                            {loading ? <Skeleton width='120px' height='18px' /> :
+                                <span>{data.ticket_cat?.title}</span>
+                            }
+                        </div>
+
+                        <div className='label'>
+                            <b>Data de Criação:</b>
+                            {loading ? <Skeleton width='100px' height='18px' /> :
+                                <span>{moment(data.created).format('DD/MM/YYYY HH:mm')}</span>
+                            }
+                        </div>
+
+                        <div className='label'>
+                            <b>Status:</b>
+                            {loading ? <Skeleton width='80px' height='18px' /> :
+                                <div className='status-change'>
+                                    <SubmenuSelect
+                                        whiteSpace='nowrap'
+                                        submenu={dataStatus.map((item) => {
+                                            return {
+                                                name: item.name,
+                                                onClick: () => handleChangeStatus(item),
+                                                icon: item.ticket_status_id === data.ticket_status_id ? <div className='bullet-color-status' style={{ backgroundColor: item.color }}><IconCheck /></div> : <div className='bullet-color-status' style={{ backgroundColor: item.color }}></div>
+                                            }
+                                        })}>
+                                        <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
+                                        <i className='icon-refresh'>
+                                            <IconRefresh />
+                                        </i>
+                                    </SubmenuSelect>
+                                </div>
+                            }
+                        </div>
+
+                        <div className='label'>
+                            <b>Solicitante:</b>
+                            {loading ? <Skeleton width='25px' height='25px' borderRadius='100px' /> :
+                                <AvatarUser
+                                    name={data.user?.name}
+                                    image={data.user?.avatar}
+                                    size={25}
+                                />
+                            }
+                            <span>{data.user?.name}</span>
+                        </div>
+                    </div>
+
+                    <div className='tabs-infos'>
+                        {loading && [0, 1, 2, 3].map(() =>
+                            <Skeleton height='32px' borderRadius='100px' width='100px' />
+                        )}
+                        {!loading && TABS_INFOS.filter((obj) => obj.visible === true).map((tab) =>
+                            <button onClick={() => setTabInfoSelected(tab.name)} className={`${tab.name === tabInfoSelected ? 'selected' : 'normal'}`}>
+                                <i>
+                                    {tab.icon}
+                                </i>
+                                <span>
+                                    {tab.label}
+                                </span>
+                            </button>
+                        )}
+                    </div>
+
+                    {tabInfoSelected === 'form' &&
+                        <div className='item-text'>
+
+                            {(data?.media?.name || loading) &&
+                                <div className='label'>
+                                    <b>Formato da Peça:</b>
+                                    {loading ? <Skeleton width='100px' height='18px' /> :
+                                        <span>{data?.media.name}</span>
+                                    }
+                                </div>
+                            }
+
+                            {(data.width || loading) &&
+                                <div className='label'>
+                                    <b>Largura:</b>
+                                    {loading ? <Skeleton width='30px' height='18px' /> :
+                                        <span>{data?.width} <i>{data.media?.measure}</i></span>
+                                    }
+                                </div>
+                            }
+                            {(data.height || loading) &&
+                                <div className='label'>
+                                    <b>Altura:</b>
+                                    {loading ? <Skeleton width='30px' height='18px' /> :
+                                        <span>{data?.height} <i>{data.media?.measure}</i></span>
+                                    }
+                                </div>
+                            }
+
+                            {(data?.media?.name && data.width && data.height || loading) &&
+                                <div className='line' />
+                            }
+
+                            {(data?.info || loading) &&
+                                <div className='label column'>
+                                    <b>Informações que devem estar na peça:</b>
+                                    {loading ? <Skeleton width='100px' height='18px' /> :
+                                        <TextMinius text={data?.info} />
+                                    }
+                                </div>
+                            }
+
+                            {(data?.target || loading) &&
+                                <div className='label column'>
+                                    <b>Objetivo a ser atingido com essa solicitação:</b>
+                                    {loading ? <Skeleton width='150px' height='18px' /> :
+                                        <span>{data?.target}</span>
+                                    }
+                                </div>
+                            }
+
+                            {(data?.obs || loading) &&
+                                <div className='label column'>
+                                    <b>Informações Extras e Observações:</b>
+                                    {loading ? <Skeleton width='100px' height='18px' /> :
+                                        <TextMinius text={data?.obs} />
+                                    }
+                                </div>
+                            }
+
+                            {(data?.file_format || loading) &&
+                                <div className='label column'>
+                                    <b>Formato de Arquivo:</b>
+                                    {loading ? <Skeleton width='50px' height='18px' /> :
+                                        <span>{data.file_format}</span>
+                                    }
+                                </div>
+                            }
+
+                            {(data?.fields?.length > 0 && !loading) &&
+                                <div className='line' />
+                            }
+
+                            {!loading && data?.fields?.map((field) =>
+                                <div className='label column'>
+                                    <b>{field.field_name}:</b>
+                                    {loading ? <Skeleton width='140px' height='18px' /> :
+                                        <TextMinius text={field.value} />
+                                    }
+                                </div>
+                            )}
+                        </div>
+                    }
+
+                    {tabInfoSelected === 'organization' &&
+                        <div className='list-organizations'>
+                            <CardOrganization
+                                name={data.organization?.name}
+                                created={data.organization?.created}
+                                logo={data.organization?.logo}
+                            />
+                        </div>
+                    }
+
+                    {tabInfoSelected === 'reference' &&
+                        <div className='list-references'>
+                            {loading && [0, 1, 2, 3, 4, 5, 6].map(() => <Skeleton width='80px' height='80px' borderRadius='10px' />)}
+                            {!loading && dataFiles.map((file, index) =>
+                                <button onClick={() => setPreviewFile({ path: file.path, name: `Referência ${index + 1}` })} style={{ backgroundImage: `url(${file.thumbnail})` }}>
+                                    <span>
+                                        <IconEye />
+                                    </span>
+                                </button>
+                            )}
+                        </div>
+                    }
+
+
+
+                </div>
+
+                <div className='center-row'>
+                    <div className='interactions'>
+                        <TabsDefault
+                            className='tabs'
+                            tabs={TABS}
+                            selected={tabSelected}
+                            onSelected={setTabSelected}
+                        />
+
+                        <div className='conversation'>
+                            {tabSelected === TABS[0] &&
+                                <div className='tab-approve' ref={listRef}>
+
+                                    <div className='list-cards'>
+                                        {!loadingInteractions && dataApprovesFilter.map((item) =>
+                                            <>
+                                                <CardTicketApprove
+                                                    key={`approve-${item.ticket_interaction_id}`}
+                                                    status={item.status ?? 'wait'}
+                                                    name={item.user_name}
+                                                    avatar={item.user_avatar}
+                                                    message={item.message}
+                                                    thumbnail={item.thumbnail}
+                                                    created={item.created}
+                                                    interactions={dataInteractions.filter((obj) => obj.reply_id === item.ticket_interaction_id)}
+                                                    onClick={() => setPreviewFile({ name: item.annex_title, path: item.annex })}
+                                                />
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            }
+
+                            {tabSelected === TABS[1] &&
+                                <div className='list-overflow' ref={listRef}>
+                                    {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
+                                        <CommentTicket
+                                            loading={true}
+                                            name=''
+                                            status={null}
+                                            message={''}
+                                            thumbnail={''}
+                                            created={''}
+                                            position={'left'}
+                                        />
+                                    )}
+                                    {!loadingInteractions && dataInteractionsFilter.map((item) =>
+                                        <CommentTicket
+                                            key={`interaction-${item.ticket_interaction_id}`}
+                                            name={item.user_name}
+                                            avatar={item.user_avatar}
+                                            message={item.message}
+                                            thumbnail={item.thumbnail}
+                                            created={item.created}
+                                            status={item.status ?? null}
+                                            repply={dataInteractions.find((obj) => obj.ticket_interaction_id === item.reply_id)?.message}
+                                            position={user?.user_id === item.user_id ? 'right' : 'left'}
+                                            onClick={() => setPreviewFile({ name: item.annex_title, path: item.annex })}
+                                            onReply={() => setReply(item)}
+                                        />
+                                    )}
+                                </div>
+                            }
+
+                            <div className='input-send' style={{ position: 'relative', zIndex: 8 }}>
+                                <InputSendTicket
+                                    approve={tabSelected === TABS[0] ? true : false}
+                                    id={Number(id)}
+                                    onRemoveReply={() => setReply(null)}
+                                    reply={reply}
+                                    onSubmit={(item, approve) => {
+                                        setDataInteractions((prev) => ([...prev, item]));
+                                        setTabSelected(approve ? TABS[1] : TABS[0])
+                                    }}
+                                />
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </S.Container>
+        </ModalDefault >
+    )
+}
+
+const TextMinius = ({ text }: { text?: string | null | undefined }) => {
+
+    const { tenant } = useTenant();
+
+    const [minius, setMinius] = useState(true);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+    const textRef = useRef<HTMLParagraphElement>(null);
+
+    const stripHtml = (html: string) => {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        return doc.body.textContent || "";
+    };
+
+    const onlyText = stripHtml(text ?? '');
+
+    useEffect(() => {
+        if (textRef.current) {
+            const { scrollWidth, clientWidth } = textRef.current;
+            setIsOverflowing(scrollWidth > clientWidth);
+        }
+    }, [onlyText, text, minius]);
+
+    return (
+        <S.ContainerTextMinius className={`text-minius ${minius ? 'minius' : 'completed'}`}>
+
+            {minius ?
+                <div className='render-text'>
+                    <p ref={textRef}>{onlyText}</p>
+                </div>
+                :
+                <div className='render-text' dangerouslySetInnerHTML={{ __html: text ?? '' }} />
+            }
+
+            {isOverflowing && (
+                <button
+                    style={{ color: tenant?.colormain }}
+                    onClick={() => setMinius(!minius)}
+                >
+                    Mostrar {minius ? "tudo" : "menos"}
+                </button>
+            )}
+        </S.ContainerTextMinius>
+    )
+
+}

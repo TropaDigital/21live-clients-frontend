@@ -113,6 +113,8 @@ export const Container = styled.button.withConfig({
     white-space: nowrap;
     padding: 0px 10px;
     svg {
+      width: 25px;
+      height:25px;
       max-width: 20px;
       max-height: 20px;
     }

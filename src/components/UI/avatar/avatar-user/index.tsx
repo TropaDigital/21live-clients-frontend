@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import * as S from './styles'
 import { useTenant } from '../../../../core/contexts/TenantContext';
+import { theme } from '../../../../assets/theme/theme';
 
-export const AvatarUser = ({ name, image, size = 30, fontSize = 11 }: { name: string, image: string, size?: number, fontSize?: number }) => {
+export const AvatarUser = ({ name, border, image, size = 30, fontSize = 11 }: { name: string, border?: string | null; image: string, size?: number, fontSize?: number }) => {
 
     const { tenant } = useTenant();
 
@@ -16,7 +17,7 @@ export const AvatarUser = ({ name, image, size = 30, fontSize = 11 }: { name: st
     }, [image])
 
     return (
-        <S.Container style={{ minWidth: size, minHeight: size, width: size, height: size }}>
+        <S.Container style={{ minWidth: size, minHeight: size, width: size, height: size, border: border ? `2px solid ${theme.colors.background.default}` : 'none', boxShadow: border ? `0px 0px 0px 2px ${border}` : 'none' }}>
             {!imageExist &&
                 <div className='name' style={{ fontSize, backgroundColor: tenant?.colormain, color: tenant?.colorsecond }}>
                     {name ? name.slice(0, 2) : null}
