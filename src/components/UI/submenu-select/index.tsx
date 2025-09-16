@@ -51,6 +51,8 @@ export const SubmenuSelect = ({
     const refSubmenu = useRef<any>(null)
     const refMenu = useRef<any>(null)
 
+    const refChildrenRight = useRef<HTMLDivElement>(null)
+
     const [menuRect, setMenuRect] = useState({
         widthMenu: 0,
         heightMenu: 0,
@@ -113,13 +115,15 @@ export const SubmenuSelect = ({
             heightWindow={window.innerHeight}
             position={position}
             whiteSpace={whiteSpace}
+
+            widthChildrenRight={refChildrenRight.current?.clientWidth}
         >
 
             {label && <p className='label'>{label}</p>}
             {description && <p className='description'>{description}</p>}
 
             <div ref={refMenu} className='row'>
-                <div className='content-button' onClick={handleOpenMenu}>
+                <div className={`content-button`} onClick={handleOpenMenu}>
                     {children ? children : search ?
                         <input /> :
                         <button type='button'>
@@ -127,7 +131,11 @@ export const SubmenuSelect = ({
                         </button>
                     }
                 </div>
-                {childrenRight}
+                {childrenRight &&
+                    <div ref={refChildrenRight} className='children-right'>
+                        {childrenRight}
+                    </div>
+                }
             </div>
 
             {opened &&

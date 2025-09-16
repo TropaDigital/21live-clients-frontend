@@ -42,7 +42,7 @@ export const Container = styled.div.withConfig({
     gap: 20px;
   }
   > .infos {
-    width: 630px;
+    width: 530px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -52,6 +52,9 @@ export const Container = styled.div.withConfig({
     overflow: auto;
     padding-bottom: 30px;
     padding-top: 30px;
+    @media (max-width: 1500px) {
+      width: 380px;
+    }
     &.pd-right {
       padding-right: 20px;
     }
@@ -132,19 +135,6 @@ export const Container = styled.div.withConfig({
         }
         .status-change {
           cursor: pointer;
-          .bullet-color-status {
-            width: 22px;
-            height: 22px;
-            border-radius: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            svg {
-              width: 15px;
-              height: 15px;
-            }
-          }
           .content-button {
             display: flex;
             gap: 5px;
@@ -331,6 +321,7 @@ export const Container = styled.div.withConfig({
           flex-wrap: wrap;
           gap: 15px;
           flex-direction: unset;
+          width: 100%;
         }
       }
       .input-send {
@@ -370,5 +361,19 @@ export const ContainerTextMinius = styled.div`
     &:hover {
       text-decoration: underline;
     }
+  }
+`;
+
+export const BulletStatus = styled.div`
+  width: 22px;
+  height: 22px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  svg {
+    width: 15px;
+    height: 15px;
   }
 `;

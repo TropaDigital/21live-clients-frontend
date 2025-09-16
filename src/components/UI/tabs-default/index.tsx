@@ -1,4 +1,5 @@
 import { useTenant } from '../../../core/contexts/TenantContext';
+import { Skeleton } from '../loading/skeleton/styles';
 import * as S from './styles'
 
 interface IProps {
@@ -7,9 +8,10 @@ interface IProps {
     tabs: string[];
     style?: React.StyleHTMLAttributes<Element>
     className?: string;
+    loading?: boolean;
 }
 
-export const TabsDefault = ({ className = "", style, onSelected, selected, tabs }: IProps) => {
+export const TabsDefault = ({ loading, className = "", style, onSelected, selected, tabs }: IProps) => {
 
     const { tenant } = useTenant();
 
@@ -21,7 +23,8 @@ export const TabsDefault = ({ className = "", style, onSelected, selected, tabs 
             style={style}
             className={className}
         >
-            {tabs.map((item) =>
+            {loading && [0, 1].map(() => <button><Skeleton width='50px' height='15px' /></button>)}
+            {!loading && tabs.map((item) =>
                 <button onClick={() => onSelected(item)} className={`${selected === item ? 'active' : 'normal'}`}>
                     {item}
                 </button>

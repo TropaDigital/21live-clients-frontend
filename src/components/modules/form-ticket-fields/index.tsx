@@ -5,7 +5,7 @@ import { useAlert } from '../../../core/contexts/AlertContext';
 import { useAuth } from '../../../core/contexts/AuthContext';
 
 import { TicketService } from '../../../core/services/TicketService';
-import type { ITicketCat, ITicketField } from '../../../core/types/ITckets';
+import type { ITicketCat, ITicketDetail, ITicketField } from '../../../core/types/ITckets';
 import type { IMedia } from '../../../core/types/IMedia';
 import type { IOptionSelect } from '../../UI/form/select-multiple';
 
@@ -30,34 +30,31 @@ interface IProps {
     id: number | null;
     admin: boolean;
     data: ITicketCat;
+    DTOEdit?: ITicketDetail;
     loading?: boolean;
     onSubmit?: (data: any) => void;
+    onChangeDTO?: ({ DTO, DTOFields, files }: { DTO: any, DTOFields: any; files: IFileInputUpload[] }) => void;
     dataFields: ITicketField[];
-    onChangeField(data: ITicketField): void;
+    onChangeField?(data: ITicketField): void;
     onChangeFields?(data: ITicketField[]): void;
     dataMedias: IMedia[];
 }
 
-export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataFields, onChangeFields, dataMedias }: IProps) => {
+export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, onChangeDTO, dataFields, onChangeFields, dataMedias }: IProps) => {
 
-    const { user } = useAuth();
+    const { user, verifyPermission } = useAuth();
     const { addAlert } = useAlert();
     const { redirectSlug } = useRedirect();
     const { tenant, organizations, loadingOrganization, users, loadingUsers } = useTenant();
-
-    const [loadingSubmit, setLoadingSubmit] = useState(false)
 
     const [dataUsers, setDataUsers] = useState<IOptionSelect[]>([])
 
     const [DTO, setDTO] = useState<any>({
         user_id: user?.user_id,
-        organization_id: user?.organization_id
+        organization_id: null
     })
     const [DTOFields, setDTOFields] = useState<any>({});
     const [files, setFiles] = useState<IFileInputUpload[]>([])
-
-    console.log('files', files)
-    console.log('loadingSubmit', loadingSubmit)
 
     const [searchParams] = useSearchParams();
     const modal = searchParams.get("modal");
@@ -72,6 +69,71 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     const [DTOModal, setDTOModal] = useState<ITicketField>({ ordem: 1, type: 'input' } as ITicketField);
 
     useEffect(() => {
+        if (organizations.length > 0) {
+            setDTO((prev: any) => ({ ...prev, organization_id: organizations[0].organization_id }))
+        }
+        if (data.default_media_id) {
+            setDTO((prev: any) => ({ ...prev, media_id: data.default_media_id }))
+        }
+    }, [organizations, data]);
+
+    useEffect(() => {
+        if (DTOEdit?.ticket_id) {
+
+            setDTO({
+                title: DTOEdit.title,
+                organization_id: DTOEdit.organization_id,
+                user_id: DTOEdit.user_id,
+                width: DTOEdit.width,
+                height: DTOEdit.height,
+                media_id: DTOEdit.media_id,
+                info: DTOEdit.info,
+                target: DTOEdit.target,
+                file_format: DTOEdit.file_format,
+                obs: DTOEdit.obs
+            })
+
+
+            DTOEdit.fields.forEach((item) => {
+
+                let findCat: ITicketField | undefined = dataFields.find((obj) => obj.ticketcat_field_id === item.ticketcat_field_id)
+
+                console.log('findCat', findCat, item)
+                if (findCat?.type === 'input' || findCat?.type === 'textarea') {
+                    DTOFields[item.ticketcat_field_id] = item.value
+                } else if (findCat?.type === 'select') {
+                    DTOFields[item.ticketcat_field_id] = {
+                        name: item.value,
+                        value: item.value,
+                    }
+                } else if (findCat?.type === 'selmultiple') {
+                    DTOFields[item.ticketcat_field_id] = item.value.split(',').map((row: string) => {
+                        return {
+                            name: row,
+                            value: row,
+                        }
+                    })
+                }
+            });
+
+            //setDTOFields({ ...DTOFields })
+        } else {
+            setDTO({
+                organization_id: DTO.organization_id,
+                user_id: DTO.user_id,
+                media_id: DTO.media_id
+            })
+            setDTOFields({})
+        }
+    }, [DTOEdit])
+
+    useEffect(() => {
+        if (onChangeDTO) {
+            onChangeDTO({ DTO, DTOFields, files })
+        }
+    }, [DTO, DTOFields, files])
+
+    useEffect(() => {
         if (modal === 'new') {
             redirectSlug(`settings/ticket-forms/${id}`)
         }
@@ -83,19 +145,6 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
 
     const handleChangeDTOField = (name: string, value: string) => {
         setDTOFields((prev: any) => ({ ...prev, [name]: value }))
-    }
-
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        try {
-            setLoadingSubmit(true);
-            alert('enviar backend');
-            if (onSubmit) onSubmit(DTOFields);
-            setLoadingSubmit(false);
-        } catch (error) {
-            console.error('Error saving form:', error);
-            setLoadingSubmit(false);
-        }
     }
 
     useEffect(() => {
@@ -230,7 +279,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     };
 
     const SELECTED_USER = dataUsers.find((obj) => Number(obj.value) === Number(DTO.user_id));
-    const SELECTED_ORGANIZATION = organizations.find((obj) => obj.organization_id);
+    const SELECTED_ORGANIZATION = organizations.find((obj) => obj.organization_id === DTO.organization_id);
 
     const LIST_MEDIAS = dataMedias.map((item) => {
         return {
@@ -244,7 +293,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
 
     return (
         <>
-            <S.Container admin={admin} color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond} onSubmit={handleSubmit}>
+            <S.Container admin={admin} color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
 
                 <ModalConfirm
                     title="Atenção"
@@ -272,59 +321,71 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                         <div className='column-input'>
                             <InputDefault
                                 label='Título da Solicitação'
+                                value={DTO.title}
                                 onChange={(e) => handleChangeDTO('title', e.target.value)}
                                 disabled={admin}
+                                loading={loading}
                             />
                         </div>
                     }
 
-                    <div className='row-input'>
-                        {admin ?
-                            <InputDefault
-                                label='Usuário'
-                                value={SELECTED_USER?.name}
-                                disabled={admin}
-                            />
-                            :
-                            <SelectDefault
-                                label='Usuário'
-                                options={dataUsers}
-                                value={{
-                                    name: SELECTED_USER?.name ?? '',
-                                    value: SELECTED_USER?.value ?? '',
-                                    avatar: SELECTED_USER?.avatar,
-                                }}
-                                onChange={(e) => handleChangeDTO('user_id', e.value)}
-                                loading={loadingUsers || loading}
-                                search
-                            />
-                        }
-
-                        {admin ?
-                            <InputDefault
-                                label='Unidade'
-                                value={SELECTED_ORGANIZATION?.name}
-                                disabled={admin}
-                            />
-                            :
-                            <SelectDefault
-                                label='Unidade'
-                                options={organizations.map((item) => {
-                                    return {
-                                        name: item.name,
-                                        value: String(item.organization_id),
+                    {(verifyPermission('tickets_anyunit') || verifyPermission('tickets_asuser')) &&
+                        <div className='row-input'>
+                            {admin ?
+                                <InputDefault
+                                    label='Usuário'
+                                    value={SELECTED_USER?.name}
+                                    disabled={admin}
+                                />
+                                :
+                                <>
+                                    {verifyPermission('tickets_asuser') &&
+                                        <SelectDefault
+                                            label='Usuário'
+                                            options={dataUsers}
+                                            value={{
+                                                name: SELECTED_USER?.name ?? '',
+                                                value: SELECTED_USER?.value ?? '',
+                                                avatar: SELECTED_USER?.avatar,
+                                            }}
+                                            onChange={(e) => handleChangeDTO('user_id', e.value)}
+                                            loading={loadingUsers || loading}
+                                            search
+                                        />
                                     }
-                                })}
-                                value={{
-                                    name: SELECTED_ORGANIZATION?.name ?? '',
-                                    value: String(SELECTED_ORGANIZATION?.organization_id) ?? '',
-                                }}
-                                onChange={(e) => handleChangeDTO('organization_id', e.value)}
-                                loading={loadingOrganization || loading}
-                                search
-                            />
-                        }
-                    </div>
+                                </>
+                            }
+
+                            {admin ?
+                                <InputDefault
+                                    label='Unidade'
+                                    value={SELECTED_ORGANIZATION?.name}
+                                    disabled={admin}
+                                />
+                                :
+                                <>
+                                    {verifyPermission('tickets_anyunit') &&
+                                        <SelectDefault
+                                            label='Unidade'
+                                            options={organizations.map((item) => {
+                                                return {
+                                                    name: item.name,
+                                                    value: String(item.organization_id),
+                                                }
+                                            })}
+                                            value={{
+                                                name: SELECTED_ORGANIZATION?.name ?? 'Nenhum selecionado',
+                                                value: String(SELECTED_ORGANIZATION?.organization_id) ?? '',
+                                            }}
+                                            onChange={(e) => handleChangeDTO('organization_id', e.value)}
+                                            loading={loadingOrganization || loading}
+                                            search
+                                        />
+                                    }
+                                </>
+                            }
+                        </div>
+                    }
 
                     {data.use_media &&
                         <>
@@ -335,6 +396,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                             label='Formato da Peça solicitada'
                                             disabled={true}
                                             value={SELECETED_MEDIA?.name}
+                                            loading={loading}
                                         />
                                     </div>
                                     <div className='row-input'>
@@ -346,6 +408,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                             icon={<IconWidth />}
                                             type='number'
                                             disabled={admin}
+                                            loading={loading}
                                         />
                                         <InputDefault
                                             label='Altura'
@@ -355,6 +418,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                             icon={<IconHeight />}
                                             type='number'
                                             disabled={admin}
+                                            loading={loading}
                                         />
                                     </div>
                                 </>
@@ -365,6 +429,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                             label='Formato da Peça solicitada'
                                             disabled={true}
                                             value={SELECETED_MEDIA?.name}
+                                            loading={loading}
                                         />
                                         :
                                         <SelectDefault
@@ -373,7 +438,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                             options={LIST_MEDIAS}
                                             disabled={data.default_media_id ? true : false}
                                             value={{
-                                                name: SELECETED_MEDIA?.name ?? 'Nenhum pré selecionado',
+                                                name: SELECETED_MEDIA?.name ?? 'Nenhum selecionado',
                                                 value: SELECETED_MEDIA?.value ?? ''
                                             }}
                                             isValidEmpty='Nenhum pré selecionado'
@@ -390,14 +455,16 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                 <h2>Informações que devem estar na peça</h2>
                             </div>
                             <div className='column-input'>
-                                <ContainerEditorStatic disabled={admin} style={{ minHeight: 80 }}>
-                                    {!admin &&
-                                        <EditorTextSlash
-                                            value={DTO.info}
-                                            onChange={(value) => !admin ? handleChangeDTO('info', value) : undefined}
-                                        />
-                                    }
-                                </ContainerEditorStatic>
+                                {!admin ?
+                                    <EditorTextSlash
+                                        loading={loading}
+                                        layout='static'
+                                        value={DTO.info}
+                                        onChange={(value) => !admin ? handleChangeDTO('info', value) : undefined}
+                                    />
+                                    :
+                                    <ContainerEditorStatic disabled={admin} style={{ minHeight: 80 }}></ContainerEditorStatic>
+                                }
                             </div>
 
                             <div className='column-input'>
@@ -406,6 +473,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                     value={DTO.target}
                                     onChange={((e) => handleChangeDTO('target', e.target.value))}
                                     disabled={admin}
+                                    loading={loading}
                                 />
                                 <InputDefault
                                     label='Formato de Arquivo'
@@ -413,6 +481,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                     value={DTO.file_format}
                                     onChange={((e) => handleChangeDTO('file_format', e.target.value))}
                                     disabled={admin}
+                                    loading={loading}
                                 />
                             </div>
 
@@ -420,20 +489,22 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                 <h2>Informações Extras e Observações</h2>
                             </div>
                             <div className='column-input'>
-                                <ContainerEditorStatic disabled={admin} style={{ minHeight: 80 }}>
-                                    {!admin &&
-                                        <EditorTextSlash
-                                            value={DTO.obs}
-                                            onChange={(value) => handleChangeDTO('obs', value)}
-                                        />
-                                    }
-                                </ContainerEditorStatic>
+                                {!admin ?
+                                    <EditorTextSlash
+                                        loading={loading}
+                                        layout='static'
+                                        value={DTO.obs}
+                                        onChange={(value) => handleChangeDTO('obs', value)}
+                                    />
+                                    :
+                                    <ContainerEditorStatic disabled={admin} style={{ minHeight: 80 }}></ContainerEditorStatic>
+                                }
                             </div>
                         </>
                     }
                 </div>
 
-                {(admin || (!admin && dataFields.length > 0)) &&
+                {((admin || loading) || (!admin && dataFields.length > 0)) &&
                     <div className={`${admin ? 'editable-fields' : 'inputs'}`}>
 
                         {admin &&
@@ -450,18 +521,18 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
 
                         {loading &&
                             [0, 1, 2].map((load) =>
-                                <InputLoad key={`load-input-${load}`} />
+                                <InputLoad admin={admin} key={`load-input-${load}`} />
                             )
                         }
 
-                        {!admin && dataFields.length > 0 &&
+                        {!admin && (!loading && dataFields.length > 0) &&
                             <div className='list-inputs'>
                                 {dataFields.map((field) =>
                                     <RenderField
                                         admin={false}
                                         field={field}
-                                        value={DTOFields[`fields-${field.ticketcat_field_id}`] ?? ''}
-                                        onChange={(value) => handleChangeDTOField(`fields-${field.ticketcat_field_id}`, value)}
+                                        value={DTOFields[`${field.ticketcat_field_id}`] ?? ''}
+                                        onChange={(value) => handleChangeDTOField(`${field.ticketcat_field_id}`, value)}
                                     />
                                 )}
                             </div>
@@ -483,8 +554,8 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                                     <RenderField
                                         admin={true}
                                         field={field}
-                                        value={DTOFields[`fields-${field.ticketcat_field_id}`] ?? ''}
-                                        onChange={(value) => handleChangeDTOField(`fields-${field.ticketcat_field_id}`, value)}
+                                        value={DTOFields[`${field.ticketcat_field_id}`] ?? ''}
+                                        onChange={(value) => handleChangeDTOField(`${field.ticketcat_field_id}`, value)}
                                         onClickAction={handleModal}
                                         loadingDuplicate={loadingDuplicate === field.ticketcat_field_id}
                                     />
@@ -502,7 +573,7 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
                     </div>
                 }
 
-                {data.allow_files &&
+                {(data.allow_files && !DTOEdit?.ticket_id) &&
                     <div className='inputs'>
 
                         {admin &&
@@ -537,8 +608,8 @@ export const FormTicketFields = ({ id, admin, data, loading, onSubmit, dataField
     )
 }
 
-export const InputLoad = () => (
-    <div className='column-input'>
+export const InputLoad = ({ admin }: { admin: boolean }) => (
+    <div className='column-input' style={{ padding: admin ? `0px 30px` : `0px` }}>
         <div className='fake-input'>
             <div>
                 <Skeleton widthAuto={true} height='18px' />

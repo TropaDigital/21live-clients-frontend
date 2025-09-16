@@ -124,6 +124,7 @@ export const CardLink = ({ onDelete, onEdit, type, item }: IProps) => {
                     verifyPermission('links_edit') && setIsOver(true);
                 }}
                 onDragLeave={() => setIsOver(false)}
+                onDragEnd={() => setIsOver(false)}
                 color={tenant?.colorhigh}
                 colorBg={tenant?.colormain}
                 colorText={tenant?.colorsecond}

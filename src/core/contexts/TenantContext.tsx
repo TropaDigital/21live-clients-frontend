@@ -6,6 +6,8 @@ import type { IOrganization, IOrganizationGroup } from '../types/IOrganization';
 import { OrganizationService } from '../services/OrganizationService';
 import type { IUser } from '../types/iUser';
 import { UserService } from '../services/UserService';
+import type { ITicketCat, ITicketStatus } from '../types/ITckets';
+import { TicketService } from '../services/TicketService';
 
 // Definição da interface para o contexto do Tenant
 interface TenantContextType {
@@ -33,6 +35,16 @@ interface TenantContextType {
     getUsers(): void;
     users: IUser[];
     loadingUsers: boolean;
+
+    //ticket cats
+    getTicketCats(): void;
+    ticketCats: ITicketCat[];
+    loadingTicketCats: boolean;
+
+    //ticket status
+    getTicketStatus(): void;
+    ticketStatus: ITicketStatus[];
+    loadingTicketStatus: boolean;
 }
 
 // Criação do contexto com um valor inicial de null
@@ -55,6 +67,12 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
 
     const [organizations, setOrganizations] = useState<IOrganization[]>([])
     const [loadingOrganization, setLoadingOrganization] = useState(false);
+
+    const [loadingTicketCats, setLoadingTicketCats] = useState(false)
+    const [ticketCats, setTicketCats] = useState<ITicketCat[]>([])
+
+    const [loadingTicketStatus, setLoadingTicketStatus] = useState(false)
+    const [ticketStatus, setTicketStatus] = useState<ITicketStatus[]>([])
 
     const [organizationsGroup, setOrganizationsGroup] = useState<IOrganizationGroup[]>([])
     const [loadingOrganizatonsGroup, setLoadingOrganizationsGroup] = useState(false)
@@ -134,6 +152,20 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
         }
     }
 
+    const getTicketCats = async () => {
+        setLoadingTicketCats(true);
+        const response = await TicketService.getCats(1, 2000, undefined, undefined, undefined, true);
+        setTicketCats([...response.items])
+        setLoadingTicketCats(false);
+    }
+
+    const getTicketStatus = async () => {
+        setLoadingTicketStatus(true);
+        const response = await TicketService.getStatus(1, 2000, undefined, undefined, undefined);
+        setTicketStatus([...response.items])
+        setLoadingTicketStatus(false);
+    }
+
     return (
         <TenantContext.Provider value={{
             getTenant,
@@ -151,8 +183,15 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
             loadingOrganizatonsGroup,
             getUsers,
             users,
-            loadingUsers
+            loadingUsers,
 
+            getTicketCats,
+            ticketCats,
+            loadingTicketCats,
+
+            getTicketStatus,
+            ticketStatus,
+            loadingTicketStatus,
         }}>
             {children}
         </TenantContext.Provider>

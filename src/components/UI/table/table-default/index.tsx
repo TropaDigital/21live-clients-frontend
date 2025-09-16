@@ -168,7 +168,7 @@ export const TableDefault = <T,>({
                                     }
                                 })}
                             >
-                                <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
+                                <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" variant="info" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
                                     <IconEye />
                                 </ButtonDefault>
                             </SubmenuSelect>
@@ -176,8 +176,8 @@ export const TableDefault = <T,>({
                     }
                     {(download) &&
                         <>
-                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant='success' icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
-                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar CSV" disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='light' icon={<IconCSV />} onClick={() => handleDownload('CSV')} />
+                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant="secondary" icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
+                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar CSV" disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='dark' icon={<IconCSV />} onClick={() => handleDownload('CSV')} />
                         </>
                     }
                 </div>

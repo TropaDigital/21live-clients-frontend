@@ -95,6 +95,8 @@ export default function Folder() {
     const query = new URLSearchParams(window.location.search);
     const search = query.get('search');
 
+    const [page, setPage] = useState(1)
+
     useEffect(() => {
         const PermissionButotns: ISubmenuSelect[] = [];
 
@@ -147,14 +149,16 @@ export default function Folder() {
         }
 
         setOptionButtonAdd([...PermissionButotns])
-    }, [role, id])
+    }, [role, id]);
 
     const getData = async () => {
         setLoadingFolder(true);
         const response = await FoldersService.get({
             id: id,
             sort: order.value,
-            search: search
+            search: search,
+            page,
+            limit: 1
         });
         const newBreadcrumb: IPropsBreadcrumb[] = response.item.breacrumb.map((item: IFolderBreadcrumb, key: number) => {
             return {
@@ -190,8 +194,10 @@ export default function Folder() {
             newFolders.push(fol)
         })
         folder.children.folders = newFolders;
+        folder.childrenCount.folders++;
         setFolder({ ...folder });
         setShowAddFolder(false);
+
     }
 
     const handleToggleCheckArchives = (file_id: number) => {
@@ -218,15 +224,19 @@ export default function Folder() {
 
         switch (type) {
             case 'folder':
+                folder.childrenCount.folders--;
                 folder.children.folders = folder.children.folders.filter((obj) => obj.folder_id !== id);
                 break;
             case 'file':
+                folder.childrenCount.files--;
                 folder.children.files = folder.children.files.filter((obj) => obj.file_id !== id);
                 break;
             case 'video':
+                folder.childrenCount.videos--;
                 folder.children.videos = folder.children.videos.filter((obj) => obj.video_id !== id);
                 break;
             case 'link':
+                folder.childrenCount.links--;
                 folder.children.links = folder.children.links.filter((obj) => obj.link_id !== id);
                 break;
         }
@@ -250,6 +260,7 @@ export default function Folder() {
                     newFile.push(row)
                 })
                 folder.children.files = newFile;
+                folder.childrenCount.files++;
                 setFolder({ ...folder });
             }
         } else {
@@ -269,6 +280,7 @@ export default function Folder() {
                 folder.children.videos.map((row) => {
                     newVideo.push(row)
                 })
+                folder.childrenCount.videos++;
                 folder.children.videos = newVideo;
                 setFolder({ ...folder });
             }
@@ -288,6 +300,7 @@ export default function Folder() {
                 folder.children.links.map((row) => {
                     newLink.push(row)
                 })
+                folder.childrenCount.links++;
                 folder.children.links = newLink;
                 setFolder({ ...folder });
             }
@@ -305,6 +318,7 @@ export default function Folder() {
             setLoadingActionArchive(true);
             for (const id of checkeds) {
                 await FilesService.delete({ id })
+                folder.childrenCount.files--;
                 folder.children.files = folder.children.files.filter((obj) => Number(obj.file_id) !== Number(id));
                 setFolder({ ...folder })
                 setArchivesChecked((prevState) => prevState.filter((obj) => obj !== id));
@@ -334,6 +348,7 @@ export default function Folder() {
 
     const handleAddFilesUpload = async (item: IFolderFileItem) => {
         folder.children.files.push(item);
+        folder.childrenCount.files++;
         setFolder({ ...folder })
     }
 
@@ -465,53 +480,6 @@ export default function Folder() {
                 </RenderTab>
             }
 
-            <ModalEditArchive
-                item={modalEditArchive}
-                opened={modalEditArchive.opened}
-                onClose={() => setModalEdiArchive({} as IPropsModalArchive)}
-                onDelete={(id) => handleOnRemoveChildren('file', Number(id))}
-                onSave={(type, item) => handleSaveLArchive(type, item)}
-                onView={(item) => setModalViewArchive(item)}
-            />
-            {(loadingFolder || folder.children.files.length > 0) &&
-                <RenderTab
-                    totalItems={loadingFolder ? undefined : folder.children?.files?.length}
-                    checkeds={loadingFolder ? undefined : archivesChecked}
-                    onCheck={loadingFolder ? undefined : handleToggleCheckAllArchives}
-                    loadingAction={loadingActionArchive}
-                    onActionSelected={(e) => handleActionArchive(e, archivesChecked)}
-                    name='Arquivos' icon={<IconArchiveMultiple />}
-                >
-                    <ModalViewArchive
-                        item={modalViewArchive}
-                        opened={modalViewArchive.file_id ? true : false}
-                        onClose={() => setModalViewArchive({} as IFolderFileItem)}
-                    />
-                    <ModalMoveArchive
-                        item={modalMoveArchives}
-                        opened={modalMoveArchives.length ? true : false}
-                        onClose={() => setModalMoveArchives([])}
-                        onSave={(item) => { handleOnRemoveChildren('file', item); setArchivesChecked((prev) => ([...prev.filter((obj) => obj !== item)])) }}
-                        folder_id={id}
-                    />
-                    <div className={`list-archives ${typeCard}`}>
-                        {loadingFolder && <CardArchiveLoading type={typeCard} quantity={'random'} />}
-                        {!loadingFolder && folder.children?.files?.map((item) =>
-                            <CardArchive
-                                checked={archivesChecked.filter((obj) => obj === item.file_id).length ? true : false}
-                                onChecked={() => handleToggleCheckArchives(item.file_id)}
-                                type={typeCard}
-                                key={`folder-archive-${item.file_id}`}
-                                item={item}
-                                onView={() => setModalViewArchive(item)}
-                                onDelete={(type, id) => handleOnRemoveChildren(type, Number(id))}
-                                onEdit={(e) => setModalEdiArchive({ ...e, opened: true })}
-                            />
-                        )}
-                    </div>
-                </RenderTab>
-            }
-
             <ModalEditVideo
                 item={modalEditVideo}
                 opened={modalEditVideo.opened}
@@ -560,6 +528,53 @@ export default function Folder() {
                                 item={item}
                                 onDelete={(type, id) => handleOnRemoveChildren(type, Number(id))}
                                 onEdit={(e) => setModalEditLink({ ...e, opened: true })}
+                            />
+                        )}
+                    </div>
+                </RenderTab>
+            }
+
+            <ModalEditArchive
+                item={modalEditArchive}
+                opened={modalEditArchive.opened}
+                onClose={() => setModalEdiArchive({} as IPropsModalArchive)}
+                onDelete={(id) => handleOnRemoveChildren('file', Number(id))}
+                onSave={(type, item) => handleSaveLArchive(type, item)}
+                onView={(item) => setModalViewArchive(item)}
+            />
+            {(loadingFolder || folder.children.files.length > 0) &&
+                <RenderTab
+                    totalItems={loadingFolder ? undefined : folder.children?.files?.length}
+                    checkeds={loadingFolder ? undefined : archivesChecked}
+                    onCheck={loadingFolder ? undefined : handleToggleCheckAllArchives}
+                    loadingAction={loadingActionArchive}
+                    onActionSelected={(e) => handleActionArchive(e, archivesChecked)}
+                    name='Arquivos' icon={<IconArchiveMultiple />}
+                >
+                    <ModalViewArchive
+                        item={modalViewArchive}
+                        opened={modalViewArchive.file_id ? true : false}
+                        onClose={() => setModalViewArchive({} as IFolderFileItem)}
+                    />
+                    <ModalMoveArchive
+                        item={modalMoveArchives}
+                        opened={modalMoveArchives.length ? true : false}
+                        onClose={() => setModalMoveArchives([])}
+                        onSave={(item) => { handleOnRemoveChildren('file', item); setArchivesChecked((prev) => ([...prev.filter((obj) => obj !== item)])) }}
+                        folder_id={id}
+                    />
+                    <div className={`list-archives ${typeCard}`}>
+                        {loadingFolder && <CardArchiveLoading type={typeCard} quantity={'random'} />}
+                        {!loadingFolder && folder.children?.files?.map((item) =>
+                            <CardArchive
+                                checked={archivesChecked.filter((obj) => obj === item.file_id).length ? true : false}
+                                onChecked={() => handleToggleCheckArchives(item.file_id)}
+                                type={typeCard}
+                                key={`folder-archive-${item.file_id}`}
+                                item={item}
+                                onView={() => setModalViewArchive(item)}
+                                onDelete={(type, id) => handleOnRemoveChildren(type, Number(id))}
+                                onEdit={(e) => setModalEdiArchive({ ...e, opened: true })}
                             />
                         )}
                     </div>

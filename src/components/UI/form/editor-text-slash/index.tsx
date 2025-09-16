@@ -32,14 +32,21 @@ import js from 'highlight.js/lib/languages/javascript';
 import ts from 'highlight.js/lib/languages/typescript';
 import html from 'highlight.js/lib/languages/xml';
 import { all, createLowlight } from 'lowlight';
+import { Skeleton } from '../../loading/skeleton/styles';
 
 const EditorTextSlash = ({
   projectId,
   value,
+  loading,
+  layout = 'fixed',
+  enableCommands = true,
   onChange
 }: {
   projectId?: string;
   value: string;
+  loading?: boolean;
+  layout?: 'fixed' | 'static';
+  enableCommands?: boolean;
   onChange?(value: string): void;
 }) => {
   const refContainer = useRef<HTMLDivElement | any>(null);
@@ -72,7 +79,7 @@ const EditorTextSlash = ({
       TableHeader,
       TableCell,
       TextAlign.configure({ types: ['heading', 'paragraph', 'image', 'tableCell'] }),
-      Placeholder.configure({ placeholder: 'Digite "/" para ver os comandos' }),
+      Placeholder.configure({ placeholder: enableCommands ? 'Digite "/" para ver os comandos' : 'Digite aqui' }),
       Underline,
       TextStyle,
       Color,
@@ -174,11 +181,13 @@ const EditorTextSlash = ({
 
   useEffect(() => {
     if (editor && editor.getHTML() !== value) {
-      console.log('value', value);
       setTimeout(() => {
-        editor.commands.setContent(
-          value.replaceAll('width="auto"', '').replaceAll('height="auto"', '')
-        );
+
+        if (value) {
+          editor.commands.setContent(
+            value.replaceAll('width="auto"', '').replaceAll('height="auto"', '')
+          );
+        }
       }, 500);
     }
   }, [value, editor]);
@@ -326,12 +335,10 @@ const EditorTextSlash = ({
   }, [editor, onChange]);
 
   return (
-    <S.Container ref={refContainer}>
-
-      <EditorContent className="editor-text-slash" editor={editor} />
+    <S.Container layout={layout} ref={refContainer}>
 
       {/* Menu de comandos (slash) */}
-      {showCommands && onChange && (
+      {showCommands && enableCommands && onChange && (
         <MenuVertical
           editor={editor}
           projectId={projectId}
@@ -347,8 +354,9 @@ const EditorTextSlash = ({
       )}
 
       {/* Menu flutuante de formatação */}
-      {isTextSelected && onChange && (
+      {((isTextSelected && onChange) || layout === 'static') && (
         <MenuHorizontal
+          layout={layout}
           editor={editor}
           textColor={textColor}
           backgroundColor={backgroundColor}
@@ -365,6 +373,12 @@ const EditorTextSlash = ({
           menuRef={refMenuHorizontal}
         />
       )}
+
+      {loading ?
+        <Skeleton height='58px' />
+        :
+        <EditorContent className="editor-text-slash" editor={editor} />
+      }
     </S.Container>
   );
 };

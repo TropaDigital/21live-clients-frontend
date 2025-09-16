@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from './styles'
 import { ModalDefault } from '../../UI/modal/modal-default'
-import type { ITicketDetail, ITicketFile, ITicketInteraction, ITicketStatus } from '../../../core/types/ITckets';
+import type { ITicket, ITicketDetail, ITicketFile, ITicketInteraction, ITicketStatus } from '../../../core/types/ITckets';
 import { useRedirect } from '../../../core/hooks/useRedirect';
 import { TabsDefault } from '../../UI/tabs-default';
 import { TicketService } from '../../../core/services/TicketService';
@@ -19,9 +19,11 @@ import { SubmenuSelect } from '../../UI/submenu-select';
 import { IconListBullet } from '../../UI/form/editor-text-slash/icons';
 import { CardOrganization } from '../cards/card-organization';
 import { CardTicketApprove } from '../chat/ticket/card-ticket-approve';
+import { ModalViewInteraction } from '../modal-view-interaction';
 
 interface IProps {
     id: string | undefined;
+    onUpdate(name: string, value: any): void;
 }
 
 interface IPreviewFile {
@@ -29,10 +31,10 @@ interface IPreviewFile {
     path: string;
 }
 
-export const ModalViewTicket = ({ id }: IProps) => {
+export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
     const { tenant } = useTenant();
-    const { user } = useAuth();
+    const { user, verifyPermission } = useAuth();
     const { redirectSlug } = useRedirect();
 
     const [opened, setOpened] = useState(false);
@@ -52,12 +54,22 @@ export const ModalViewTicket = ({ id }: IProps) => {
     const [dataInteractions, setDataInteractions] = useState<ITicketInteraction[]>([])
     const [dataFiles, setDataFiles] = useState<ITicketFile[]>([])
 
-    const [previewFile, setPreviewFile] = useState<IPreviewFile | null>(null)
+    const [previewFile, setPreviewFile] = useState<IPreviewFile | null>(null);
+    const [previewApprove, setPreviewApprove] = useState<ITicketInteraction | null>(null)
 
-    const TABS = ['Interações', 'Aprovações']
-    const [tabSelected, setTabSelected] = useState(TABS[0])
+    const TAB_NAME_INTERACTION = 'Interações';
+    const TAB_NAME_APPROVE = 'Aprovações';
 
-    console.log('loadingStatus', loadingStatus)
+    const [TABS, setTABS] = useState([TAB_NAME_INTERACTION, TAB_NAME_APPROVE])
+    const [tabSelected, setTabSelected] = useState(TAB_NAME_INTERACTION)
+
+    useEffect(() => {
+        if (data?.app === 'jobs') {
+            setTabSelected(TAB_NAME_APPROVE);
+        } else {
+            setTabSelected(TAB_NAME_INTERACTION)
+        }
+    }, [data])
 
     const TABS_INFOS = [
         {
@@ -95,7 +107,6 @@ export const ModalViewTicket = ({ id }: IProps) => {
     const [tabInfoSelected, setTabInfoSelected] = useState(TABS_INFOS[0].name)
 
     useEffect(() => {
-        setTabSelected(TABS[0])
         setTabInfoSelected(TABS_INFOS.filter((obj) => obj.visible === true)[0].name)
     }, [id, loading])
 
@@ -104,6 +115,9 @@ export const ModalViewTicket = ({ id }: IProps) => {
         setLoading(true);
         setLoadingInteractions(true);
         setLoadingStatus(true);
+
+        setDataInteractions([]);
+
         const response = await TicketService.getById(Number(id))
         const responseFiles = await TicketService.getFiles(Number(id))
         setData({ ...response.item })
@@ -135,6 +149,25 @@ export const ModalViewTicket = ({ id }: IProps) => {
 
     const handleChangeStatus = async (status: ITicketStatus) => {
         console.log('status', status)
+
+        const newData = {
+            ...data,
+            ticket_status: {
+                ...data.ticket_status,
+                name: status.name,
+                color: status.color,
+                ticket_status_id: status.ticket_status_id,
+            }
+        }
+
+        setData({ ...newData })
+
+        onUpdate('status', status)
+
+        await TicketService.set({
+            ticket_status_id: status.ticket_status_id
+        }, data.ticket_id)
+
     }
 
     /*
@@ -151,11 +184,20 @@ export const ModalViewTicket = ({ id }: IProps) => {
     }
     */
 
+    const handleVoteTicket = (item: ITicketInteraction, newItem: ITicketInteraction) => {
+
+        const newData = dataInteractions.map((row) => {
+            return row.ticket_interaction_id === item.ticket_interaction_id ? item : row
+        })
+
+        setDataInteractions([...newData, newItem]);
+    }
+
     return (
         <ModalDefault
             padding='0px'
             paddingHeader='20px 40px 20px 40px'
-            title={`#${id} ${loading ? '' : data?.title}`}
+            title={`#${id} ${loading ? '' : data?.title ?? ''}`}
             layout={"center"}
             onClose={() => redirectSlug(`/tickets`)}
             opened={opened}
@@ -187,59 +229,121 @@ export const ModalViewTicket = ({ id }: IProps) => {
                 user_id: 0,
             }} />
 
+            <ModalViewInteraction
+                opened={previewApprove?.ticket_interaction_id ? true : false}
+                onClose={() => setPreviewApprove(null)}
+                item={previewApprove ?? {} as ITicketInteraction}
+                interactions={dataInteractions.filter((obj) => obj.reply_id === previewApprove?.ticket_interaction_id)}
+                onSubmit={handleVoteTicket}
+            />
+
             <S.Container color={tenant?.colorhigh ?? ''}>
 
                 <div className='infos pd-right'>
 
                     <div className='item-text'>
 
-                        <div className='label'>
-                            <b>Formulário:</b>
-                            {loading ? <Skeleton width='120px' height='18px' /> :
-                                <span>{data.ticket_cat?.title}</span>
-                            }
-                        </div>
+                        {(data.ticket_cat || loading) &&
+                            <div className='label'>
+                                <b>Formulário:</b>
+                                {loading ? <Skeleton width='120px' height='18px' /> :
+                                    <span>{data.ticket_cat?.title}</span>
+                                }
+                            </div>
+                        }
 
-                        <div className='label'>
-                            <b>Data de Criação:</b>
-                            {loading ? <Skeleton width='100px' height='18px' /> :
-                                <span>{moment(data.created).format('DD/MM/YYYY HH:mm')}</span>
-                            }
-                        </div>
+                        {(data.created || loading) &&
+                            <div className='label'>
+                                <b>Data de Criação:</b>
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{moment(data.created).format('DD/MM/YYYY HH:mm')}</span>
+                                }
+                            </div>
+                        }
 
-                        <div className='label'>
-                            <b>Status:</b>
-                            {loading ? <Skeleton width='80px' height='18px' /> :
-                                <div className='status-change'>
-                                    <SubmenuSelect
-                                        whiteSpace='nowrap'
-                                        submenu={dataStatus.map((item) => {
-                                            return {
-                                                name: item.name,
-                                                onClick: () => handleChangeStatus(item),
-                                                icon: item.ticket_status_id === data.ticket_status_id ? <div className='bullet-color-status' style={{ backgroundColor: item.color }}><IconCheck /></div> : <div className='bullet-color-status' style={{ backgroundColor: item.color }}></div>
-                                            }
-                                        })}>
-                                        <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
-                                        <i className='icon-refresh'>
-                                            <IconRefresh />
-                                        </i>
-                                    </SubmenuSelect>
-                                </div>
-                            }
-                        </div>
+                        {((data.app === 'jobs' && data.deadline) || loading) &&
+                            <div className='label'>
+                                <b>Previsão de Entrega:</b>
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{data.deadline}</span>
+                                }
+                            </div>
+                        }
 
-                        <div className='label'>
-                            <b>Solicitante:</b>
-                            {loading ? <Skeleton width='25px' height='25px' borderRadius='100px' /> :
-                                <AvatarUser
-                                    name={data.user?.name}
-                                    image={data.user?.avatar}
-                                    size={25}
-                                />
-                            }
-                            <span>{data.user?.name}</span>
-                        </div>
+                        {(data.ticket_status?.type === 'final' || loading) &&
+                            <div className='label'>
+                                <b>Data de Entrega:</b>
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{moment(data.finished).format('DD/MM/YYYY HH:mm')}</span>
+                                }
+                            </div>
+                        }
+
+                        {(data.updated || loading) &&
+                            <div className='label'>
+                                <b>Data de Atualização:</b>
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{moment(data.updated).format('DD/MM/YYYY HH:mm')}</span>
+                                }
+                            </div>
+                        }
+
+                        {(data.ticket_status?.type === 'final' || loading) &&
+                            <div className='label'>
+                                <b>Tempo Utilizado:</b>
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{data.workminutes} minuto{data.workminutes > 1 ? 's' : ''}</span>
+                                }
+                            </div>
+                        }
+
+                        {(data.ticket_status_id || loading) &&
+                            <div className='label'>
+                                <b>Status:</b>
+                                {loading ? <Skeleton width='80px' height='18px' /> :
+                                    <div className='status-change'>
+                                        {verifyPermission('tickets_edit') ?
+                                            <SubmenuSelect
+                                                whiteSpace='nowrap'
+                                                submenu={dataStatus.map((item) => {
+                                                    return {
+                                                        name: item.name,
+                                                        onClick: () => handleChangeStatus(item),
+                                                        icon: item.ticket_status_id === data.ticket_status_id ?
+                                                            <S.BulletStatus style={{ backgroundColor: item.color }}><IconCheck /></S.BulletStatus>
+                                                            :
+                                                            <S.BulletStatus style={{ backgroundColor: item.color }} />
+                                                    }
+                                                })}>
+                                                <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
+                                                <i className='icon-refresh'>
+                                                    <IconRefresh />
+                                                </i>
+                                            </SubmenuSelect>
+                                            :
+                                            <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        {(data.user?.name || loading) &&
+                            <div className='label'>
+                                <b>Solicitante:</b>
+                                {loading ? <Skeleton width='25px' height='25px' borderRadius='100px' /> :
+                                    <AvatarUser
+                                        name={data.user?.name}
+                                        image={data.user?.avatar}
+                                        size={25}
+                                    />
+                                }
+                                {loading ? <Skeleton width='100px' height='18px' /> :
+                                    <span>{data.user?.name}</span>
+                                }
+
+                            </div>
+                        }
                     </div>
 
                     <div className='tabs-infos'>
@@ -327,13 +431,13 @@ export const ModalViewTicket = ({ id }: IProps) => {
                                 </div>
                             }
 
-                            {(data?.fields?.length > 0 && !loading) &&
+                            {(data?.fields?.length > 0 && !loading && (!data?.media?.name && !data.width && !data.height)) &&
                                 <div className='line' />
                             }
 
                             {!loading && data?.fields?.map((field) =>
                                 <div className='label column'>
-                                    <b>{field.field_name}:</b>
+                                    <b>{field.ticketcat_field_name}:</b>
                                     {loading ? <Skeleton width='140px' height='18px' /> :
                                         <TextMinius text={field.value} />
                                     }
@@ -371,38 +475,53 @@ export const ModalViewTicket = ({ id }: IProps) => {
 
                 <div className='center-row'>
                     <div className='interactions'>
+
                         <TabsDefault
                             className='tabs'
                             tabs={TABS}
                             selected={tabSelected}
                             onSelected={setTabSelected}
+                            loading={loading}
                         />
 
                         <div className='conversation'>
-                            {tabSelected === TABS[1] &&
+                            {tabSelected === TAB_NAME_APPROVE &&
                                 <div className='tab-approve' ref={listRef}>
 
                                     <div className='list-cards'>
+
+                                        {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
+                                            <CardTicketApprove
+                                                loading={true}
+                                                status={'wait'}
+                                                name={''}
+                                                avatar={''}
+                                                message={''}
+                                                thumbnail={''}
+                                                created={''}
+                                                interactions={[]}
+                                                onClick={() => undefined}
+                                            />
+                                        )}
+
                                         {!loadingInteractions && dataApprovesFilter.map((item) =>
-                                            <>
-                                                <CardTicketApprove
-                                                    key={`approve-${item.ticket_interaction_id}`}
-                                                    status={item.status ?? 'wait'}
-                                                    name={item.user_name}
-                                                    avatar={item.user_avatar}
-                                                    message={item.message}
-                                                    thumbnail={item.thumbnail}
-                                                    created={item.created}
-                                                    interactions={dataInteractions.filter((obj) => obj.reply_id === item.ticket_interaction_id)}
-                                                    onClick={() => setPreviewFile({ name: item.annex_title, path: item.annex })}
-                                                />
-                                            </>
+                                            <CardTicketApprove
+                                                key={`approve-${item.ticket_interaction_id}`}
+                                                status={item.status ?? 'wait'}
+                                                name={item.user_name}
+                                                avatar={item.user_avatar}
+                                                message={item.message}
+                                                thumbnail={item.thumbnail}
+                                                created={item.created}
+                                                interactions={dataInteractions.filter((obj) => obj.reply_id === item.ticket_interaction_id)}
+                                                onClick={() => setPreviewApprove({ ...item })}
+                                            />
                                         )}
                                     </div>
                                 </div>
                             }
 
-                            {tabSelected === TABS[0] &&
+                            {tabSelected === TAB_NAME_INTERACTION &&
                                 <div className='list-overflow' ref={listRef}>
                                     {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
                                         <CommentTicket
@@ -424,9 +543,11 @@ export const ModalViewTicket = ({ id }: IProps) => {
                                             thumbnail={item.thumbnail}
                                             created={item.created}
                                             status={item.status ?? null}
-                                            repply={dataInteractions.find((obj) => obj.ticket_interaction_id === item.reply_id)?.message}
+                                            repply={dataInteractions.find((obj) => obj.ticket_interaction_id === item.reply_id)}
                                             position={user?.user_id === item.user_id ? 'right' : 'left'}
-                                            onClick={() => setPreviewFile({ name: item.annex_title, path: item.annex })}
+                                            onClick={(type) => {
+                                                type === 'reply' ? setPreviewApprove({ ...dataInteractions.find((obj) => obj.ticket_interaction_id === item.reply_id) ?? {} as ITicketInteraction }) : type === 'aprove' ? setPreviewApprove({ ...item }) : setPreviewFile({ name: item.annex_title, path: item.annex });
+                                            }}
                                             onReply={() => setReply(item)}
                                         />
                                     )}
@@ -435,7 +556,7 @@ export const ModalViewTicket = ({ id }: IProps) => {
 
                             <div className='input-send' style={{ position: 'relative', zIndex: 8 }}>
                                 <InputSendTicket
-                                    approve={tabSelected === TABS[0] ? true : false}
+                                    approve={tabSelected === TABS[1] ? true : false}
                                     id={Number(id)}
                                     onRemoveReply={() => setReply(null)}
                                     reply={reply}

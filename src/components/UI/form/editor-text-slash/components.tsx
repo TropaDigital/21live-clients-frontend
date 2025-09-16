@@ -370,23 +370,25 @@ const MenuIconColor = ({
   function extractUsedColorsFromHTML(html: string, type: 'text' | 'bg') {
     const colors = new Set<string>();
 
+    // pega todos os atributos style=""
     const regex = /style="([^"]*)"/g;
 
     for (const match of html.matchAll(regex)) {
       const styleContent = match[1];
 
-      // TEXT COLORS
+      // TEXT COLORS (somente se não for bg)
       if (type === 'text') {
-        const colorMatch = styleContent.match(/(^|\s|;)color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/);
-        const bgMatch = styleContent.match(/background-color:/);
+        const colorMatch = styleContent.match(/color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/i);
+        const bgMatch = styleContent.match(/background-color:/i);
+
         if (colorMatch && !bgMatch) {
-          colors.add(colorMatch[2]);
+          colors.add(colorMatch[1]); // aqui estava errado, antes usava [2]
         }
       }
 
       // BACKGROUND COLORS
       if (type === 'bg') {
-        const bgMatch = styleContent.match(/background-color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/);
+        const bgMatch = styleContent.match(/background-color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/i);
         if (bgMatch) {
           colors.add(bgMatch[1]);
         }
@@ -408,7 +410,7 @@ const MenuIconColor = ({
           marginTop: positionTop
         }} className='menu-colors'>
 
-          {recentColors.length > 0 &&
+          {recentColors.length > 1 &&
             <>
               <p className='title-color'>Usado recentemente</p>
               <div className='list-colors'>
@@ -453,6 +455,7 @@ interface MenuHorizontalProps {
   onBackgroundColorChange: (color: string) => void;
   position: { top: number; left: number };
   menuRef: React.RefObject<HTMLDivElement>;
+  layout: 'fixed' | 'static';
   refContainer: React.RefObject<HTMLDivElement>
 }
 
@@ -464,6 +467,7 @@ export const MenuHorizontal: React.FC<MenuHorizontalProps> = ({
   onTextColorChange,
   onBackgroundColorChange,
   position,
+  layout,
   menuRef
 }) => {
   // Função para adicionar ou editar um link
@@ -507,7 +511,7 @@ export const MenuHorizontal: React.FC<MenuHorizontalProps> = ({
   const isYoutubeSelected = editor?.isActive('youtube');
 
   return !isImageSelected && !isYoutubeSelected ? (
-    <S.ContainerMenuHorizontal ref={menuRef} style={{ top: position.top, left: position.left }}>
+    <S.ContainerMenuHorizontal layout={layout} ref={menuRef} style={{ top: position.top, left: position.left }}>
       {/* Negrito */}
       <button
         type='button'

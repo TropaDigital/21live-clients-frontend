@@ -13,6 +13,9 @@ export const ContainerComment = styled.div.withConfig({
   justify-content: flex-start;
   gap: 10px;
   animation: fadeInDown 0.5s;
+  .user-photo {
+    margin-top: 8px;
+  }
   .message-center {
     display: flex;
     align-items: center;
@@ -56,7 +59,44 @@ export const ContainerComment = styled.div.withConfig({
     display: flex;
     gap: 5px;
     flex-direction: column;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
+    position: relative;
+    &:before {
+      --size: 8px;
+      --color: ${({ theme }) => theme.colors.neutral[400]};
+      content: "";
+      position: absolute;
+      left: ${({ position }) => (position === "left" ? "-8px" : "unset")};
+      right: ${({ position }) => (position === "right" ? "-8px" : "unset")};
+      top: 20px;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: calc(var(--size) / 2) solid transparent;
+      border-bottom: calc(var(--size) / 2) solid transparent;
+      border-right: ${({ position }) =>
+        position === "left" ? `var(--size) solid var(--color)` : "unset"};
+      border-left: ${({ position }) =>
+        position === "right" ? `var(--size) solid var(--color)` : "unset"};
+    }
+    &:after {
+      --size: 8px;
+      --color: ${({ theme }) => theme.colors.background.default};
+      content: "";
+      position: absolute;
+      left: ${({ position }) => (position === "left" ? "-7px" : "unset")};
+      right: ${({ position }) => (position === "right" ? "-7px" : "unset")};
+      top: 20px;
+      transform: translateY(-50%);
+      width: 0;
+      height: 0;
+      border-top: calc(var(--size) / 2) solid transparent;
+      border-bottom: calc(var(--size) / 2) solid transparent;
+      border-right: ${({ position }) =>
+        position === "left" ? `var(--size) solid var(--color)` : "unset"};
+      border-left: ${({ position }) =>
+        position === "right" ? `var(--size) solid var(--color)` : "unset"};
+    }
     .user {
       display: flex;
       align-items: center;
@@ -82,6 +122,10 @@ export const ContainerComment = styled.div.withConfig({
       display: flex;
       align-items: center;
       gap: 8px;
+      .reply-thumb {
+        border-radius: 8px;
+        max-height: 30px;
+      }
       i {
         display: flex;
         svg {
@@ -95,8 +139,9 @@ export const ContainerComment = styled.div.withConfig({
       justify-content: flex-end;
     }
     .preview {
-      width: 100%;
-      height: 150px;
+      min-width: 100%;
+      width: 300px;
+      height: 300px;
       border-radius: 8px;
       background-size: cover;
       background-position: center;
@@ -124,6 +169,15 @@ export const ContainerComment = styled.div.withConfig({
     .text {
       font-size: 12px;
       color: ${({ theme }) => theme.colors.neutral[700]};
+      text-align: ${({ position }) => position};
+    }
+    .text-date {
+      display: flex;
+      justify-content: flex-end;
+      span {
+        font-size: 10px;
+        color: ${({ theme }) => theme.colors.neutral[700]};
+      }
     }
   }
 `;
@@ -135,7 +189,8 @@ export const ContainerCardApprove = styled.div`
   display: flex;
   flex-direction: column;
   padding: 15px;
-  width: calc(33.3% - 10px);
+  width: calc(20% - 13px);
+  cursor: pointer;
   box-sizing: border-box;
   gap: 15px;
   animation: fadeInDown 0.5s;
@@ -190,6 +245,23 @@ export const ContainerCardApprove = styled.div`
       &:hover {
         margin-right: 0px;
       }
+    }
+  }
+  @media (max-width: 2700px) {
+    width: calc(33.3% - 10px);
+  }
+  @media (max-width: 1919px) {
+    width: calc(50% - 8px);
+  }
+  @media (max-width: 1400px) {
+    .thumb {
+      height: 200px;
+    }
+  }
+  @media (max-width: 1280px) {
+    width: 100%;
+    .thumb {
+      height: 200px;
     }
   }
 `;

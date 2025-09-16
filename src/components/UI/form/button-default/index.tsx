@@ -9,6 +9,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     iconPosition?: 'left' | 'right' // Opcional: controle da posição do ícone
     loading?: boolean;
     flex?: boolean;
+    total?: number;
     variant?:
     | 'primary'
     | 'secondary'
@@ -29,6 +30,7 @@ export const ButtonDefault = ({
     iconPosition = 'left',
     variant = 'primary',
     loading,
+    total,
     ...rest
 }: ButtonProps) => {
 
@@ -50,6 +52,11 @@ export const ButtonDefault = ({
                 {!loading ? children : <IconLoadingBounce />}
                 {iconPosition === 'right' && icon && <i>{icon}</i>}
             </div>
+            {total && total > 0 ?
+                <div className='total'>
+                    {total}
+                </div>
+                : null}
         </S.Container>
     )
 }

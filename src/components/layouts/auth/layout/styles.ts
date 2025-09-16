@@ -87,6 +87,11 @@ export const Container = styled.div.withConfig({
       display: flex;
       flex-direction: column;
       overflow: auto;
+      h1 {
+        flex: 1;
+        color: ${({ theme }) => theme.colors.neutral[700]};
+        font-size: 28px;
+      }
       @media (max-width: 400px) {
         height: calc(100% - 70px);
         top: 70px;

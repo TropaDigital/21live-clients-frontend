@@ -1,3 +1,5 @@
+import moment from "moment";
+import type { IFilterTicket } from "../../components/modules/cards/modal-filter-ticket";
 import type { ITicketCat } from "../types/ITckets";
 import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
@@ -8,18 +10,43 @@ export const TicketService = {
     limit?: number,
     search?: string,
     order?: string,
-    deleted?: boolean
+    filter?: IFilterTicket
   ) => {
     const tenant = getSlug();
 
-    const queryDeleted = deleted ? `&deleted=true` : ``;
     const queryOrder = order ? `&sort=${order}` : ``;
     const querySearch = search ? `&search=${search}` : ``;
+
+    /*
+    fromDate: Date | undefined;
+    toDate: Date | undefined;
+    organization_id: number | undefined;
+    ticket_cat_id: number | undefined;
+    ticket_status_id: number | undefined;
+    user_id: number | undefined;
+    */
+
+    const queryFromDate = filter?.fromDate
+      ? `&createdFrom=${moment(filter?.fromDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryToDate = filter?.toDate
+      ? `&createdTo=${moment(filter?.toDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryOrganization = filter?.toDate
+      ? `&organization_id=${filter.organization_id}`
+      : ``;
+    const queryCatId = filter?.ticket_cat_id
+      ? `&ticket_cat_id=${filter.ticket_cat_id}`
+      : ``;
+    const queryStatusId = filter?.ticket_status_id
+      ? `&ticket_status_id=${filter.ticket_status_id}`
+      : ``;
+    const queryUserId = filter?.user_id ? `&user_id=${filter.user_id}` : ``;
 
     const response = await BaseService.get(
       `/${tenant}/API/Tickets?page=${page ?? 1}&limit=${
         limit ?? 999999
-      }${querySearch}${queryOrder}${queryDeleted}`
+      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}`
     );
 
     if (response.data.items && page) {
@@ -33,6 +60,12 @@ export const TicketService = {
         }
       );
     }
+
+    return response.data;
+  },
+  delete: async (id: number) => {
+    const tenant = getSlug();
+    const response = await BaseService.delete(`/${tenant}/API/Tickets/${id}`);
 
     return response.data;
   },
@@ -97,6 +130,7 @@ export const TicketService = {
       annex_title,
       status,
       access,
+      ticket_interaction_id,
     } = params;
 
     const tenant = getSlug();
@@ -121,15 +155,24 @@ export const TicketService = {
     let response;
     if (annex) {
       response = await BaseService.post(
-        `/${tenant}/API/TicketInteractions/${ticket_id}`,
+        `/${tenant}/API/TicketInteractions/${
+          ticket_interaction_id ? ticket_interaction_id : ticket_id
+        }`,
         formData,
         config
       );
     } else {
-      response = await BaseService.post(
-        `/${tenant}/API/TicketInteractions/${ticket_id}`,
-        params
-      );
+      if (ticket_interaction_id) {
+        response = await BaseService.put(
+          `/${tenant}/API/TicketInteractions/${ticket_interaction_id}`,
+          params
+        );
+      } else {
+        response = await BaseService.post(
+          `/${tenant}/API/TicketInteractions/${ticket_id}`,
+          params
+        );
+      }
     }
 
     return response.data;
@@ -139,18 +182,20 @@ export const TicketService = {
     limit?: number,
     search?: string,
     order?: string,
-    deleted?: boolean
+    deleted?: boolean,
+    fields?: boolean
   ) => {
     const tenant = getSlug();
 
     const queryDeleted = deleted ? `&deleted=true` : ``;
     const queryOrder = order ? `&sort=${order}` : ``;
     const querySearch = search ? `&search=${search}` : ``;
+    const queryFields = fields ? `&fields=true` : ``;
 
     const response = await BaseService.get(
       `/${tenant}/API/TicketCats?page=${page ?? 1}&limit=${
         limit ?? 999999
-      }${querySearch}${queryOrder}${queryDeleted}`
+      }${querySearch}${queryOrder}${queryDeleted}${queryFields}`
     );
 
     if (response.data.items && page) {
@@ -395,6 +440,64 @@ export const TicketService = {
     const response = await BaseService.delete(
       `/${tenant}/API/TicketCatFields/${id}`
     );
+    return response.data;
+  },
+
+  set: async (payload: any, id?: number) => {
+    const tenant = getSlug();
+
+    let response;
+    if (id) {
+      response = await BaseService.put(`/${tenant}/API/Tickets/${id}`, {
+        ...payload,
+      });
+    } else {
+      response = await BaseService.post(`/${tenant}/API/Tickets`, {
+        ...payload,
+      });
+    }
+    return response.data;
+  },
+  setFields: async (payload: any, ticket_id?: number, edit?: boolean) => {
+    const tenant = getSlug();
+
+    let response;
+    if (edit) {
+      response = await BaseService.put(
+        `/${tenant}/API/Tickets/${ticket_id}/fields`,
+        {
+          ...payload,
+        }
+      );
+    } else {
+      response = await BaseService.post(
+        `/${tenant}/API/Tickets/${ticket_id}/fields`,
+        {
+          ...payload,
+        }
+      );
+    }
+    return response.data;
+  },
+  setFiles: async (annex: File, ticket_id?: number) => {
+    const tenant = getSlug();
+
+    const formData = new FormData();
+
+    formData.append("ticket_id", String(ticket_id));
+    formData.append("path", annex);
+    formData.append("name", annex.name);
+
+    const config = {
+      headers: { "Content-Type": "multipart/form-data" },
+    };
+
+    const response = await BaseService.post(
+      `/${tenant}/API/TicketFiles/${ticket_id}`,
+      formData,
+      config
+    );
+
     return response.data;
   },
 };

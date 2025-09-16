@@ -8,6 +8,7 @@ import { VideoService } from '../../../../core/services/VideoService';
 import { LinkService } from '../../../../core/services/LinkService';
 import { useTenant } from '../../../../core/contexts/TenantContext';
 import { useParams } from 'react-router-dom';
+import { theme } from '../../../../assets/theme/theme';
 
 export interface IPropsBreadcrumb {
     folder_id?: number;
@@ -17,9 +18,10 @@ export interface IPropsBreadcrumb {
     here?: boolean
 }
 
-export const BreadCrumbAuthLayout = ({ data, onDelete }: {
+export const BreadCrumbAuthLayout = ({ data, border = 'light', onDelete }: {
     data: IPropsBreadcrumb[];
     onDelete?(type: string, id: number | string): void;
+    border?: 'light' | 'dark'
 }) => {
 
     const { id: IDParam } = useParams();
@@ -101,7 +103,9 @@ export const BreadCrumbAuthLayout = ({ data, onDelete }: {
     }
 
     return (
-        <S.Container className='breadcrumb'>
+        <S.Container style={{
+            borderBottom: border === 'light' ? `1px solid ${theme.colors.neutral[200]}` : `1px solid ${theme.colors.neutral[300]}`
+        }} className='breadcrumb'>
             <div className='overflow'>
                 {items.map((item, key) =>
                     <li

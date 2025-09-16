@@ -68,14 +68,15 @@ export const RenderField = ({ admin, field, value, loadingDuplicate, onChange, o
                     <ContainerEditorStaticLabel>
                         {data.label && <p className='label'>{data.label}</p>}
                         {data.description && <p className='description'>{data.description}</p>}
-                        <ContainerEditorStatic disabled={admin} style={{ minHeight: 50 }}>
-                            {!admin &&
-                                <EditorTextSlash
-                                    value={value}
-                                    onChange={(e) => onChange && onChange(e)}
-                                />
-                            }
-                        </ContainerEditorStatic>
+                        {!admin ?
+                            <EditorTextSlash
+                                layout='static'
+                                value={value}
+                                onChange={(e) => onChange && onChange(e)}
+                            />
+                            :
+                            <ContainerEditorStatic disabled={admin} style={{ minHeight: 50 }}></ContainerEditorStatic>
+                        }
                     </ContainerEditorStaticLabel>
                 }
 

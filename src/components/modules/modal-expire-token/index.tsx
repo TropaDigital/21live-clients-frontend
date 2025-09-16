@@ -48,7 +48,6 @@ export const ModalExpireToken = () => {
 
     return (
         <>
-            {timeLeft}
             <S.Container
                 colorBg={tenant?.colormain}
                 color={tenant?.colorhigh}

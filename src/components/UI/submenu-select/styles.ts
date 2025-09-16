@@ -14,6 +14,8 @@ interface IProps {
   subBottom: number;
   heightWindow: number;
   whiteSpace: "nowrap" | "normal";
+
+  widthChildrenRight?: number;
 }
 
 export const Container = styled.div.withConfig({
@@ -25,6 +27,8 @@ export const Container = styled.div.withConfig({
       "menuHeight",
       "menuTop",
       "menuBottom",
+
+      "widthChildrenRight",
 
       "subWidth",
       "subHeight",
@@ -55,12 +59,16 @@ export const Container = styled.div.withConfig({
   .row {
     display: flex;
     gap: 10px;
+    max-width: 100%;
   }
   .content-button {
     flex: 1;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+
+    max-width: ${({ widthChildrenRight }) =>
+      widthChildrenRight ? `calc(100% - ${widthChildrenRight + 10}px)` : `100%`};
   }
   ul {
     z-index: 99;

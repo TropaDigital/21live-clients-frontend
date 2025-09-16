@@ -1,17 +1,21 @@
-import { BreadCrumbAuthLayout } from '../../components/layouts/auth/breadcrumb'
 import * as S from './styles'
 import { TableDefault, TDViewByHead, type ITHead } from '../../components/UI/table/table-default'
 import { useEffect, useState } from 'react'
-import type { ITicket } from '../../core/types/ITckets'
+import type { ITicket, ITicketCat } from '../../core/types/ITckets'
 import { TicketService } from '../../core/services/TicketService'
-import { IconEye, IconSolicitation } from '../../assets/icons'
+import { IconClone, IconEye, IconFilter, IconPencil, IconSolicitation, IconStatus, IconTrash } from '../../assets/icons'
 import { BadgeSimpleColor } from '../../components/UI/badge/badge-simple-color'
 import { AvatarUser } from '../../components/UI/avatar/avatar-user'
 import moment from 'moment'
 import { BtnsActionTable } from '../../components/UI/table/btns-action'
-import { Toolbar } from '../../components/layouts/auth/toolbar'
 import { useParams } from 'react-router-dom'
 import { ModalViewTicket } from '../../components/modules/modal-view-ticket'
+import { ButtonDefault } from '../../components/UI/form/button-default'
+import { ModalEditTicket } from '../../components/modules/modal-edit-ticket'
+import Confetti from 'react-confetti'
+import { useTenant } from '../../core/contexts/TenantContext'
+import { ModalConfirm } from '../../components/UI/modal/modal-confirm'
+import { FILTER_DEFAULT, ModalFilterTicket, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
 
 export default function Tickets() {
 
@@ -125,6 +129,10 @@ export default function Tickets() {
 
     const { id } = useParams();
 
+    const { tenant } = useTenant();
+
+    const [newTicket, setNewTicket] = useState(false)
+
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<ITicket[]>([])
 
@@ -137,35 +145,200 @@ export default function Tickets() {
         total_show: 0,
     })
 
-    const getData = async (page: number, limit: number, search: string, order: string) => {
+    const [modalTicket, setModalTicket] = useState(false);
+    const [modalTicketItem, setModalTicketItem] = useState<ITicket | null>(null)
+
+    const [loadingClone, setLoadingClone] = useState(false)
+    const [DTOClone, setDTOClone] = useState<ITicket | null>(null)
+
+    const [loadingDelete, setLoadingDelete] = useState(false)
+    const [DTODelete, setDTODelete] = useState<ITicket | null>(null)
+
+    const [modalFilter, setModalFilter] = useState(false)
+    const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(FILTER_DEFAULT)
+
+    const getData = async (page: number, limit: number, search: string, order: string, filter: IFilterTicket) => {
         setLoading(true);
-        const response = await TicketService.get(pagination.page, pagination.limit, search, order)
+        const response = await TicketService.get(pagination.page, pagination.limit, search, order, filter)
         setPagination({ page, limit, total: response.total, total_show: response.items.length })
         setData([...response.items]);
         setLoading(false);
     }
 
     useEffect(() => {
-        getData(pagination.page, pagination.limit, search, order);
-    }, [pagination.page, pagination.limit, search, order])
+        getData(pagination.page, pagination.limit, search, order, DTOFilter);
+    }, [pagination.page, pagination.limit, search, order, DTOFilter])
+
+    const handleCloseModalTicket = () => {
+        setModalTicket(false);
+        setModalTicketItem(null);
+    }
+
+    const handleOpenModalTicket = (type: 'new' | 'edit', ticket?: ITicket) => {
+        if (type === 'edit' && ticket) {
+            setModalTicket(true);
+            setModalTicketItem(ticket);
+        } else {
+            setModalTicket(true);
+            setModalTicketItem(null);
+        }
+    }
+
+    const handleOnSubmitTicket = (item: ITicket, type: 'edit' | 'new') => {
+        if (type === 'new') {
+            setData((prev) => ([item, ...prev]));
+            setNewTicket(data.length === 1);
+            setTimeout(() => {
+                setNewTicket(false)
+            }, 4000)
+        } else {
+            setData([
+                ...data.map((row) => {
+                    return row.ticket_id === item.ticket_id ? item : row
+                })
+            ])
+        }
+    }
+
+    const handleClone = async () => {
+        try {
+            if (!DTOClone) return;
+
+            setLoadingClone(true);
+            const responseGet = await TicketService.getById(DTOClone.ticket_id);
+
+            const responseSend = await TicketService.set({
+                ticket_cat_id: DTOClone.ticket_cat_id,
+                tenant_id: DTOClone.tenant_id,
+                title: DTOClone.title + ' (Cópia)',
+                organization_id: DTOClone.organization_id,
+                user_id: DTOClone.user_id,
+                width: DTOClone.width,
+                height: DTOClone.height,
+                media_id: DTOClone.media_id,
+                info: DTOClone.info,
+                target: DTOClone.target,
+                file_format: DTOClone.file_format,
+                obs: DTOClone.obs
+            })
+
+            if (responseGet.item.fields) {
+                let payloadFields: any = []
+                responseGet.item.fields.forEach((item: any) => {
+                    payloadFields.push({
+                        ticketcat_field_id: item.ticketcat_field_id,
+                        value: item.value,
+                    })
+                })
+
+                await TicketService.setFields(payloadFields, responseSend.item.ticket_id);
+            }
+
+            setData([responseSend.item, ...data])
+            setLoadingClone(false);
+            setDTOClone(null)
+
+        } catch (error) {
+            setLoadingClone(false);
+        }
+    }
+
+    const handleSetFilter = (filter: IFilterTicket) => {
+        setDTOFilter({ ...filter })
+    }
+
+    const handleDelete = async () => {
+        if (!DTODelete?.ticket_id) return false;
+        setLoadingDelete(true);
+        await TicketService.delete(DTODelete?.ticket_id)
+
+        setData([...data.filter((obj) => obj.ticket_id !== DTODelete.ticket_id)])
+
+        setDTODelete(null)
+        setLoadingDelete(false);
+
+        const response = await TicketService.get(pagination.page, pagination.limit, search, order)
+        setData([...response.items]);
+    }
+
+    const countFilled = Object.values(DTOFilter)
+        .filter((value) => value !== undefined && value !== 0 && value !== null)
+        .length;
+
+        console.log('DTOFilter', DTOFilter)
 
     return (
         <S.Container>
-            <BreadCrumbAuthLayout
-                data={[
-                    {
-                        name: 'Solicitações',
-                        icon: <IconSolicitation />,
-                        here: true,
-                        redirect: `/tickets`
-                    }
-                ]}
-            />
-            <Toolbar>
-                aqui pod entrar configs
-            </Toolbar>
 
-            <ModalViewTicket id={id} />
+            {data.length === 1 && !loading &&
+                <Confetti
+                    numberOfPieces={newTicket ? 300 : 0}
+                    run={true}
+                    colors={[tenant?.colorhigh ?? '', tenant?.colormain ?? '']}
+                />
+            }
+
+            <div className='header'>
+                <h1>Solicitações</h1>
+                <div className='right'>
+                    <ButtonDefault total={countFilled} onClick={() => setModalFilter(true)} variant='light' flex={false} icon={<IconFilter />}>
+                        Filtros
+                    </ButtonDefault>
+                    <ButtonDefault onClick={() => handleOpenModalTicket('new')} flex={false} icon={<IconSolicitation />}>
+                        Nova Solicitação
+                    </ButtonDefault>
+                </div>
+            </div>
+
+            <ModalFilterTicket
+                opened={modalFilter}
+                onClose={() => setModalFilter(false)}
+                DTOFilter={DTOFilter}
+                setDTOFilter={handleSetFilter}
+            />
+
+            <ModalEditTicket
+                ticket={modalTicketItem ?? undefined}
+                opened={modalTicket}
+                onClose={handleCloseModalTicket}
+                onSubmit={handleOnSubmitTicket}
+            />
+
+            <ModalViewTicket
+                onUpdate={(name, value) => {
+                    setData([...data.map((item) => {
+                        if (item.ticket_id === Number(id)) {
+                            if (name === 'status') {
+                                item.ticket_status_name = value.name
+                                item.ticket_status_color = value.color
+                                item.ticket_status_id = value.ticket_status_id
+                            }
+                        }
+                        return item;
+                    })])
+                }}
+                id={id}
+            />
+
+            <ModalConfirm
+                opened={DTOClone?.ticket_id ? true : false}
+                title='Duplicar'
+                description={`Deseja duplicar a solicitação ${DTOClone?.title}`}
+                onCancel={() => setDTOClone(null)}
+                onConfirm={handleClone}
+                loading={loadingClone}
+                type="info"
+            />
+
+            <ModalConfirm
+                opened={DTODelete?.ticket_id ? true : false}
+                title='Remover'
+                description={`Deseja remover a solicitação ${DTODelete?.title}`}
+                onCancel={() => setDTODelete(null)}
+                onConfirm={handleDelete}
+                loading={loadingDelete}
+                type="danger"
+            />
 
             <div className='content-page'>
 
@@ -206,7 +379,7 @@ export default function Tickets() {
                                     <TDViewByHead thead={thead} nameTH={TABLE_HEAD[5].name}>
                                         {item.organization_name}
                                     </TDViewByHead>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[5].name}>
+                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[6].name}>
                                         <div className='user'>
                                             <AvatarUser
                                                 name={item.user_name}
@@ -215,10 +388,10 @@ export default function Tickets() {
                                             <span>{item.user_name}</span>
                                         </div>
                                     </TDViewByHead>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[6].name}>
+                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[7].name}>
                                         {moment(item.created).format('DD/MM/YYYY MM:mm')}
                                     </TDViewByHead>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[7].name}>
+                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[8].name}>
                                         {item.finished ? moment(item.finished).format('DD/MM/YYYY MM:mm') : '----'}
                                     </TDViewByHead>
                                     <td>
@@ -228,6 +401,31 @@ export default function Tickets() {
                                                     name: 'Visualizar',
                                                     icon: <IconEye />,
                                                     path: `/tickets/${item.ticket_id}`,
+                                                    permission: 'tickets_view'
+                                                },
+                                                {
+                                                    name: 'Editar',
+                                                    icon: <IconPencil />,
+                                                    onClick: () => handleOpenModalTicket('edit', item),
+                                                    permission: 'tickets_edit',
+                                                },
+                                                {
+                                                    name: 'Alterar Status',
+                                                    icon: <IconStatus />,
+                                                    onClick: () => console.log('status', item),
+                                                    permission: 'tickets_edit',
+                                                },
+                                                {
+                                                    name: 'Duplicar',
+                                                    icon: <IconClone />,
+                                                    onClick: () => setDTOClone(item),
+                                                    permission: 'tickets_add',
+                                                },
+                                                {
+                                                    name: 'Remover',
+                                                    icon: <IconTrash />,
+                                                    onClick: () => setDTODelete(item),
+                                                    permission: 'tickets_delete'
                                                 }
                                             ]}
                                         />

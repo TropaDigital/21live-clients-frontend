@@ -163,6 +163,7 @@ export interface ITicketCat {
   private: boolean;
   jobs: boolean;
   materials: string;
+  fields: ITicketField[] | null;
   created: string;
   updated: string | null;
 }

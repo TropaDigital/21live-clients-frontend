@@ -1,13 +1,22 @@
 import styled from "styled-components";
 import { theme } from "../../../../assets/theme/theme";
 
-export const Container = styled.div`
+interface IProps {
+  layout: "fixed" | "static";
+}
+
+export const Container = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["layout"].includes(prop),
+})<IProps>`
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-
+  border: 1px solid
+    ${({ layout, theme }) =>
+      layout === "static" ? theme.colors.neutral[300] : "none"};
+  border-radius: ${({ layout }) => (layout === "static" ? "8px" : "0px")};
   .editor-text-slash {
     flex: 1;
     display: flex;
@@ -20,8 +29,7 @@ export const Container = styled.div`
       box-shadow: none;
       border: none;
       border-radius: 0px;
-      padding: 0px;
-
+      padding: ${({ layout }) => (layout === "static" ? "20px" : "0px")};
       height: 100%;
 
       iframe {
@@ -278,22 +286,37 @@ export const Container = styled.div`
   }
 `;
 
-export const ContainerMenuHorizontal = styled.div`
+export const ContainerMenuHorizontal = styled.div.withConfig({
+  shouldForwardProp: (prop) => !["layout"].includes(prop),
+})<IProps>`
   transition: all 0.5s;
-  position: absolute;
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 0px 8px;
+  position: ${({ layout }) => (layout === "fixed" ? "absolute" : "unset")};
+  background: ${({ layout }) =>
+    layout === "fixed"
+      ? theme.colors.background.default
+      : theme.colors.neutral[100]};
+  border: 1px solid
+    ${({ layout }) =>
+      layout === "fixed" ? "rgba(0, 0, 0, 0.05)" : "transparent"};
+  border-bottom: 1px solid
+    ${({ layout }) =>
+      layout === "static" ? theme.colors.neutral[300] : "transparent"};
+  border-radius: ${({ layout }) =>
+    layout === "fixed" ? "8px" : "8px 8px 0px 0px"};
+  box-shadow: ${({ layout }) =>
+    layout === "fixed" ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "unset"};
+  padding: ${({ layout }) => (layout === "fixed" ? " 5px 8px" : "10px")};
   display: flex;
-  gap: 10px;
+  flex-wrap: ${({ layout }) => (layout === "fixed" ? "nowrap" : "wrap")};
+  gap: 5px;
   align-items: center;
   box-sizing: border-box;
   .line {
     width: 1px;
     height: 25px;
     background: rgba(0, 0, 0, 0.1);
+    margin: 0px !important;
+    border: none !important;
   }
   > button {
     background: none;
@@ -306,15 +329,24 @@ export const ContainerMenuHorizontal = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0px;
+    margin: 0px;
+    outline: none;
     svg {
-      width: 20px;
-      height: 20px;
+      width: 15px;
+      height: 15px;
     }
     &:hover {
-      background: ${({ theme }) => theme.colors.neutral[100]};
+      background: ${({ theme, layout }) =>
+        layout === "fixed"
+          ? theme.colors.neutral[100]
+          : theme.colors.neutral[300]};
     }
     &.is-active {
-      background: ${({ theme }) => theme.colors.neutral[200]};
+      background: ${({ theme, layout }) =>
+        layout === "fixed"
+          ? theme.colors.neutral[200]
+          : theme.colors.neutral[300]};
     }
   }
 
@@ -329,7 +361,7 @@ export const ContainerMenuHorizontal = styled.div`
     }
     .menu-colors {
       position: absolute;
-      width: 214px;
+      width: 182px;
       margin-top: 30px;
       padding: 15px;
       background-color: white;

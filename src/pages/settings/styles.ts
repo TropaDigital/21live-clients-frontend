@@ -132,8 +132,6 @@ export const Container = styled.div.withConfig({
         }
         h1 {
           flex: 1;
-          color: ${({ theme }) => theme.colors.neutral[700]};
-          font-size: 28px;
         }
         .buttons {
           display: flex;

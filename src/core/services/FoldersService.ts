@@ -11,10 +11,14 @@ export const FoldersService = {
     id,
     sort,
     search,
+    page,
+    limit,
   }: {
     id?: string;
     sort: string;
     search?: string | null;
+    page?: number;
+    limit?: number;
   }) => {
     const tenant = getSlug();
 
@@ -65,8 +69,8 @@ export const FoldersService = {
     } else {
       const response = await BaseService.get(
         `/${tenant}/API/Folders${id ? `/${id}` : ``}${
-          sort ? `/?sort=${sort}` : ``
-        }`
+          page ? `?page=${page}&limit=${limit}` : ``
+        }${sort ? `&sort=${sort}` : ``}`
       );
       return response.data;
     }
@@ -170,9 +174,9 @@ export const FoldersService = {
       order,
     };
 
-    if ( !access ) delete paylaod.access
-    if ( !menulink ) delete paylaod.menulink
-    if ( !order ) delete paylaod.order
+    if (!access) delete paylaod.access;
+    if (!menulink) delete paylaod.menulink;
+    if (!order) delete paylaod.order;
 
     const response = await BaseService.put(
       `/${tenant}/API/Folders/${folder_id}`,

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { SubmenuSelect, type ISubmenuSelect } from '../../submenu-select';
 import * as S from './styles'
 import { IconCheck, IconChevronDown, IconLoading } from '../../../../assets/icons';
@@ -26,8 +26,6 @@ interface IOption {
 
 export const SelectDefault = ({ loading, disabled, label, description, search, icon, iconFont, value, isValidEmpty, options, onChange }: IProps) => {
 
-    const [optionsInternal, setOptionsInternal] = useState<ISubmenuSelect[]>([]);
-    const [fullOptions, setFullOptions] = useState<ISubmenuSelect[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
 
     const OPTION_EMPTY = isValidEmpty ? isValidEmpty : 'Nenhuma opção'
@@ -43,36 +41,34 @@ export const SelectDefault = ({ loading, disabled, label, description, search, i
         }
     }
 
-    useEffect(() => {
-
-        const newOptions: ISubmenuSelect[] = []
+    const fullOptions = useMemo(() => {
+        const newOptions: ISubmenuSelect[] = [];
 
         if (isValidEmpty) {
             newOptions.push({
                 name: OPTION_EMPTY,
                 icon: !value.value ? <IconCheck /> : null,
                 onClick: () => onChangeInternal(null)
-            })
+            });
         }
 
-        options.map((item) => (newOptions.push({
-            name: item.name,
-            avatar: item.avatar ?? undefined,
-            icon: value.value === item.value ? <IconCheck /> : null,
-            iconFont: item.iconFont,
-            onClick: () => onChangeInternal(item.name)
-        })));
+        options.forEach((item) => {
+            newOptions.push({
+                name: item.name,
+                avatar: item.avatar ?? undefined,
+                icon: value.value === item.value ? <IconCheck /> : null,
+                iconFont: item.iconFont,
+                onClick: () => onChangeInternal(item.name)
+            });
+        });
 
-        setFullOptions(newOptions);
-        setOptionsInternal(newOptions);
-    }, [value, options]);
+        return newOptions;
+    }, [options, value, isValidEmpty, OPTION_EMPTY]);
 
-
-    useEffect(() => {
-        const filtered = fullOptions.filter((item) =>
+    const optionsInternal = useMemo(() => {
+        return fullOptions.filter((item) =>
             item.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setOptionsInternal(filtered);
     }, [searchTerm, fullOptions]);
 
     const handleOnSearch = (value: string) => {

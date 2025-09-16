@@ -114,7 +114,7 @@ export const Container = styled.button.withConfig({
     padding: 0px 10px;
     svg {
       width: 25px;
-      height:25px;
+      height: 25px;
       max-width: 20px;
       max-height: 20px;
     }
@@ -128,6 +128,13 @@ export const Container = styled.button.withConfig({
     &:after {
       background-color: rgba(0, 0, 0, 0.2);
     }
+  }
+  .total {
+    background-color: ${({ theme }) => theme.colors.error[500]};
+    border-radius: 100px;
+    color: white;
+    font-size: 11px;
+    padding: 5px 10px
   }
 `;
 
