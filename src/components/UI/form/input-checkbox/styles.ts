@@ -46,3 +46,15 @@ export const Container = styled.div.withConfig({
     padding: 10px 0px;
   }
 `;
+
+export const LabelCheckbox = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  > p {
+    font-size: 11px;
+    color: ${({ theme }) => theme.colors.neutral[600]};
+    margin: 0px;
+    padding: 0px;
+  }
+`;

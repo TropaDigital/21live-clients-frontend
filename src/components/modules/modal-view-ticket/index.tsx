@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as S from './styles'
 import { ModalDefault } from '../../UI/modal/modal-default'
-import type { ITicket, ITicketDetail, ITicketFile, ITicketInteraction, ITicketStatus } from '../../../core/types/ITckets';
+import type { ITicketDetail, ITicketFile, ITicketInteraction, ITicketStatus } from '../../../core/types/ITckets';
 import { useRedirect } from '../../../core/hooks/useRedirect';
 import { TabsDefault } from '../../UI/tabs-default';
 import { TicketService } from '../../../core/services/TicketService';
@@ -51,16 +51,18 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     const [loadingStatus, setLoadingStatus] = useState(false);
     const [dataStatus, setDataStatus] = useState<ITicketStatus[]>([])
 
+    console.log('loadingStatus', loadingStatus)
+
     const [dataInteractions, setDataInteractions] = useState<ITicketInteraction[]>([])
     const [dataFiles, setDataFiles] = useState<ITicketFile[]>([])
 
     const [previewFile, setPreviewFile] = useState<IPreviewFile | null>(null);
     const [previewApprove, setPreviewApprove] = useState<ITicketInteraction | null>(null)
 
-    const TAB_NAME_INTERACTION = 'Interações';
+    const TAB_NAME_INTERACTION = 'Mensagens';
     const TAB_NAME_APPROVE = 'Aprovações';
 
-    const [TABS, setTABS] = useState([TAB_NAME_INTERACTION, TAB_NAME_APPROVE])
+    const TABS = [TAB_NAME_INTERACTION, TAB_NAME_APPROVE]
     const [tabSelected, setTabSelected] = useState(TAB_NAME_INTERACTION)
 
     useEffect(() => {
@@ -490,6 +492,18 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
                                     <div className='list-cards'>
 
+                                        {!loadingInteractions && dataApprovesFilter.length === 0 &&
+                                            <CommentTicket
+                                                loading={false}
+                                                name={tenant?.name ?? ''}
+                                                status={null}
+                                                message={'Não há nenhuma aprovação.'}
+                                                thumbnail={''}
+                                                created={moment().format('YYYY-MM-DD HH:mm:ss')}
+                                                position={'left'}
+                                            />
+                                        }
+
                                         {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
                                             <CardTicketApprove
                                                 loading={true}
@@ -523,6 +537,19 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
                             {tabSelected === TAB_NAME_INTERACTION &&
                                 <div className='list-overflow' ref={listRef}>
+
+                                    {!loadingInteractions && dataInteractionsFilter.length === 0 &&
+                                        <CommentTicket
+                                            loading={false}
+                                            name={tenant?.name ?? ''}
+                                            status={null}
+                                            message={'Não há nenhuma mensagem.'}
+                                            thumbnail={''}
+                                            created={moment().format('YYYY-MM-DD HH:mm:ss')}
+                                            position={'left'}
+                                        />
+                                    }
+
                                     {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
                                         <CommentTicket
                                             loading={true}

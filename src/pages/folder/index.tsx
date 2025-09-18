@@ -97,6 +97,8 @@ export default function Folder() {
 
     const [page, setPage] = useState(1)
 
+    console.log('setPage', setPage)
+
     useEffect(() => {
         const PermissionButotns: ISubmenuSelect[] = [];
 

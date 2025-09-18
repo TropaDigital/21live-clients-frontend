@@ -9,7 +9,7 @@ import { STORAGE_TOKEN, STORAGE_USER } from '../../../core/constants';
 
 export const ModalExpireToken = () => {
 
-    const { isExpired, countdown, percentage, showWarningModal, timeLeft } = useSessionTimer();
+    const { isExpired, countdown, percentage, showWarningModal } = useSessionTimer();
     const { tenant } = useTenant();
     const { token, setIsLogged, handleRefreshToken } = useAuth();
 

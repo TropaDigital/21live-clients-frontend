@@ -32,7 +32,7 @@ export const TicketService = {
     const queryToDate = filter?.toDate
       ? `&createdTo=${moment(filter?.toDate).format("YYYY-MM-DD")}`
       : ``;
-    const queryOrganization = filter?.toDate
+    const queryOrganization = filter?.organization_id
       ? `&organization_id=${filter.organization_id}`
       : ``;
     const queryCatId = filter?.ticket_cat_id

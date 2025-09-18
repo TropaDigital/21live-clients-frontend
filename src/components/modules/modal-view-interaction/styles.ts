@@ -23,13 +23,21 @@ export const Container = styled.div`
       0 0 / var(--size) var(--size);
     justify-content: flex-start;
     align-items: center;
-    width: 100%;
+    flex: 1;
     min-height: 400px;
     border-radius: 0px 0px 40px 40px;
     overflow: hidden;
     position: relative;
     @media (max-width: 400px) {
       max-height: 500px;
+    }
+    .text-render {
+      width: calc(100vw - 700px);
+      height: 100%;
+      background-color: ${({ theme }) => theme.colors.background.default};
+      padding: 30px;
+      display: flex;
+      box-sizing: border-box;
     }
     video {
       width: 100%;
@@ -80,7 +88,8 @@ export const Container = styled.div`
   .right-interactions {
     display: flex;
     flex-direction: column;
-    min-width: 400px;
+    width: 400px;
+    max-width: 400px;
     max-width: 100%;
     overflow: auto;
     max-height: calc(100vh - 90px);
@@ -253,8 +262,10 @@ export const ContainerToggle = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
       svg {
         transition: all 0.5s;
+        cursor: pointer;
       }
       &.closed {
         svg {

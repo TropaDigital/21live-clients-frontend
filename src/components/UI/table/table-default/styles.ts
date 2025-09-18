@@ -64,6 +64,18 @@ export const Container = styled.div.withConfig({
       height: 40px;
     }
   }
+  .show-hide-total {
+    display: flex;
+    gap: 10px;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 0px 10px 10px 0px;
+    padding: 10px;
+    margin-right: -30px;
+    align-items: center;
+    margin-left: 20px;
+    i {
+    }
+  }
   .overflow-table {
     max-width: 100%;
     overflow-x: auto;

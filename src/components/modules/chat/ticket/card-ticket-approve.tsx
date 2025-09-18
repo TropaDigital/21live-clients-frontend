@@ -1,3 +1,4 @@
+import { IconTextarea } from '../../../../assets/icons';
 import type { ITicketInteraction } from '../../../../core/types/ITckets';
 import { STATUS_TICKET_INTERACTION } from '../../../../core/utils/status';
 import { AvatarUser } from '../../../UI/avatar/avatar-user';
@@ -18,7 +19,7 @@ interface IProps {
     loading?: boolean;
 }
 
-export const CardTicketApprove = ({ loading, avatar, name, status, created, thumbnail, onClick, interactions }: IProps) => {
+export const CardTicketApprove = ({ loading, avatar, name, status, message, created, thumbnail, onClick, interactions }: IProps) => {
 
     return (
         <S.ContainerCardApprove onClick={onClick}>
@@ -50,7 +51,14 @@ export const CardTicketApprove = ({ loading, avatar, name, status, created, thum
             <div className='thumb' style={{ backgroundImage: `url(${thumbnail})` }}>
                 {loading && <Skeleton width='100%' height='100%' />}
                 {!loading &&
-                    <div className='overlay' style={{ backgroundColor: STATUS_TICKET_INTERACTION[status].colorOpacity }}></div>
+                    <div className='overlay' style={{ backgroundColor: STATUS_TICKET_INTERACTION[status].colorOpacity }}>
+                        {!thumbnail && message &&
+                            <div className='icon'>
+                                <IconTextarea />
+                                <span>Texto</span>
+                            </div>
+                        }
+                    </div>
                 }
             </div>
 

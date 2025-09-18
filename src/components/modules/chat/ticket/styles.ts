@@ -230,6 +230,21 @@ export const ContainerCardApprove = styled.div`
       height: 100%;
       padding: 15px;
       border-radius: 10px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .icon {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 20px 20px 15px 20px;
+        border-radius: 12px;
+        align-items: center;
+        justify-content: center;
+        background-color: rgba(0, 0, 0, 0.1);
+      }
     }
   }
   .foot-card {
@@ -357,17 +372,6 @@ export const ContainerModalUpload = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  .label-checkbox {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    > p {
-      font-size: 11px;
-      color: ${({ theme }) => theme.colors.neutral[600]};
-      margin: 0px;
-      padding: 0px;
-    }
-  }
   .foot {
     display: flex;
     gap: 20px;

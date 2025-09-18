@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
-import { IconCheck, IconHome, IconProfile, IconSolicitation, IconStatus } from '../../../../assets/icons';
+import { IconHome, IconProfile, IconSolicitation, IconStatus } from '../../../../assets/icons';
 import { useTenant } from '../../../../core/contexts/TenantContext';
-import { InputDateRange, InputDateRangeByType } from '../../../UI/form/input-date-range';
+import { InputDateRange } from '../../../UI/form/input-date-range';
 import { SelectDefault } from '../../../UI/form/select-default';
 import { ModalDefault } from '../../../UI/modal/modal-default'
 import * as S from './styles'
 import { ButtonDefault } from '../../../UI/form/button-default';
-import { BulletStatus } from '../../modal-view-ticket/styles';
 import { useAuth } from '../../../../core/contexts/AuthContext';
+import { LabelCheckbox } from '../../../UI/form/input-checkbox/styles';
+import { InputCheckbox } from '../../../UI/form/input-checkbox';
 
 interface IProps {
     opened: boolean;
@@ -34,6 +35,8 @@ export const FILTER_DEFAULT: IFilterTicket = {
     user_id: undefined,
 }
 
+export const NAME_STORAGE_FILTER_TICKET = '@21filter-ticket'
+
 export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: IProps) => {
 
     const { user } = useAuth();
@@ -53,6 +56,7 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
         organizations,
     } = useTenant();
 
+    const [saveStorage, setSaveStorage] = useState(false)
     const [DTO, setDTO] = useState<IFilterTicket>({} as IFilterTicket);
 
     useEffect(() => {
@@ -65,6 +69,33 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
         if (users.length === 0) getUsers();
         if (organizations.length === 0) getOrganizations();
     }, [ticketCats, ticketStatus, users, organizations])
+
+    useEffect(() => {
+        const STORAGE_FILTER = window.localStorage.getItem(NAME_STORAGE_FILTER_TICKET);
+        if (STORAGE_FILTER) {
+            setSaveStorage(true);
+        }
+    }, [])
+
+    const handleConfirm = () => {
+
+        if (saveStorage) {
+            const JSON_FILTER = JSON.stringify(DTO);
+            window.localStorage.setItem(NAME_STORAGE_FILTER_TICKET, JSON_FILTER);
+        } else {
+            window.localStorage.removeItem(NAME_STORAGE_FILTER_TICKET)
+        }
+
+        setDTOFilter(DTO);
+        onClose();
+    }
+
+    const handleReset = () => {
+        window.localStorage.removeItem(NAME_STORAGE_FILTER_TICKET);
+        setSaveStorage(false)
+        setDTOFilter({ ...FILTER_DEFAULT });
+        onClose();
+    }
 
     const LIST_STATUS = ticketStatus.map((row) => {
         return {
@@ -181,19 +212,22 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
                         setDates={(dates) => setDTO((prev) => ({ ...prev, fromDate: dates?.from, toDate: dates?.to }))}
 
                     />
+
+                    <LabelCheckbox>
+                        <InputCheckbox
+                            label='Salvar Filtros'
+                            checked={saveStorage}
+                            onChange={setSaveStorage}
+                        />
+                    </LabelCheckbox>
+
                 </div>
 
                 <div className='foot-buttons'>
-                    <ButtonDefault variant='light' onClick={() => {
-                        setDTOFilter({ ...FILTER_DEFAULT });
-                        onClose();
-                    }}>
+                    <ButtonDefault variant='light' onClick={handleReset}>
                         Limpar Filtro
                     </ButtonDefault>
-                    <ButtonDefault onClick={() => {
-                        setDTOFilter(DTO);
-                        onClose();
-                    }}>Confirmar</ButtonDefault>
+                    <ButtonDefault onClick={handleConfirm}>Confirmar</ButtonDefault>
                 </div>
             </S.Container>
         </ModalDefault >

@@ -14,6 +14,7 @@ import * as S from './styles';
 import { InputCheckbox } from '../../UI/form/input-checkbox';
 import { SelectDefault } from '../../UI/form/select-default';
 import { unmaskMoney } from '../../../core/utils/replaces';
+import { LabelCheckbox } from '../../UI/form/input-checkbox/styles';
 
 interface IProps {
     id: number | null;
@@ -166,24 +167,24 @@ export const FormMedia = ({ id, onSubmit, onLoad }: IProps) => {
                     </div>
 
                     <div className='column-input'>
-                        <div className='label-checkbox'>
+                        <LabelCheckbox>
                             <InputCheckbox
                                 label='Necessita Tamanho'
                                 checked={data.sizeable}
                                 loading={loading}
                                 onChange={(bol) => setData((prev) => ({ ...prev, sizeable: bol }))}
                             />
-                        </div>
+                        </LabelCheckbox>
 
 
-                        <div className='label-checkbox'>
+                        <LabelCheckbox>
                             <InputCheckbox
                                 label='Habilitar Valores'
                                 checked={showValue}
                                 loading={loading}
                                 onChange={(bol) => { setShowValue(bol); setData((prev) => ({ ...prev, value: bol === false ? '0' : prev.value })) }}
                             />
-                        </div>
+                        </LabelCheckbox>
 
                         {showValue &&
                             <InputDefault

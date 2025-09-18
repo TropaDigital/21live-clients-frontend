@@ -1,7 +1,7 @@
 import * as S from './styles'
 import { TableDefault, TDViewByHead, type ITHead } from '../../components/UI/table/table-default'
 import { useEffect, useState } from 'react'
-import type { ITicket, ITicketCat } from '../../core/types/ITckets'
+import type { ITicket } from '../../core/types/ITckets'
 import { TicketService } from '../../core/services/TicketService'
 import { IconClone, IconEye, IconFilter, IconPencil, IconSolicitation, IconStatus, IconTrash } from '../../assets/icons'
 import { BadgeSimpleColor } from '../../components/UI/badge/badge-simple-color'
@@ -15,7 +15,8 @@ import { ModalEditTicket } from '../../components/modules/modal-edit-ticket'
 import Confetti from 'react-confetti'
 import { useTenant } from '../../core/contexts/TenantContext'
 import { ModalConfirm } from '../../components/UI/modal/modal-confirm'
-import { FILTER_DEFAULT, ModalFilterTicket, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
+import { FILTER_DEFAULT, ModalFilterTicket, NAME_STORAGE_FILTER_TICKET, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
+import { useAuth } from '../../core/contexts/AuthContext'
 
 export default function Tickets() {
 
@@ -34,11 +35,6 @@ export default function Tickets() {
         {
             "name": "Titulo",
             "value": "title",
-            "order": true
-        },
-        {
-            "name": "Formato da Peça",
-            "value": "media_name",
             "order": true
         },
         {
@@ -130,6 +126,7 @@ export default function Tickets() {
     const { id } = useParams();
 
     const { tenant } = useTenant();
+    const { user, verifyPermission } = useAuth();
 
     const [newTicket, setNewTicket] = useState(false)
 
@@ -145,6 +142,8 @@ export default function Tickets() {
         total_show: 0,
     })
 
+    const STORAGE_FILTER_SAVE = window.localStorage.getItem(NAME_STORAGE_FILTER_TICKET)
+
     const [modalTicket, setModalTicket] = useState(false);
     const [modalTicketItem, setModalTicketItem] = useState<ITicket | null>(null)
 
@@ -155,7 +154,7 @@ export default function Tickets() {
     const [DTODelete, setDTODelete] = useState<ITicket | null>(null)
 
     const [modalFilter, setModalFilter] = useState(false)
-    const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(FILTER_DEFAULT)
+    const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(STORAGE_FILTER_SAVE ? JSON.parse(STORAGE_FILTER_SAVE) : FILTER_DEFAULT)
 
     const getData = async (page: number, limit: number, search: string, order: string, filter: IFilterTicket) => {
         setLoading(true);
@@ -212,7 +211,7 @@ export default function Tickets() {
                 tenant_id: DTOClone.tenant_id,
                 title: DTOClone.title + ' (Cópia)',
                 organization_id: DTOClone.organization_id,
-                user_id: DTOClone.user_id,
+                user_id: user?.user_id,
                 width: DTOClone.width,
                 height: DTOClone.height,
                 media_id: DTOClone.media_id,
@@ -222,7 +221,7 @@ export default function Tickets() {
                 obs: DTOClone.obs
             })
 
-            if (responseGet.item.fields) {
+            if (responseGet.item.fields && responseGet.item.fields.length > 0) {
                 let payloadFields: any = []
                 responseGet.item.fields.forEach((item: any) => {
                     payloadFields.push({
@@ -234,7 +233,9 @@ export default function Tickets() {
                 await TicketService.setFields(payloadFields, responseSend.item.ticket_id);
             }
 
-            setData([responseSend.item, ...data])
+            const response = await TicketService.get(pagination.page, pagination.limit, search, order, DTOFilter)
+            setData([...response.items]);
+
             setLoadingClone(false);
             setDTOClone(null)
 
@@ -257,15 +258,13 @@ export default function Tickets() {
         setDTODelete(null)
         setLoadingDelete(false);
 
-        const response = await TicketService.get(pagination.page, pagination.limit, search, order)
+        const response = await TicketService.get(pagination.page, pagination.limit, search, order, DTOFilter)
         setData([...response.items]);
     }
 
     const countFilled = Object.values(DTOFilter)
         .filter((value) => value !== undefined && value !== 0 && value !== null)
         .length;
-
-        console.log('DTOFilter', DTOFilter)
 
     return (
         <S.Container>
@@ -351,6 +350,7 @@ export default function Tickets() {
                     onPaginate={(page) => setPagination((prev) => ({ ...prev, page }))}
                     onLimit={(limit) => setPagination((prev) => ({ ...prev, limit }))}
                     download={'Solicitações'}
+                    theadNameStorage="tickets"
                     getDataDownload={() => TicketService.get(pagination.page, 99999999, search, order)}
                     order={order}
                     loading={loading}
@@ -359,15 +359,15 @@ export default function Tickets() {
                         <tbody>
                             {data.map((item) =>
                                 <tr>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[0].name}>
+                                    <TDViewByHead path={verifyPermission('tickets_view') ? `/tickets/${item.ticket_id}` : undefined} thead={thead} nameTH={TABLE_HEAD[0].name}>
                                         <span className='td-id'>
                                             #{item.ticket_id}
                                         </span>
                                     </TDViewByHead>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[1].name}>
+                                    <TDViewByHead path={verifyPermission('tickets_view') ? `/tickets/${item.ticket_id}` : undefined} thead={thead} nameTH={TABLE_HEAD[1].name}>
                                         {item.ticket_cat_title}
                                     </TDViewByHead>
-                                    <TDViewByHead thead={thead} nameTH={TABLE_HEAD[2].name}>
+                                    <TDViewByHead path={verifyPermission('tickets_view') ? `/tickets/${item.ticket_id}` : undefined} thead={thead} nameTH={TABLE_HEAD[2].name}>
                                         {item.title}
                                     </TDViewByHead>
                                     <TDViewByHead thead={thead} nameTH={TABLE_HEAD[3].name}>

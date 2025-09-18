@@ -22,6 +22,7 @@ import { ContainerEditorStatic } from '../../UI/form/editor-text-slash/styles';
 import { AvatarTenant } from '../../UI/avatar/avatar-tenant';
 import { InputColor } from '../../UI/form/input-color';
 import { useRedirect } from '../../../core/hooks/useRedirect';
+import { LabelCheckbox } from '../../UI/form/input-checkbox/styles';
 
 
 interface IProps {
@@ -412,7 +413,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                             </div>
                             <div className='column-input'>
 
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Limite de Downloads'
                                         checked={data.downlimit}
@@ -420,10 +421,10 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, downlimit: bol }))}
                                     />
                                     <p>Adiciona a opção de limitar por unidade o número de downloads disponíveis para os usuários.</p>
-                                </div>
+                                </LabelCheckbox>
 
                                 {id &&
-                                    <div className='label-checkbox'>
+                                    <LabelCheckbox>
                                         <InputCheckbox
                                             label='Ativar Aprovação de Customizações'
                                             checked={data.customApproval}
@@ -431,7 +432,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                             onChange={(bol) => setData((prev) => ({ ...prev, customApproval: bol }))}
                                         />
                                         <p>Faz necessária a aprovação das criações de peças customizadas, através do Solicitações, antes de liberar o download.</p>
-                                    </div>
+                                    </LabelCheckbox>
                                 }
                             </div>
                         </>
@@ -444,7 +445,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                             </div>
                             <div className='column-input'>
 
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar registro de novos usuários'
                                         checked={data.register}
@@ -453,11 +454,11 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                     />
                                     <p>Habilita novos usuários criarem contas na tela inicial</p>
 
-                                </div>
+                                </LabelCheckbox>
 
                                 {id &&
                                     <>
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Validar registro de novos usuários'
                                                 disabled={data.register === false ? true : false}
@@ -466,9 +467,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                 onChange={(bol) => setData((prev) => ({ ...prev, register_validate: bol }))}
                                             />
                                             <p>Faz com que os usuários cadastrados na opção acima não recebam acesso de imediato, ao invés disso, eles caem numa tela para terem seu cadastro aprovados ou não pela administraçãoƒ</p>
-                                        </div>
+                                        </LabelCheckbox>
 
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Travar registro à Unidades existentes'
                                                 disabled={data.register === false ? true : false}
@@ -477,9 +478,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                 onChange={(bol) => setData((prev) => ({ ...prev, register_setOrganization: bol }))}
                                             />
                                             <p>Ao ativar essa opção você impede que novos usuários sejam criados junto de novas unidades, forçando os mesmo a se atrelarem a uma unidade já cadastrada.</p>
-                                        </div>
+                                        </LabelCheckbox>
 
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Ativar preenchimento completo de dados'
                                                 checked={data.complete_fill}
@@ -487,9 +488,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                 onChange={(bol) => setData((prev) => ({ ...prev, complete_fill: bol }))}
                                             />
                                             <p>Usuários cadastrados pelo Registro de Novos Usuários ou por integrações externas(hotmart) caem numa tela de passo a passo para preencher todos os dados de sua conta. Caso essa opção seja desabilitada, o novo usuário cai numa tela simples, resumida, apenas com os dados necessários.</p>
-                                        </div>
+                                        </LabelCheckbox>
 
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Ativar cadastro de anônimos'
                                                 checked={data.register_asAnon}
@@ -497,7 +498,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                 onChange={(bol) => setData((prev) => ({ ...prev, register_asAnon: bol }))}
                                             />
                                             <p>Habilita novos usuários criarem contas anônimas a partir da tela inicial.</p>
-                                        </div>
+                                        </LabelCheckbox>
                                     </>
                                 }
                             </div>
@@ -508,7 +509,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         <h2>Tarefas</h2>
                                     </div>
                                     <div className='column-input gap-20'>
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Ativar módulo tarefas'
                                                 checked={data.jobs}
@@ -516,7 +517,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                 onChange={(bol) => setData((prev) => ({ ...prev, jobs: bol }))}
                                             />
                                             <p>Habilita o módulo de gerenciamento de tarefas, amarrando as entregas com as solicitações e disponibilizando os arquivos direto nas pastas da plataforma.</p>
-                                        </div>
+                                        </LabelCheckbox>
                                         {data.jobs &&
                                             <>
                                                 <SelectDefault
@@ -550,7 +551,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                 <h2>Cursos</h2>
                             </div>
                             <div className='column-input'>
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar modo e-learning'
                                         checked={data.elearning}
@@ -558,13 +559,13 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, elearning: bol }))}
                                     />
                                     <p>Habilita o módulo de cursos, permitindo o acompanhamento do progresso dos usuarios.</p>
-                                </div>
+                                </LabelCheckbox>
                             </div>
                             <div className='head-area'>
                                 <h2>Módulos Extras</h2>
                             </div>
                             <div className='column-input'>
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Produtos'
                                         checked={data.products}
@@ -572,9 +573,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, products: bol }))}
                                     />
                                     <p>Ativa o módulo de produtos, além de habilitar o uso de suas imagens nas customizações.</p>
-                                </div>
+                                </LabelCheckbox>
                                 {id &&
-                                    <div className='label-checkbox'>
+                                    <LabelCheckbox>
                                         <InputCheckbox
                                             label='Ativar Materiais'
                                             checked={data.materials}
@@ -582,9 +583,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                             onChange={(bol) => setData((prev) => ({ ...prev, materials: bol }))}
                                         />
                                         <p>Ativa o módulo de materiais, habilitando sua associação as unidades e solicitações.</p>
-                                    </div>
+                                    </LabelCheckbox>
                                 }
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Redes Sociais'
                                         checked={data.social}
@@ -592,8 +593,8 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, social: bol }))}
                                     />
                                     <p>Ativa as opções para conectar o sistema ao Facebook, permitindo publicar artes diretamenta em suas páginas.</p>
-                                </div>
-                                <div className='label-checkbox'>
+                                </LabelCheckbox>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Verba Compartilhada'
                                         checked={data.sharedMedia}
@@ -601,7 +602,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, sharedMedia: bol }))}
                                     />
                                     <p>Ativa o módulo de lançamento de verbas compartilhada de mídia para as unidades.</p>
-                                </div>
+                                </LabelCheckbox>
                             </div>
                         </>
                     }
@@ -612,7 +613,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                 <h2>Solicitações</h2>
                             </div>
                             <div className='column-input'>
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Solicitações'
                                         checked={data.tickets}
@@ -620,7 +621,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, tickets: bol }))}
                                     />
                                     <p>Ativa o módulo de solitações, onde os clientes podem abrir tickets para solicitar novas artes.</p>
-                                </div>
+                                </LabelCheckbox>
                             </div>
 
                             {data.tickets &&
@@ -630,7 +631,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                     </div>
                                     <div className='column-input'>
                                         {id &&
-                                            <div className='label-checkbox'>
+                                            <LabelCheckbox>
                                                 <InputCheckbox
                                                     label='Desativar visualizar tickets da unidade'
                                                     checked={data.tickets_userview}
@@ -638,10 +639,10 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                     onChange={(bol) => setData((prev) => ({ ...prev, tickets_userview: bol }))}
                                                 />
                                                 <p>Usuário só poderá visualizar tickets que ele mesmo criou.</p>
-                                            </div>
+                                            </LabelCheckbox>
                                         }
 
-                                        <div className='label-checkbox'>
+                                        <LabelCheckbox>
                                             <InputCheckbox
                                                 label='Habilitar prazo de Entrega'
                                                 checked={tickets_deadline}
@@ -651,7 +652,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                     setTickets_deadline(bol)
                                                 }}
                                             />
-                                        </div>
+                                        </LabelCheckbox>
 
                                         {tickets_deadline &&
                                             <InputDefault
@@ -666,7 +667,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         }
 
                                         {id &&
-                                            <div className='label-checkbox'>
+                                            <LabelCheckbox>
                                                 <InputCheckbox
                                                     label='Ativar Mensagem de Limite de Horas'
                                                     checked={data.allow_hour_limit}
@@ -674,7 +675,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                                     onChange={(bol) => setData((prev) => ({ ...prev, allow_hour_limit: bol }))}
                                                 />
                                                 <p>Configura uma mensagem para ser exibida caso o cliente atinja o limite de horas de trabalho</p>
-                                            </div>
+                                            </LabelCheckbox>
                                         }
 
                                         {data.allow_hour_limit &&
@@ -697,7 +698,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                 <h2>Privacidade & Cookies</h2>
                             </div>
                             <div className='column-input'>
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Aviso de Cookies'
                                         checked={data.cookiejar}
@@ -705,9 +706,9 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, cookiejar: bol }))}
                                     />
                                     <p>Exibe na tela de login o aviso de política de cookies conforme pede a LGPD</p>
-                                </div>
+                                </LabelCheckbox>
 
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Ativar Política de Privacidade Customizada'
                                         checked={data.termset}
@@ -716,7 +717,7 @@ export const FormTenant = ({ id, onSubmit, onLoad }: IProps) => {
                                     />
                                     <p>Por padrão, o sistema usa o seguinte os seguintes termos: Política de Privacidade</p>
                                     <p>Marque essa opção caso queira definir um política customizada para sua área do cliente</p>
-                                </div>
+                                </LabelCheckbox>
 
                                 {data.termset &&
                                     <ContainerEditorStatic>

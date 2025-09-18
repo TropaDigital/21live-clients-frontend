@@ -17,6 +17,7 @@ import { InputCheckbox } from '../../UI/form/input-checkbox';
 import { SelectDefault } from '../../UI/form/select-default';
 import { useAuth } from '../../../core/contexts/AuthContext';
 import { FormTicketFields } from '../form-ticket-fields';
+import { LabelCheckbox } from '../../UI/form/input-checkbox/styles';
 
 interface IProps {
     id: number | null;
@@ -213,7 +214,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                 </div>
                             }
                              */}
-                            <div className='label-checkbox'>
+                            <LabelCheckbox>
                                 <InputCheckbox
                                     label='Habilitar Categoria Padrão'
                                     checked={data.setas_default}
@@ -221,9 +222,9 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     onChange={(bol) => setData((prev) => ({ ...prev, setas_default: bol }))}
                                 />
                                 <p>Sobrescreve a categoria "Padrão" do sistema e fica no topo da lista. Se múltiplas padrão forem cadastradas, elas aparecem primeiro em ordem alfabética.</p>
-                            </div>
+                            </LabelCheckbox>
                             {!data.setas_default && verifyPermission('tickets_viewall') &&
-                                <div className='label-checkbox'>
+                                <LabelCheckbox>
                                     <InputCheckbox
                                         label='Habilitar Categoria Privada'
                                         checked={data.private}
@@ -231,9 +232,9 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                         onChange={(bol) => setData((prev) => ({ ...prev, private: bol }))}
                                     />
                                     <p>Essa categoria só será visível pra usuários com permissão pra visualizar todas as solicitações.</p>
-                                </div>
+                                </LabelCheckbox>
                             }
-                            <div className='label-checkbox'>
+                            <LabelCheckbox>
                                 <InputCheckbox
                                     label='Habilitar Título Personalizado'
                                     checked={data.use_title}
@@ -241,8 +242,8 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     onChange={(bol) => setData((prev) => ({ ...prev, use_title: bol }))}
                                 />
                                 <p>Selecione esta opção caso deseje o campo fixo 'Título' no formulário da solicitação.</p>
-                            </div>
-                            <div className='label-checkbox'>
+                            </LabelCheckbox>
+                            <LabelCheckbox>
                                 <InputCheckbox
                                     label='Habilitar Campos padrões'
                                     checked={data.default_fields}
@@ -250,8 +251,8 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     onChange={(bol) => setData((prev) => ({ ...prev, default_fields: bol }))}
                                 />
                                 <p>Habilita na solicitação os campos: Informações, Objetivo, Observações e Formato do Arquivo</p>
-                            </div>
-                            <div className='label-checkbox'>
+                            </LabelCheckbox>
+                            <LabelCheckbox>
                                 <InputCheckbox
                                     label='Habilitar Envio de Arquivos de Referência'
                                     checked={data.allow_files}
@@ -259,8 +260,8 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     onChange={(bol) => setData((prev) => ({ ...prev, allow_files: bol }))}
                                 />
                                 <p>Habilita o envio de arquivos de referência ao abrir a solicitação</p>
-                            </div>
-                            <div className='label-checkbox'>
+                            </LabelCheckbox>
+                            <LabelCheckbox>
                                 <InputCheckbox
                                     label='Habilitar Formato de Peça'
                                     checked={data.use_media}
@@ -268,7 +269,7 @@ export const FormTicketCat = ({ id, onSubmit, onLoad }: IProps) => {
                                     onChange={(bol) => setData((prev) => ({ ...prev, use_media: bol }))}
                                 />
                                 <p>Habilita definir um Formato de Peça para a Solicitação.</p>
-                            </div>
+                            </LabelCheckbox>
                         </div>
                         {data.use_media &&
                             <div className='column-input'>

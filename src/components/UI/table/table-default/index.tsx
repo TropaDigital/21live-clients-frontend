@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconCheck, IconCSV, IconExcel, IconEye, IconSearch, IconSortOrder } from '../../../../assets/icons';
+import { IconCheck, IconCSV, IconExcel, IconEye, IconEyeClose, IconSearch, IconSortOrder } from '../../../../assets/icons';
 import { ButtonDefault } from '../../form/button-default';
 import { Skeleton } from '../../loading/skeleton/styles';
 import * as S from './styles'
@@ -7,6 +7,7 @@ import { SelectDefault } from '../../form/select-default';
 import { generateCSVandExcel } from '../../../../core/utils/download';
 import { useTenant } from '../../../../core/contexts/TenantContext';
 import { SubmenuSelect } from '../../submenu-select';
+import { LinkSlug } from '../../../../core/utils/link-slug';
 
 interface IProps<T> {
     onSearch?(search: string): void;
@@ -16,6 +17,7 @@ interface IProps<T> {
     getDataDownload: () => Promise<GetResponse<T>>;
     setTheadShow?(head: ITHead[]): void;
     theadShow?: ITHead[];
+    theadNameStorage?: string;
     thead: ITHead[];
     tbody: React.ReactNode;
     download?: string;
@@ -45,6 +47,7 @@ export const TableDefault = <T,>({
     onSearch,
     getDataDownload,
     setTheadShow,
+    theadNameStorage,
     theadShow,
     download,
     onPaginate,
@@ -73,8 +76,10 @@ export const TableDefault = <T,>({
         name: '100 Registros',
         value: '100',
     }]
+    const { tenant } = useTenant();
 
     const LIMIT_SELECTED = OPTIONS_LIMIT.find((obj) => Number(obj.value) === pagination?.limit);
+    const NAME_STORAGE_HIDE_TABLE_HEAD = theadNameStorage ? `@21thead:${theadNameStorage}` : 'NAME_STORAGE_HIDE_TABLE_HEAD'
 
     const [loadingDownload, setLoadingDownload] = useState<'' | 'CSV' | 'EXCEL'>('')
 
@@ -83,6 +88,13 @@ export const TableDefault = <T,>({
         pages: [],
         totalPages: 0,
     })
+
+    useEffect(() => {
+        const STORAGE_SHOW_THEAD = window.localStorage.getItem(NAME_STORAGE_HIDE_TABLE_HEAD);
+        if (STORAGE_SHOW_THEAD && setTheadShow) {
+            setTheadShow([...JSON.parse(STORAGE_SHOW_THEAD)])
+        }
+    }, [setTheadShow])
 
     function generatePages({ page, limit, total }: { page: number, limit: number, total: number }) {
         const totalPages = Math.ceil(total / limit);
@@ -126,21 +138,25 @@ export const TableDefault = <T,>({
         setLoadingDownload('');
     }
 
-    const { tenant } = useTenant();
-
     const handleToggleHead = (item: ITHead) => {
 
         if (setTheadShow && theadShow) {
             const find = theadShow.filter((obj) => obj.name === item.name)
             if (find.length > 0) {
-                setTheadShow([...theadShow.filter((obj) => obj.name !== item.name)])
+                const newTheadShow = theadShow.filter((obj) => obj.name !== item.name)
+                window.localStorage.setItem(NAME_STORAGE_HIDE_TABLE_HEAD, JSON.stringify(newTheadShow))
+                setTheadShow([...newTheadShow])
             } else {
                 theadShow.push(item)
+                window.localStorage.setItem(NAME_STORAGE_HIDE_TABLE_HEAD, JSON.stringify(theadShow))
                 setTheadShow([...theadShow])
             }
         }
 
+
     }
+
+    const TOTAL_HIDE_THEAD = theadShow ? thead.length - theadShow.length : 0;
 
     return (
         <S.Container colorBg={tenant?.colormain} color={tenant?.colorhigh} colorText={tenant?.colorsecond}>
@@ -170,13 +186,24 @@ export const TableDefault = <T,>({
                             >
                                 <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" variant="info" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
                                     <IconEye />
+
+                                    {TOTAL_HIDE_THEAD > 0 &&
+                                        <div data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={`${TOTAL_HIDE_THEAD} Colunas escondidas`} className='show-hide-total'>
+                                            <i>
+                                                <IconEyeClose />
+                                            </i>
+                                            <span>
+                                                {TOTAL_HIDE_THEAD}
+                                            </span>
+                                        </div>
+                                    }
                                 </ButtonDefault>
                             </SubmenuSelect>
                         </>
                     }
                     {(download) &&
                         <>
-                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant="secondary" icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
+                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant="success" icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
                             <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar CSV" disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='dark' icon={<IconCSV />} onClick={() => handleDownload('CSV')} />
                         </>
                     }
@@ -228,13 +255,25 @@ export const TableDefault = <T,>({
                         <tbody>
                             {Array.from({ length: pagination?.limit ?? 5 }).map((_) => (
                                 <tr>
-                                    {thead.map((td, index) =>
-                                        <td key={`td-load-${index}-${td.value}`}>
-                                            <div style={{ display: 'flex', width: '100%', padding: '9px 0px' }}>
-                                                <Skeleton widthAuto={true} height='17px' />
-                                            </div>
-                                        </td>
-                                    )}
+                                    <>
+                                        {theadShow ?
+                                            theadShow.map((td, index) =>
+                                                <td key={`td-load-${index}-${td.value}`}>
+                                                    <div style={{ display: 'flex', width: '100%', padding: '9px 0px' }}>
+                                                        <Skeleton widthAuto={true} height='17px' />
+                                                    </div>
+                                                </td>
+                                            )
+                                            :
+                                            thead.map((td, index) =>
+                                                <td key={`td-load-${index}-${td.value}`}>
+                                                    <div style={{ display: 'flex', width: '100%', padding: '9px 0px' }}>
+                                                        <Skeleton widthAuto={true} height='17px' />
+                                                    </div>
+                                                </td>
+                                            )
+                                        }
+                                    </>
                                 </tr>
                             ))}
                         </tbody>}
@@ -306,10 +345,16 @@ export const TableDefault = <T,>({
     )
 }
 
-export const TDViewByHead = ({ thead, nameTH, children }: { thead: any[], nameTH: string; children: React.ReactNode }) => {
+export const TDViewByHead = ({ thead, nameTH, children, path }: { thead: any[], nameTH: string; children: React.ReactNode, path?: string }) => {
     return thead.filter((obj) => obj.name === nameTH).length > 0 ? (
         <td>
-            {children}
+            {path ?
+                <LinkSlug style={{ textDecoration: 'none' }} path={path}>
+                    {children}
+                </LinkSlug>
+                :
+                children
+            }
         </td>
     ) : null
 }

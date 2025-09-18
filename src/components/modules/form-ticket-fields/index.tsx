@@ -77,6 +77,8 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
         }
     }, [organizations, data]);
 
+    console.log('DTO', DTO)
+
     useEffect(() => {
         if (DTOEdit?.ticket_id) {
 
@@ -278,8 +280,10 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
 
     };
 
+
     const SELECTED_USER = dataUsers.find((obj) => Number(obj.value) === Number(DTO.user_id));
-    const SELECTED_ORGANIZATION = organizations.find((obj) => obj.organization_id === DTO.organization_id);
+    const SELECTED_ORGANIZATION = organizations.find((obj) => obj.organization_id === Number(DTO.organization_id));
+
 
     const LIST_MEDIAS = dataMedias.map((item) => {
         return {
@@ -288,7 +292,8 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
         }
     })
 
-    const SELECETED_MEDIA = LIST_MEDIAS.find((obj) => obj.value === String(data.default_media_id));
+    const SELECETED_MEDIA = LIST_MEDIAS.find((obj) => obj.value === String(DTO.media_id));
+    
     const SELECETED_MEDIA_FULL = dataMedias.find((obj) => obj.media_id === data.default_media_id);
 
     return (
@@ -390,38 +395,14 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
                     {data.use_media &&
                         <>
                             {data.default_media_id ?
-                                <>
-                                    <div className='column-input'>
-                                        <InputDefault
-                                            label='Formato da Peça solicitada'
-                                            disabled={true}
-                                            value={SELECETED_MEDIA?.name}
-                                            loading={loading}
-                                        />
-                                    </div>
-                                    <div className='row-input'>
-                                        <InputDefault
-                                            label='Largura'
-                                            description={SELECETED_MEDIA_FULL?.measure}
-                                            value={DTO.width}
-                                            onChange={(e) => handleChangeDTO('width', e.target.value)}
-                                            icon={<IconWidth />}
-                                            type='number'
-                                            disabled={admin}
-                                            loading={loading}
-                                        />
-                                        <InputDefault
-                                            label='Altura'
-                                            description={SELECETED_MEDIA_FULL?.measure}
-                                            value={DTO.height}
-                                            onChange={(e) => handleChangeDTO('height', e.target.value)}
-                                            icon={<IconHeight />}
-                                            type='number'
-                                            disabled={admin}
-                                            loading={loading}
-                                        />
-                                    </div>
-                                </>
+                                <div className='column-input'>
+                                    <InputDefault
+                                        label='Formato da Peça solicitada'
+                                        disabled={true}
+                                        value={SELECETED_MEDIA?.name}
+                                        loading={loading}
+                                    />
+                                </div>
                                 :
                                 <div className='column-input'>
                                     {admin ?
@@ -441,10 +422,33 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
                                                 name: SELECETED_MEDIA?.name ?? 'Nenhum selecionado',
                                                 value: SELECETED_MEDIA?.value ?? ''
                                             }}
-                                            isValidEmpty='Nenhum pré selecionado'
                                             onChange={(e) => handleChangeDTO('media_id', e.value)}
                                         />
                                     }
+                                </div>
+                            }
+                            {SELECETED_MEDIA?.value &&
+                                <div className='row-input'>
+                                    <InputDefault
+                                        label='Largura'
+                                        description={SELECETED_MEDIA_FULL?.measure}
+                                        value={DTO.width}
+                                        onChange={(e) => handleChangeDTO('width', e.target.value)}
+                                        icon={<IconWidth />}
+                                        type='number'
+                                        disabled={admin}
+                                        loading={loading}
+                                    />
+                                    <InputDefault
+                                        label='Altura'
+                                        description={SELECETED_MEDIA_FULL?.measure}
+                                        value={DTO.height}
+                                        onChange={(e) => handleChangeDTO('height', e.target.value)}
+                                        icon={<IconHeight />}
+                                        type='number'
+                                        disabled={admin}
+                                        loading={loading}
+                                    />
                                 </div>
                             }
                         </>

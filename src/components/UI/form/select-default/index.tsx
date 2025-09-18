@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { SubmenuSelect, type ISubmenuSelect } from '../../submenu-select';
 import * as S from './styles'
 import { IconCheck, IconChevronDown, IconLoading } from '../../../../assets/icons';

@@ -106,17 +106,6 @@ export const Container = styled.div.withConfig({
           : isMobile && !menuOpened
           ? "calc(100% - 60px)"
           : "calc(100% - 260px)"};
-      .label-checkbox {
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        > p {
-          font-size: 11px;
-          color: ${({ theme }) => theme.colors.neutral[600]};
-          margin: 0px;
-          padding: 0px;
-        }
-      }
       .head-setting {
         display: flex;
         align-items: center;

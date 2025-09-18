@@ -111,11 +111,22 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
                         </TransformWrapper>
                     </div>
                 }
-                {extension === 'other' &&
+                {extension === 'other' && item?.annex &&
                     <div className="preview-render">
                         <img src={item.thumbnail} alt={item.annex_title} style={{ maxWidth: '100%', maxHeight: '400px' }} />
                     </div>
                 }
+
+                {!item?.annex && item.message &&
+                    <div className="preview-render">
+                        <div className="text-render">
+                            <EditorTextSlash
+                                value={item.message}
+                            />
+                        </div>
+                    </div>
+                }
+
                 {extension === 'video' &&
                     <div className="preview-render">
                         <video controls src={item.annex}>
@@ -146,7 +157,7 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
                             />
                             <span>{item.user_name}</span>
                         </div>
-                        {item.message && item.message !== '<p></p>' &&
+                        {item.annex && item.message && item.message !== '<p></p>' &&
                             <div className='label'>
                                 <b>Texto:</b>
                                 <div dangerouslySetInnerHTML={{ __html: item.message }} />

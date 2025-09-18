@@ -11,6 +11,7 @@ import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type UploadResult } from '../../
 import { ButtonDefault } from '../../../UI/form/button-default'
 import { useAlert } from '../../../../core/contexts/AlertContext'
 import { InputCheckbox } from '../../../UI/form/input-checkbox'
+import { LabelCheckbox } from '../../../UI/form/input-checkbox/styles'
 
 export const InputSendTicket = ({ id, reply, approve, onRemoveReply, onSubmit }: {
     id: number;
@@ -142,14 +143,14 @@ export const InputSendTicket = ({ id, reply, approve, onRemoveReply, onSubmit }:
                         onChange={(e) => setFile(e)}
                     />
 
-                    <div className='label-checkbox'>
+                    <LabelCheckbox>
                         <InputCheckbox
                             label='Pedir aprovação'
                             checked={checkApprove}
                             onChange={() => setCheckApprove(!checkApprove)}
                         />
                         <p>Permitir aprovação de arquivo</p>
-                    </div>
+                    </LabelCheckbox>
 
                     <div className='foot'>
                         <ButtonDefault variant='light' onClick={handleCloseUpload}>Descartar</ButtonDefault>

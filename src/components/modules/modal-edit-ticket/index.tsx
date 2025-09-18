@@ -115,7 +115,7 @@ export const ModalEditTicket = ({ opened, ticket, onClose, onSubmit }: IProps) =
 
             if (dataForm.use_title && !DTO.title) throw new Error('Título obrigatório.')
 
-            if (dataForm.use_media) {
+            if (DTO.media_id) {
                 if (!DTO.width) throw new Error('Largura obrigatório.')
                 if (!DTO.height) throw new Error('Altura obrigatório.')
             }
@@ -142,6 +142,12 @@ export const ModalEditTicket = ({ opened, ticket, onClose, onSubmit }: IProps) =
                     value: finalValue
                 };
             });
+
+            if (DTO.media_id) {
+                DTO.media_id = Number(DTO.media_id)
+            } else {
+                DTO.media_id = null
+            }
 
             const response = await TicketService.set(DTO, ticket?.ticket_id);
             onSubmit(response.item, ticket?.ticket_id ? 'edit' : 'new');
