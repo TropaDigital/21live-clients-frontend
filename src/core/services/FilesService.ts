@@ -2,9 +2,19 @@ import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
 
 export const FilesService = {
-  get: async (id: number) => {
+  get: async ({
+    page = 1,
+    offset = 0,
+    limit = 50,
+  }: {
+    page: number;
+    offset: number;
+    limit: number;
+  }) => {
     const tenant = getSlug();
-    const response = await BaseService.get(`/${tenant}/API/Files/${id}`);
+    const response = await BaseService.get(
+      `/${tenant}/API/Files?page=${page}&offset=${offset}&limit=${limit}`
+    );
     return response.data;
   },
   set: async (params: any, options: any = {}) => {

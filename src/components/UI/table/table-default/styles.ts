@@ -64,16 +64,17 @@ export const Container = styled.div.withConfig({
       height: 40px;
     }
   }
-  .show-hide-total {
+
+  .buttons-thead {
     display: flex;
-    gap: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 0px 10px 10px 0px;
-    padding: 10px;
-    margin-right: -30px;
-    align-items: center;
-    margin-left: 20px;
-    i {
+    button {
+      &:first-child {
+        border-radius: 8px 0px 0px 8px;
+      }
+      &:last-child {
+        border-radius: 0px 8px 8px 0px;
+        border-left: 1px solid ${({theme}) => theme.colors.neutral[300]};
+      }
     }
   }
   .overflow-table {

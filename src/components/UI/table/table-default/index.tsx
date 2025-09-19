@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconCheck, IconCSV, IconExcel, IconEye, IconEyeClose, IconLoading, IconSearch, IconSortOrder } from '../../../../assets/icons';
+import { IconCheck, IconCSV, IconExcel, IconEye, IconEyeClose, IconLoading, IconMoreVertical, IconSearch, IconSortOrder } from '../../../../assets/icons';
 import { ButtonDefault } from '../../form/button-default';
 import { Skeleton } from '../../loading/skeleton/styles';
 import * as S from './styles'
@@ -192,28 +192,46 @@ export const TableDefault = <T,>({
                                     }
                                 })}
                             >
-                                <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" variant="info" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
-                                    <IconEye />
-
+                                <div className='buttons-thead'>
+                                    <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" variant="info" data-tooltip-content="Esconder/Exibir Colunas" type='button'>
+                                        <IconEye />
+                                    </ButtonDefault>
                                     {TOTAL_HIDE_THEAD > 0 &&
-                                        <div data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={`${TOTAL_HIDE_THEAD} Colunas escondidas`} className='show-hide-total'>
+                                        <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" variant='info' data-tooltip-content={`${TOTAL_HIDE_THEAD} Colunas escondidas`}>
                                             <i>
                                                 <IconEyeClose />
                                             </i>
                                             <span>
                                                 {TOTAL_HIDE_THEAD}
                                             </span>
-                                        </div>
+                                        </ButtonDefault>
                                     }
-                                </ButtonDefault>
+
+                                </div>
                             </SubmenuSelect>
                         </>
                     }
                     {(download) &&
-                        <>
-                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar EXCEL" loading={loadingDownload === 'EXCEL' ? true : false} variant="success" icon={<IconExcel />} onClick={() => handleDownload('EXCEL')} />
-                            <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content="Exportar CSV" disabled={loadingDownload !== '' ? true : false} loading={loadingDownload === 'CSV' ? true : false} variant='dark' icon={<IconCSV />} onClick={() => handleDownload('CSV')} />
-                        </>
+                        <SubmenuSelect
+                            closeOnSelected={false}
+                            whiteSpace='nowrap'
+                            submenu={[
+                                {
+                                    name: 'Download Excel',
+                                    icon: loadingDownload === 'EXCEL' ? <IconLoading /> : <IconExcel />,
+                                    onClick: () => handleDownload('EXCEL')
+                                },
+                                {
+                                    name: 'Download CSV',
+                                    icon: loadingDownload === 'CSV' ? <IconLoading /> : <IconCSV />,
+                                    onClick: () => handleDownload('CSV')
+                                }
+                            ]}
+                        >
+                            <ButtonDefault variant='light'>
+                                <IconMoreVertical />
+                            </ButtonDefault>
+                        </SubmenuSelect>
                     }
                 </div>
             </div>

@@ -67,10 +67,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
     const [reply, setReply] = useState<ITicketInteraction | null>(null)
 
-    const [loadingStatus, setLoadingStatus] = useState(false);
-
-    console.log('loadingStatus', loadingStatus)
-
     const [dataInteractions, setDataInteractions] = useState<ITicketInteraction[]>([])
     const [dataFiles, setDataFiles] = useState<ITicketFile[]>([])
     const [dataInteractionsGroup, setDataInteractionsGroup] = useState<ITicketInteractionGroup[]>([])
@@ -179,8 +175,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         if (ticketStatus.length === 0) { getTicketStatus(); }
     }, [ticketStatus])
 
-    console.log('data', dataInteractionsGroup)
-
     function groupByJobService(
         interactions: ITicketInteraction[],
         status: string
@@ -272,13 +266,36 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
     useEffect(() => {
         if (dataInteractions.length) {
-
             const interactionsFilter = dataInteractions.filter((obj: any) => obj.annex || obj.task_text)
-
             setDataInteractionsGroup([...groupByJobService(interactionsFilter, statusApprove)])
             setStatsApprove(calculateGlobalStats(interactionsFilter))
+        } else {
+            setDataInteractionsGroup([])
+            setStatsApprove({
+                percentageFail: 0,
+                percentagePass: 0,
+                percentageWait: 0,
+                total: 0,
+                totalFail: 0,
+                totalFiles: 0,
+                totalPass: 0,
+                totalTexts: 0,
+                totalWait: 0
+            })
         }
+
     }, [dataInteractions, statusApprove])
+
+    useEffect(() => {
+
+    }, [statsApprove])
+
+    useEffect(() => {
+        if (!loading && !loadingInteractions) {
+            onUpdate('notifications', dataInteractionsFilter.length)
+            onUpdate('awaiting_approval', statsApprove.totalWait)
+        }
+    }, [loading, loadingInteractions, statsApprove])
 
     useEffect(() => {
         if (dataInteractionsGroup.length > 0) {
@@ -289,7 +306,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     const getData = async () => {
         setLoading(true);
         setLoadingInteractions(true);
-        setLoadingStatus(true);
 
         setDataInteractions([]);
 
@@ -304,7 +320,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         setDataInteractions([...responseInteractions.items])
 
         setLoadingInteractions(false);
-        setLoadingStatus(false);
     }
 
     useEffect(() => {

@@ -24,6 +24,7 @@ export interface IFilterTicket {
     ticket_cat_id: number | undefined;
     ticket_status_id: number | undefined;
     user_id: number | undefined
+    approval?: boolean
 }
 
 export const FILTER_DEFAULT: IFilterTicket = {
@@ -35,7 +36,18 @@ export const FILTER_DEFAULT: IFilterTicket = {
     user_id: undefined,
 }
 
+export const FILTER_APPROVAL_DEFAULT: IFilterTicket = {
+    toDate: undefined,
+    fromDate: undefined,
+    organization_id: undefined,
+    ticket_cat_id: undefined,
+    ticket_status_id: undefined,
+    user_id: undefined,
+    approval: true,
+}
+
 export const NAME_STORAGE_FILTER_TICKET = '@21filter-ticket'
+export const NAME_STORAGE_FILTER_TICKET_APPROVAL = '@21filter-ticket-approval'
 
 export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: IProps) => {
 

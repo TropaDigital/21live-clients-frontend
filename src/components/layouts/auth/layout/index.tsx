@@ -35,38 +35,63 @@ export default function AuthLayout() {
     const [siderbarToggleMobile, setSidebarToggleMobile] = useState(false);
 
     //sidebar resize
-    const [menuWidth, setMenuWidth] = useState(280)
     const [isResizing, setIsResizing] = useState(false)
     const menuRef = useRef<HTMLDivElement>(null);
+    const startXRef = useRef<number | null>(null);
 
     const [search, setSearch] = useState('')
 
     const query = new URLSearchParams(window.location.search);
     const searchQuery = query.get('search');
 
-    // Efeito para lidar com o redimensionamento
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
-            if (!isResizing || !menuRef.current) return
+            e.preventDefault(); // previne seleção de texto
 
-            const newWidth = e.clientX - menuRef.current.getBoundingClientRect().left
-            // Limita a largura mínima e máxima
-            setMenuWidth(Math.min(Math.max(newWidth, 280), 350))
-        }
+            if (!isResizing) return;
+
+            if (startXRef.current === null) {
+                startXRef.current = e.clientX;
+                return;
+            }
+
+            const deltaX = e.clientX - startXRef.current;
+
+            if (deltaX < -10) { // arrastou para a esquerda
+                setSidebarToggle(false);
+                startXRef.current = e.clientX;
+            } else if (deltaX > 10) { // arrastou para a direita
+                setSidebarToggle(true);
+                startXRef.current = e.clientX;
+            }
+        };
 
         const handleMouseUp = () => {
-            setIsResizing(false)
-        }
+            setIsResizing(false);
+            startXRef.current = null;
+
+            // Restaura seleção de texto
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        };
 
         if (isResizing) {
-            document.addEventListener('mousemove', handleMouseMove)
-            document.addEventListener('mouseup', handleMouseUp)
+            // Bloqueia seleção de texto enquanto arrasta
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = 'ew-resize';
+
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', handleMouseUp);
         }
 
         return () => {
-            document.removeEventListener('mousemove', handleMouseMove)
-            document.removeEventListener('mouseup', handleMouseUp)
-        }
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+
+            // Restaura caso saia do efeito
+            document.body.style.userSelect = '';
+            document.body.style.cursor = '';
+        };
     }, [isResizing]);
 
     useEffect(() => {
@@ -97,7 +122,6 @@ export default function AuthLayout() {
                 colorText={tenant?.colorsecond}
                 color={tenant?.colorhigh}
                 colorBg={tenant?.colormain}
-                width={`${menuWidth}px`}
                 opened={isMobile ? true : siderbarToggle}
                 openedMobile={siderbarToggleMobile}
                 ref={menuRef}
@@ -151,7 +175,13 @@ export default function AuthLayout() {
             </S.ContainerSidebar>
             <div className="content">
                 <header>
-                    <button onClick={() => isMobile ? setSidebarToggleMobile(!siderbarToggleMobile) : setSidebarToggle(!siderbarToggle)} className="sidebar-toggle">
+                    <button
+                        data-tooltip-place="right"
+                        data-tooltip-id="tooltip"
+                        data-tooltip-content={siderbarToggle ? 'Fechar menu' : 'Abrir Menu'}
+                        onClick={() => isMobile ? setSidebarToggleMobile(!siderbarToggleMobile) : setSidebarToggle(!siderbarToggle)}
+                        className="sidebar-toggle"
+                    >
                         <IconMenu />
                     </button>
                     <form className="search" onSubmit={handleSearch}>
@@ -369,6 +399,10 @@ const MenuSidebarFolder = ({ opened, sortable, isDragging, icon, name, redirect,
             sortable={sortable}
             opened={opened}
             className={isDragging ? 'no-hover' : 'hover'}
+
+            data-tooltip-place="right"
+            data-tooltip-id="tooltip"
+            data-tooltip-content={opened ? undefined : name}
 
         >
             <LinkSlug path={`/${redirect}`}>

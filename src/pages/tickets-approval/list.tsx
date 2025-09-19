@@ -15,12 +15,12 @@ import { ModalEditTicket } from '../../components/modules/modal-edit-ticket'
 import Confetti from 'react-confetti'
 import { useTenant } from '../../core/contexts/TenantContext'
 import { ModalConfirm } from '../../components/UI/modal/modal-confirm'
-import { FILTER_DEFAULT, ModalFilterTicket, NAME_STORAGE_FILTER_TICKET, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
+import { FILTER_APPROVAL_DEFAULT, ModalFilterTicket, NAME_STORAGE_FILTER_TICKET_APPROVAL, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
 import { useAuth } from '../../core/contexts/AuthContext'
 import { BulletStatus } from '../../components/modules/modal-view-ticket/styles'
 import { SubmenuSelect } from '../../components/UI/submenu-select'
 
-export default function Tickets() {
+export default function TicketsApproval() {
 
     const [thead, setThead] = useState<ITHead[]>([
         {
@@ -144,7 +144,7 @@ export default function Tickets() {
         total_show: 0,
     })
 
-    const STORAGE_FILTER_SAVE = window.localStorage.getItem(NAME_STORAGE_FILTER_TICKET)
+    const STORAGE_FILTER_SAVE = window.localStorage.getItem(NAME_STORAGE_FILTER_TICKET_APPROVAL)
 
     const [modalTicket, setModalTicket] = useState(false);
     const [modalTicketItem, setModalTicketItem] = useState<ITicket | null>(null)
@@ -156,7 +156,7 @@ export default function Tickets() {
     const [DTODelete, setDTODelete] = useState<ITicket | null>(null)
 
     const [modalFilter, setModalFilter] = useState(false)
-    const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(STORAGE_FILTER_SAVE ? JSON.parse(STORAGE_FILTER_SAVE) : FILTER_DEFAULT)
+    const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(STORAGE_FILTER_SAVE ? JSON.parse(STORAGE_FILTER_SAVE) : FILTER_APPROVAL_DEFAULT)
 
     useEffect(() => {
         if (ticketStatus.length === 0) getTicketStatus();
@@ -275,7 +275,7 @@ export default function Tickets() {
         setData([...data.filter((obj) => obj.ticket_id !== DTODelete.ticket_id)])
 
         setDTODelete(null)
-        setLoadingDelete(false)
+        setLoadingDelete(false);
 
         const response = await TicketService.get({
             page: pagination.page,

@@ -122,7 +122,6 @@ interface IPropsContainerSidebar {
   colorBg?: string;
   colorText?: string;
   color?: string;
-  width: string;
   opened: boolean;
   openedMobile: boolean;
 }
@@ -139,7 +138,7 @@ export const ContainerSidebar = styled.div.withConfig({
 })<IPropsContainerSidebar>`
   background: ${({ theme }) => theme.colors.background.default};
   min-width: ${({ opened }) => (opened ? `280px` : `90px`)};
-  width: ${({ width, opened }) => (opened ? width : `90px`)};
+  width: ${({ opened }) => (opened ? '280px' : `90px`)};
   height: calc(100vh);
   box-sizing: border-box;
   position: relative;

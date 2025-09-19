@@ -30,6 +30,7 @@ export interface ISubmenuSelect {
     required?: boolean;
     permission?: string;
     jobs?: boolean;
+    total?: number
 }
 
 export const SubmenuSelect = ({

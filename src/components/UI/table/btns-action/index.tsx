@@ -52,6 +52,7 @@ export const BtnsActionTable = ({ submenu }: IProps) => {
                         path={item.path ?? ''}
                     >
                         {item.icon}
+                        {item.total && item.total > 0 ? <span className='total'>{item.total}</span> : null}
                     </LinkSlug>
             )}
         </S.Container>

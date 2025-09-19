@@ -46,6 +46,8 @@ interface IPropsModalLink extends IFolderLink {
     opened: boolean
 }
 
+const LIMIT_PAGE = 5;
+
 export default function Folder() {
 
     const { id } = useParams();
@@ -55,6 +57,13 @@ export default function Folder() {
 
     const refPage = useRef<HTMLDivElement>(null)
     const [typeCard, setTypeCard] = useState<'card' | 'list'>('card')
+
+
+    const [pageFolders, setPageFolders] = useState(1)
+    const [loadingPaginateFolders, setLoadingPaginateFolders] = useState(false)
+
+    const [pageFiles, setPageFiles] = useState(1)
+    const [loadingPaginateFiles, setLoadingPaginateFiles] = useState(false)
 
     const [loadingActionArchive, setLoadingActionArchive] = useState(false);
     const [loadingFolder, setLoadingFolder] = useState(true);
@@ -94,10 +103,6 @@ export default function Folder() {
 
     const query = new URLSearchParams(window.location.search);
     const search = query.get('search');
-
-    const [page, setPage] = useState(1)
-
-    console.log('setPage', setPage)
 
     useEffect(() => {
         const PermissionButotns: ISubmenuSelect[] = [];
@@ -157,11 +162,12 @@ export default function Folder() {
         setLoadingFolder(true);
         const response = await FoldersService.get({
             id: id,
+            page: pageFiles,
+            limit: LIMIT_PAGE,
             sort: order.value,
             search: search,
-            page,
-            limit: 1
         });
+
         const newBreadcrumb: IPropsBreadcrumb[] = response.item.breacrumb.map((item: IFolderBreadcrumb, key: number) => {
             return {
                 folder_id: item.folder_id === 0 ? null : item.folder_id,
@@ -171,8 +177,15 @@ export default function Folder() {
                 here: response.item.breacrumb.length === (key + 1) ? true : false,
             }
         })
+
+        response.item.children.folders = response.item.children.folders.slice(0, LIMIT_PAGE)
+        response.item.children.files = response.item.children.files.slice(0, LIMIT_PAGE)
+        response.item.children.links = response.item.children.links.slice(0, LIMIT_PAGE)
+        response.item.children.videos = response.item.children.videos.slice(0, LIMIT_PAGE)
+
         setBreadcrumb([...newBreadcrumb])
         setFolder({ ...response.item })
+
         setLoadingFolder(false);
     }
 
@@ -182,12 +195,12 @@ export default function Folder() {
 
     useEffect(() => {
         setArchivesChecked([]);
-
         const el = document.getElementById('overflow-page');
         if (el) {
             el.scrollTop = 0;
         }
-
+        setPageFiles(1);
+        setPageFolders(1);
     }, [id]);
 
     const handleAddFolder = (item: IFolderItem) => {
@@ -354,6 +367,65 @@ export default function Folder() {
         setFolder({ ...folder })
     }
 
+    const handlePaginate = async (type: 'files' | 'folders') => {
+
+        if (loadingFolder) return;
+
+        if (type === 'files') {
+            if (LIMIT_PAGE > folder.childrenCount.files) return;
+            if (folder.children.files.length >= folder.childrenCount.files) return;
+            if (loadingPaginateFiles) return
+            setLoadingPaginateFiles(true);
+            setPageFiles((prev) => (prev + 1))
+            const response = await FilesService.get({
+                page: pageFiles + 1,
+                offset: LIMIT_PAGE,
+                limit: LIMIT_PAGE,
+            })
+            response.items.forEach((item: any) => {
+                folder.children.files.push(item)
+            })
+            setFolder({ ...folder })
+            setLoadingPaginateFiles(false);
+        } else if (type === 'folders') {
+            if (LIMIT_PAGE > folder.childrenCount.folders) return;
+            if (folder.children.folders.length >= folder.childrenCount.folders) return;
+            if (loadingPaginateFolders) return
+            setLoadingPaginateFolders(true);
+            setPageFolders((prev) => (prev + 1))
+            const response = await FoldersService.get({
+                id: id,
+                page: pageFolders + 1,
+                limit: LIMIT_PAGE,
+                offset: LIMIT_PAGE,
+                sort: order.value,
+                search: search,
+            });
+            response.item.children.folders.forEach((item: any) => {
+                folder.children.folders.push(item)
+            })
+            setFolder({ ...folder })
+            setLoadingPaginateFolders(false);
+        }
+    }
+
+    const scrollToId = (id: string) => {
+        const container = document.getElementById('overflow-page');
+        const element = document.getElementById(id);
+
+        if (!container || !element) return;
+
+        const containerTop = container.getBoundingClientRect().top;
+        const elementTop = element.getBoundingClientRect().top;
+
+        const scrollOffset = elementTop - containerTop + container.scrollTop;
+
+        container.scrollTo({
+            top: scrollOffset,
+            behavior: 'smooth',
+        });
+    };
+
     return (
         <S.Container ref={refPage}>
             <BreadCrumbAuthLayout
@@ -364,26 +436,26 @@ export default function Folder() {
                 <div className='toolbar-filters'>
                     <div className='left'>
                         {verifyPermission('folders_view') &&
-                            <div className='total'>
+                            <div onClick={() => scrollToId("folders")} className='total'>
                                 <i>
                                     <IconFolder />
                                 </i>
                                 <span>{loadingFolder ? <Skeleton width={'8px'} height={'18px'} /> : <b>{folder.childrenCount.folders}</b>} Pastas</span>
                             </div>
                         }
-                        <div className='total'>
+                        <div onClick={() => scrollToId("files")} className='total'>
                             <i>
                                 <IconArchive />
                             </i>
                             <span>{loadingFolder ? <Skeleton width={'8px'} height={'18px'} /> : <b>{folder.childrenCount.files}</b>} Arquivos</span>
                         </div>
-                        <div className='total'>
+                        <div onClick={() => scrollToId("videos")} className='total'>
                             <i>
                                 <IconFolderVideo />
                             </i>
                             <span>{loadingFolder ? <Skeleton width={'8px'} height={'18px'} /> : <b>{folder.childrenCount.videos}</b>} Vídeos</span>
                         </div>
-                        <div className='total'>
+                        <div onClick={() => scrollToId("links")} className='total'>
                             <i>
                                 <IconLink />
                             </i>
@@ -458,7 +530,14 @@ export default function Folder() {
                 onSave={(items) => handleAddFilesUpload(items)}
             />
             {(loadingFolder || showAddFolder || folder.children.folders.length > 0) &&
-                <RenderTab name='Pastas' icon={<IconFolder />}>
+                <RenderTab
+                    name='Pastas'
+                    icon={<IconFolder />}
+                    totalItems={loadingFolder ? undefined : folder.childrenCount.folders}
+                    totalItemsRenderized={folder.children?.folders?.length}
+                    onReachEnd={() => handlePaginate('folders')}
+                    id='folders'
+                >
                     <ModalEditFolder
                         opened={modalEditFolder.folder_id ? true : false}
                         onClose={() => setModalEditFolder({} as IFolderItem)}
@@ -468,7 +547,6 @@ export default function Folder() {
                     />
                     <div className={`list-folders ${typeCard}`}>
                         {loadingFolder === false && showAddFolder && <CardNewFolder type={typeCard} onSubmit={handleAddFolder} />}
-                        {loadingFolder && <CardFolderLoading type={typeCard} quantity={'random'} />}
                         {!loadingFolder && folder.children?.folders?.map((item) =>
                             <CardFolder
                                 type={typeCard}
@@ -478,6 +556,7 @@ export default function Folder() {
                                 onEdit={(e) => setModalEditFolder({ ...e })}
                             />
                         )}
+                        {(loadingFolder || loadingPaginateFolders) && <CardFolderLoading type={typeCard} quantity={'random'} />}
                     </div>
                 </RenderTab>
             }
@@ -490,7 +569,14 @@ export default function Folder() {
                 onSave={(type, item) => handleSaveVideo(type, item)}
             />
             {(loadingFolder || folder.children.videos.length > 0) &&
-                <RenderTab name='Vídeos' icon={<IconFolderVideo />}>
+                <RenderTab
+                    name='Vídeos'
+                    icon={<IconFolderVideo />}
+                    totalItems={loadingFolder ? undefined : folder.childrenCount.videos}
+                    totalItemsRenderized={folder.children?.videos?.length}
+                    onReachEnd={() => console.log('end videos')}
+                    id='videos'
+                >
                     <ModalViewVideo
                         item={modalViewVideo}
                         opened={modalViewVideo.video_id ? true : false}
@@ -520,7 +606,14 @@ export default function Folder() {
                 onSave={(type, item) => handleSaveLink(type, item)}
             />
             {(loadingFolder || folder.children.links.length > 0) &&
-                <RenderTab name='Links' icon={<IconLink />}>
+                <RenderTab
+                    name='Links'
+                    icon={<IconLink />}
+                    totalItems={loadingFolder ? undefined : folder.childrenCount.links}
+                    totalItemsRenderized={folder.children?.links?.length}
+                    onReachEnd={() => console.log('end links')}
+                    id='links'
+                >
                     <div className={`list-links ${typeCard}`}>
                         {loadingFolder && <CardLinkLoading type={typeCard} quantity={'random'} />}
                         {!loadingFolder && folder.children?.links?.map((item) =>
@@ -546,12 +639,15 @@ export default function Folder() {
             />
             {(loadingFolder || folder.children.files.length > 0) &&
                 <RenderTab
-                    totalItems={loadingFolder ? undefined : folder.children?.files?.length}
+                    totalItems={loadingFolder ? undefined : folder.childrenCount.files}
+                    totalItemsRenderized={folder.children?.files?.length}
                     checkeds={loadingFolder ? undefined : archivesChecked}
                     onCheck={loadingFolder ? undefined : handleToggleCheckAllArchives}
                     loadingAction={loadingActionArchive}
                     onActionSelected={(e) => handleActionArchive(e, archivesChecked)}
                     name='Arquivos' icon={<IconArchiveMultiple />}
+                    onReachEnd={() => handlePaginate('files')}
+                    id={"files"}
                 >
                     <ModalViewArchive
                         item={modalViewArchive}
@@ -566,7 +662,6 @@ export default function Folder() {
                         folder_id={id}
                     />
                     <div className={`list-archives ${typeCard}`}>
-                        {loadingFolder && <CardArchiveLoading type={typeCard} quantity={'random'} />}
                         {!loadingFolder && folder.children?.files?.map((item) =>
                             <CardArchive
                                 checked={archivesChecked.filter((obj) => obj === item.file_id).length ? true : false}
@@ -579,6 +674,7 @@ export default function Folder() {
                                 onEdit={(e) => setModalEdiArchive({ ...e, opened: true })}
                             />
                         )}
+                        {loadingFolder || loadingPaginateFiles && <CardArchiveLoading type={typeCard} quantity={'random'} />}
                     </div>
                 </RenderTab>
             }
@@ -587,8 +683,9 @@ export default function Folder() {
     )
 }
 
-export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelected, onCheck, name, icon, children }: {
+export const RenderTab = ({ totalItems, totalItemsRenderized, id, onReachEnd, checkeds, loadingAction, onActionSelected, onCheck, name, icon, children }: {
     totalItems?: number;
+    totalItemsRenderized: number;
     checkeds?: number[]
     loadingAction?: boolean;
     onCheck?(type: 'check' | 'uncheck'): void;
@@ -596,13 +693,48 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
     name: string;
     icon: ReactNode;
     children: ReactNode
+    onReachEnd?: () => void;
+    id: string;
 }) => {
+
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const tabRef = useRef<HTMLDivElement>(null);
 
     const [toggleShow, setToggleShow] = useState(true)
     const { tenant } = useTenant();
 
+    useEffect(() => {
+        const container = document.getElementById("overflow-page");
+        if (!container || !sentinelRef.current) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const [entry] = entries;
+                if (entry.isIntersecting) {
+                    onReachEnd?.();
+                }
+            },
+            {
+                root: container, // o container com scroll
+                threshold: 1.0, // precisa estar totalmente visível
+            }
+        );
+
+        observer.observe(sentinelRef.current);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [onReachEnd, totalItemsRenderized]);
+
     return (
-        <S.ContainerListItems color={tenant?.colorhigh} colorBg={tenant?.colormain} colorText={tenant?.colorsecond}>
+        <S.ContainerListItems
+            color={tenant?.colorhigh}
+            colorBg={tenant?.colormain}
+            colorText={tenant?.colorsecond}
+            ref={tabRef}
+            id={id}
+        >
             <div className='head'>
 
                 <div className='info-fab'>
@@ -615,6 +747,9 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
                         {icon}
                     </i>
                     <p className='title'>{name}</p>
+                    {totalItems && totalItems > 0 &&
+                        <span className='total'>{totalItems}</span>
+                    }
                 </div>
 
                 {toggleShow && (onCheck && onActionSelected) &&
@@ -667,6 +802,7 @@ export const RenderTab = ({ totalItems, checkeds, loadingAction, onActionSelecte
                     {children}
                 </div>
             }
+            <div ref={sentinelRef} style={{ height: 1 }} />
         </S.ContainerListItems>
     )
 }

@@ -13,12 +13,14 @@ export const FoldersService = {
     search,
     page,
     limit,
+    offset,
   }: {
     id?: string;
     sort: string;
     search?: string | null;
     page?: number;
     limit?: number;
+    offset?: number;
   }) => {
     const tenant = getSlug();
 
@@ -70,7 +72,7 @@ export const FoldersService = {
       const response = await BaseService.get(
         `/${tenant}/API/Folders${id ? `/${id}` : ``}${
           page ? `?page=${page}&limit=${limit}` : ``
-        }${sort ? `&sort=${sort}` : ``}`
+        }${sort ? `&sort=${sort}` : ``}${offset ? `&offset=${offset}` : ``}`
       );
       return response.data;
     }

@@ -25,6 +25,7 @@ export const Container = styled.div`
         display: flex;
         align-items: center;
         gap: 10px;
+        cursor: pointer;
         i {
           display: flex;
           align-items: center;
@@ -217,6 +218,13 @@ export const ContainerListItems = styled.div.withConfig({
         font-size: 17px;
         font-weight: 700;
         color: ${({ theme }) => theme.colors.neutral[800]};
+      }
+      .total {
+        background-color: ${({ theme }) => theme.colors.neutral[600]};
+        font-size: 8px;
+        border-radius: 100px;
+        padding: 5px 10px;
+        color: ${({ theme }) => theme.colors.background.default};
       }
     }
     .selected-function {

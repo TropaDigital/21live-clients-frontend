@@ -5,13 +5,19 @@ import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
 
 export const TicketService = {
-  get: async (
-    page?: number,
-    limit?: number,
-    search?: string,
-    order?: string,
-    filter?: IFilterTicket
-  ) => {
+  get: async ({
+    page,
+    limit,
+    search,
+    order,
+    filter,
+  }: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    order?: string;
+    filter?: IFilterTicket;
+  }) => {
     const tenant = getSlug();
 
     const queryOrder = order ? `&sort=${order}` : ``;
@@ -43,10 +49,12 @@ export const TicketService = {
       : ``;
     const queryUserId = filter?.user_id ? `&user_id=${filter.user_id}` : ``;
 
+    const queryApproval = filter?.approval ? `&status!=null` : ``;
+
     const response = await BaseService.get(
       `/${tenant}/API/Tickets?page=${page ?? 1}&limit=${
         limit ?? 999999
-      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}`
+      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}${queryApproval}`
     );
 
     if (response.data.items && page) {

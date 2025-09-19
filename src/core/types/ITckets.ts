@@ -185,6 +185,7 @@ export interface ITicket {
   organization_name: string;
   media_name: string;
   notifications: number;
+  awaiting_approval: number;
   lastUpdate: string;
   jobs_deadline: string;
 }
