@@ -79,7 +79,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
             const response = await FoldersService.getMenu();
             setMenus([...response.items.filter((obj: any) => obj.folder_id)])
             setLoadingMenus(false);
-            handleRefreshToken();
+            //handleRefreshToken();
         } catch (error: any) {
             console.log('error', error)
         }
