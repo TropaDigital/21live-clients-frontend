@@ -98,7 +98,7 @@ export default function AuthLayout() {
         if (timeLeft <= 180) {
             handleRefreshToken();
         }
-    }, [pathname]);
+    }, [timeLeft, pathname]);
 
     useClickOutside(menuRef, () => {
         if (isMobile) {
