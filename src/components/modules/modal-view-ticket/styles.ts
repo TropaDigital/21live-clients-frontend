@@ -275,6 +275,183 @@ export const Container = styled.div.withConfig({
       padding: 10px 30px 0px 30px;
       border-bottom: 1px solid ${({ theme }) => theme.colors.neutral[200]};
     }
+    .empty-interactions {
+      border: 1px solid ${({ color }) => color};
+      background-color: ${({ theme }) => theme.colors.background.default};
+      animation: fadeIn 0.5s;
+      color: ${({ color }) => color};
+      width: 100%;
+      border-radius: 8px;
+      box-sizing: border-box;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      i {
+        display: flex;
+        svg {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+    .tab-approve {
+      overflow: auto;
+      padding: 0px;
+      position: relative;
+      display: flex;
+      flex: 1;
+      align-items: flex-start;
+      flex-direction: column;
+      background-color: ${({ theme }) => theme.colors.neutral[200]};
+      border-radius: 0px 0px 16px 16px;
+      .status {
+        display: flex;
+        width: 100%;
+        gap: 20px;
+        padding: 20px 20px 0px 20px;
+        box-sizing: border-box;
+        .item-status {
+          flex: 1;
+          border-radius: 12px;
+          padding: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          cursor: pointer;
+          .head-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            i {
+              width: 35px;
+              height: 35px;
+              color: white;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              border-radius: 100px;
+              svg {
+              }
+            }
+            span {
+              font-size: 13px;
+              color: ${({ theme }) => theme.colors.neutral[600]};
+            }
+          }
+          .stats-status {
+            display: flex;
+            justify-content: center;
+            border-top: 1px solid;
+            padding-top: 15px;
+            gap: 15px;
+            align-items: center;
+            > p {
+              font-size: 20px;
+              font-weight: bold;
+            }
+            > span {
+              color: white;
+              border-radius: 100px;
+              padding: 5px 10px;
+              font-size: 11px;
+            }
+          }
+        }
+      }
+      .percent-status {
+        width: calc(100% - 40px);
+        min-height: 10px;
+        border-radius: 100px;
+        overflow: hidden;
+        display: flex;
+        margin: 20px;
+        > div {
+          height: 100%;
+        }
+      }
+      .btn-new {
+        padding: 0px 20px 20px 20px;
+      }
+      .list-cards {
+        display: flex;
+        gap: 15px;
+        flex-direction: column;
+        position: relative;
+        width: 100%;
+        padding: 0px 20px 20px 20px;
+        box-sizing: border-box;
+        .group-service {
+          display: flex;
+          flex-direction: column;
+          .head-group {
+            display: flex;
+            align-items: center;
+            background-color: ${({ theme }) => theme.colors.neutral[400]};
+            margin-bottom: 0px;
+            color: ${({ theme }) => theme.colors.neutral[700]};
+            border-radius: 8px;
+            padding: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+            .name {
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              font-size: 13px;
+              flex: 1;
+              i {
+                display: flex;
+                svg {
+                  transition: all 0.5s;
+                }
+              }
+              span {
+              }
+            }
+            .totals {
+              display: flex;
+              gap: 5px;
+              .total {
+                border-radius: 8px;
+                display: flex;
+                gap: 5px;
+                padding: 5px 8px;
+                align-items: center;
+                color: white;
+                svg {
+                  width: 15px;
+                  height: 15px;
+                }
+              }
+            }
+          }
+          .items-group {
+            display: none;
+            flex-wrap: wrap;
+            gap: 15px;
+            flex-direction: unset;
+            position: relative;
+            width: 100%;
+          }
+          &.opened {
+            .head-group {
+              margin-bottom: 15px;
+              background-color: ${({ theme }) => theme.colors.neutral[800]};
+              color: ${({ theme }) => theme.colors.background.default};
+              i {
+                svg {
+                  transform: rotate(180deg);
+                }
+              }
+            }
+            .items-group {
+              display: flex;
+            }
+          }
+        }
+      }
+    }
     .conversation {
       height: calc(100% - 50px);
       display: flex;
@@ -302,22 +479,6 @@ export const Container = styled.div.withConfig({
         z-index: 2;
         > div {
           margin-bottom: 15px;
-        }
-      }
-      .tab-approve {
-        overflow: auto;
-        padding: 30px 30px 0px 30px;
-        position: relative;
-        display: flex;
-        flex: 1;
-        flex-direction: unset;
-        align-items: flex-start;
-        .list-cards {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 15px;
-          flex-direction: unset;
-          width: 100%;
         }
       }
       .input-send {

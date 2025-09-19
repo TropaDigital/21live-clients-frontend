@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import EditorTextSlash from '../../../UI/form/editor-text-slash'
 import * as S from './styles'
-import { IconClose, IconLoading, IconReply, IconSend, IconUpload } from '../../../../assets/icons'
-import { useTenant } from '../../../../core/contexts/TenantContext'
+import { IconFile } from '../../../../assets/icons'
 import type { ITicketInteraction } from '../../../../core/types/ITckets'
 import { TicketService } from '../../../../core/services/TicketService'
 import { useAuth } from '../../../../core/contexts/AuthContext'
@@ -11,25 +10,16 @@ import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type UploadResult } from '../../
 import { ButtonDefault } from '../../../UI/form/button-default'
 import { useAlert } from '../../../../core/contexts/AlertContext'
 
-export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
+export const InputSendTicketApprove = ({ id, onSubmit }: {
     id: number;
-    reply: ITicketInteraction | null;
-    onExcluireply(): void;
-    onSubmit(item: ITicketInteraction): void;
+    onSubmit(item: ITicketInteraction, approve: boolean): void;
 }) => {
 
     const [file, setFile] = useState<UploadResult | null>(null)
 
-    const [DTOFile, setDTOFile] = useState<{ name: string, file: File | null }>({
-        name: '',
-        file: null
-    })
-
-
-    const [modalFile, setModalFile] = useState(false)
+    const [opened, setOpened] = useState(false);
 
     const { user } = useAuth();
-    const { tenant } = useTenant()
     const [value, setValue] = useState<string>("")
 
     const [loading, setLoading] = useState(false);
@@ -49,11 +39,7 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
                 annex_title: null,
             };
 
-            if (!file && ((!value) || (value === '<p></p>'))) {
-                throw new Error('Mensagem é obrigatória')
-            }
-
-            payload.reply_id = reply?.ticket_interaction_id ?? null;
+            payload.status = 'wait';
             payload.annex = file;
             payload.annex_title = file?.name;
 
@@ -62,8 +48,7 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
             handleCloseUpload()
             setFile(null)
             setValue("");
-            onSubmit(response.item);
-            onExcluireply();
+            onSubmit(response.item, true);
             setLoading(false);
             ;
         } catch (error: any) {
@@ -76,48 +61,20 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
     const handleConfirmUpload = () => {
         try {
             handleSubmit(file?.files[0].file ?? null);
-            setModalFile(false);
         } catch (error: any) {
             addAlert('error', 'Ops', error.message);
         }
     }
 
     const handleCloseUpload = () => {
-        setDTOFile({ name: '', file: null });
-        setModalFile(false);
+        setOpened(false)
         setFile(null)
     }
 
     return (
-        <>
-            <S.ContainerInputSend>
-
-                {reply && !reply.status &&
-                    <div className='reply-content'>
-                        <i>
-                            <IconReply />
-                        </i>
-                        <div className='render' dangerouslySetInnerHTML={{ __html: reply.message }} />
-                        <button onClick={onExcluireply}>
-                            <IconClose />
-                        </button>
-                    </div>
-                }
-                <div className='message-principal'>
-                    <EditorTextSlash value={value ?? ''} onChange={(value) => !loading && setValue(value)} />
-                    <div className='btn-action'>
-                        <button onClick={() => setModalFile(true)}>
-                            {DTOFile.file && <i>1</i>}
-                            <IconUpload />
-                        </button>
-                        <button onClick={() => handleSubmit()} disabled={loading} style={{ backgroundColor: tenant?.colorhigh, color: 'white' }}>
-                            {loading ? <IconLoading /> : <IconSend />}
-                        </button>
-                    </div>
-                </div>
-            </S.ContainerInputSend>
-
-            <ModalDefault layout='center' title='Anexar Arquivo' opened={modalFile} onClose={() => setModalFile(false)}>
+        <S.ContainerInputSendApprove>
+            <ButtonDefault icon={<IconFile />} onClick={() => setOpened(true)}>Adicionar Arquivo para Aprovação</ButtonDefault>
+            <ModalDefault layout='center' title='Anexar Arquivo' opened={opened} onClose={handleCloseUpload}>
                 <S.ContainerModalUpload>
                     <InputUpload
                         multiple={false}
@@ -129,13 +86,15 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
                         onChange={(e) => setFile(e)}
                     />
 
+                    <EditorTextSlash layout='static' value={value ?? ''} onChange={(value) => !loading && setValue(value)} />
+
                     <div className='foot'>
                         <ButtonDefault variant='light' onClick={handleCloseUpload}>Descartar</ButtonDefault>
-                        <ButtonDefault disabled={file?.files[0].file ? false : true} onClick={handleConfirmUpload}>Confirmar</ButtonDefault>
+                        <ButtonDefault disabled={file?.files[0].file ? false : true} loading={loading} onClick={handleConfirmUpload}>Confirmar</ButtonDefault>
                     </div>
 
                 </S.ContainerModalUpload>
             </ModalDefault>
-        </>
+        </S.ContainerInputSendApprove>
     )
 }

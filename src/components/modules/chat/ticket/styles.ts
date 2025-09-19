@@ -193,7 +193,7 @@ export const ContainerCardApprove = styled.div`
   cursor: pointer;
   box-sizing: border-box;
   gap: 15px;
-  animation: fadeInDown 0.5s;
+  animation: fadeIn 0.5s;
   .header-card {
     display: flex;
     align-items: center;
@@ -366,6 +366,8 @@ export const ContainerInputSend = styled.div`
     }
   }
 `;
+
+export const ContainerInputSendApprove = styled.div``;
 
 export const ContainerModalUpload = styled.div`
   width: 380px;

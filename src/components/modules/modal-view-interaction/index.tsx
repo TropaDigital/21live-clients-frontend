@@ -96,7 +96,7 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
     }
 
     return (
-        <ModalDefault padding='0px' paddingHeader='30px 40px' layout='right' title={item.annex_title} opened={opened} onClose={onClose}>
+        <ModalDefault padding='0px' paddingHeader='30px 40px' layout='right' title={item.task_text ? 'Texto' : item.annex_title} opened={opened} onClose={onClose}>
             <S.Container color={tenant?.colorhigh}>
 
                 {extension === 'image' &&
@@ -121,7 +121,7 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
                     <div className="preview-render">
                         <div className="text-render">
                             <EditorTextSlash
-                                value={item.message}
+                                value={item.task_text?.annex_text ?? ''}
                             />
                         </div>
                     </div>
@@ -144,10 +144,12 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
                 <div className="right-interactions">
 
                     <div className="head-infos">
-                        <div className='label'>
-                            <b>Arquivo:</b>
-                            <span>{item.annex_title}</span>
-                        </div>
+                        {item.annex_title &&
+                            <div className='label'>
+                                <b>Arquivo:</b>
+                                <span>{item.annex_title}</span>
+                            </div>
+                        }
                         <div className='label'>
                             <b>Usuário:</b>
                             <AvatarUser

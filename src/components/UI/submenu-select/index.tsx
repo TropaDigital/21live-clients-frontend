@@ -57,12 +57,11 @@ export const SubmenuSelect = ({
         if (!loading) setOpened(true);
     };
 
-    // 🔑 Corrigido: useLayoutEffect para evitar o "salto" no primeiro clique
     useLayoutEffect(() => {
         if (!refMenu.current || !opened) return;
 
         const updatePosition = () => {
-            if (!refMenu.current || !refSubmenu.current) return;
+            if (!refMenu.current) return;
 
             const rect = refMenu.current.getBoundingClientRect();
             const viewportWidth = window.innerWidth;
@@ -86,27 +85,20 @@ export const SubmenuSelect = ({
                 style.maxHeight = Math.min(maxHeight, spaceAbove);
             }
 
-            // Width
-            if (whiteSpace === 'normal') {
-                style.width = rect.width;
+            // 🔑 Ajuste horizontal ANTES de renderizar
+            let left = rect.left + window.scrollX;
+
+            // largura estimada do submenu: usa o parent como base
+            const estimatedWidth = refSubmenu.current?.offsetWidth || rect.width;
+
+            if (left + estimatedWidth > viewportWidth - 8) {
+                left = viewportWidth - estimatedWidth - 8 + window.scrollX;
             }
 
-            // Atualiza temporariamente para garantir que o submenu tenha tamanho real
+            left = Math.max(left, 8 + window.scrollX);
+            style.left = left;
+
             setPositionStyle(style);
-
-            // Ajuste horizontal após render
-            requestAnimationFrame(() => {
-                if (!refSubmenu.current) return;
-                const submenuRect = refSubmenu.current.getBoundingClientRect();
-                let left = rect.left + window.scrollX;
-
-                if (left + submenuRect.width > viewportWidth - 8) {
-                    left = viewportWidth - submenuRect.width - 8 + window.scrollX;
-                }
-                left = Math.max(left, 8 + window.scrollX);
-
-                setPositionStyle(prev => ({ ...prev, left }));
-            });
         };
 
         updatePosition();
@@ -122,7 +114,7 @@ export const SubmenuSelect = ({
             window.removeEventListener("resize", updatePosition);
             window.removeEventListener("scroll", updatePosition);
         };
-    }, [opened, whiteSpace]);
+    }, [opened]);
 
     useClickOutside(refSubmenu, () => setOpened(false));
 

@@ -98,12 +98,52 @@ export interface ITicketInteraction {
   annex_title: string;
   annex_jobs: boolean;
   thumbnail: string;
+  task_file?: ITicketInteractionFile;
+  task_text?: ITicketInteractionText;
   status: "pass" | "fail" | "wait" | null;
   user_name: string;
   user_avatar: string;
   access: string;
   created: string;
   updated: string;
+}
+
+export interface ITicketInteractionFile {
+  task_file_id: number;
+  task_id: number;
+  file_name: string;
+  project_id: number | null;
+  url: string | null;
+  size: string; // ex: "99000 bytes"
+  key: string;
+  bucket: string;
+  status: string;
+  products_delivery_id: number;
+  last_archive: string; // observe: no boolean, no null — no formato consistente no payload
+  ticket_interaction_id: number;
+  original_name: string;
+  tenant_id: number | null;
+  created: string; // ISO datetime string
+  updated: string; // ISO datetime string
+  user_id: number;
+  position: number;
+  job_service: string;
+}
+
+export interface ITicketInteractionText {
+  task_text_id: number;
+  parent_id: number;
+  task_id: number;
+  products_delivery_id: number;
+  ticket_interaction_id: number;
+  user_id: number;
+  annex_text: string; // HTML string
+  status: string;
+  last_archive: string; // vem como "false" ou "true" (string)
+  tenant_id: number | null;
+  created: string; // datetime string
+  updated: string; // datetime string
+  job_service: string;
 }
 
 export interface ITicketFile {

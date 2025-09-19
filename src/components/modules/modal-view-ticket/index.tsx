@@ -8,7 +8,7 @@ import { TicketService } from '../../../core/services/TicketService';
 import { AvatarUser } from '../../UI/avatar/avatar-user';
 import { BadgeSimpleColor } from '../../UI/badge/badge-simple-color';
 import moment from 'moment';
-import { IconCheck, IconEye, IconHistory, IconHome, IconImage, IconPencil, IconRefresh } from '../../../assets/icons';
+import { IconCheck, IconChevronDown, IconDislike, IconEye, IconEyeClose, IconFile, IconHome, IconImage, IconLike, IconPencil, IconRefresh, IconSolicitation, IconStatusWait, IconTextarea } from '../../../assets/icons';
 import { ModalViewArchive } from '../modal-view-archive';
 import { useTenant } from '../../../core/contexts/TenantContext';
 import { InputSendTicket } from '../chat/ticket/input-send';
@@ -16,10 +16,11 @@ import { CommentTicket } from '../chat/ticket/comment';
 import { useAuth } from '../../../core/contexts/AuthContext';
 import { Skeleton } from '../../UI/loading/skeleton/styles';
 import { SubmenuSelect } from '../../UI/submenu-select';
-import { IconListBullet } from '../../UI/form/editor-text-slash/icons';
 import { CardOrganization } from '../cards/card-organization';
 import { CardTicketApprove } from '../chat/ticket/card-ticket-approve';
 import { ModalViewInteraction } from '../modal-view-interaction';
+import { STATUS_TICKET_INTERACTION } from '../../../core/utils/status';
+import { InputSendTicketApprove } from '../chat/ticket/input-send-approve';
 
 interface IProps {
     id: string | undefined;
@@ -29,6 +30,24 @@ interface IProps {
 interface IPreviewFile {
     name: string;
     path: string;
+}
+
+interface ITicketInteractionGroup {
+    job_service: string;
+    approves: ITicketInteraction[];
+    stats: IGlobalStats;
+}
+
+interface IGlobalStats {
+    total: number;
+    totalPass: number;
+    totalFail: number;
+    totalWait: number;
+    percentagePass: number;
+    percentageFail: number;
+    percentageWait: number;
+    totalFiles: number;
+    totalTexts: number;
 }
 
 export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
@@ -54,6 +73,11 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
     const [dataInteractions, setDataInteractions] = useState<ITicketInteraction[]>([])
     const [dataFiles, setDataFiles] = useState<ITicketFile[]>([])
+    const [dataInteractionsGroup, setDataInteractionsGroup] = useState<ITicketInteractionGroup[]>([])
+
+    const [statsApprove, setStatsApprove] = useState<IGlobalStats>({} as IGlobalStats)
+    const [statusApprove, setStatusApprove] = useState<string>("wait");
+    const [serviceSelected, setServiceSelected] = useState("")
 
     const [previewFile, setPreviewFile] = useState<IPreviewFile | null>(null);
     const [previewApprove, setPreviewApprove] = useState<ITicketInteraction | null>(null)
@@ -77,7 +101,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             name: 'form',
             label: 'Solicitação',
             icon: <IconPencil />,
-            visible: data.fields?.length > 0 || loading ? true : false
+            visible: (data.fields?.length > 0 || data.media_id || loading) ? true : false
         },
         {
             name: 'organization',
@@ -91,6 +115,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             icon: <IconImage />,
             visible: dataFiles.length > 0 || loading ? true : false
         },
+        /*
         {
             name: 'materials',
             label: 'Materiais',
@@ -103,17 +128,163 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             icon: <IconHistory />,
             visible: true,
         }
+        */
     ]
 
     const [tabInfoSelected, setTabInfoSelected] = useState(TABS_INFOS[0].name)
 
+    const STATUS_STATS = [
+        {
+            name: STATUS_TICKET_INTERACTION.wait.name,
+            icon: <IconStatusWait />,
+            status: 'wait',
+            colors: STATUS_TICKET_INTERACTION.wait,
+            stats: {
+                total: statsApprove.totalWait,
+                percent: statsApprove.percentageWait
+            },
+        },
+        {
+            name: STATUS_TICKET_INTERACTION.pass.name,
+            icon: <IconLike />,
+            status: 'pass',
+            colors: STATUS_TICKET_INTERACTION.pass,
+            stats: {
+                total: statsApprove.totalPass,
+                percent: statsApprove.percentagePass
+            },
+        },
+        {
+            name: STATUS_TICKET_INTERACTION.fail.name,
+            icon: <IconDislike />,
+            status: 'fail',
+            colors: STATUS_TICKET_INTERACTION.fail,
+            stats: {
+                total: statsApprove.totalFail,
+                percent: statsApprove.percentageFail
+            },
+        }
+    ]
+
     useEffect(() => {
-        setTabInfoSelected(TABS_INFOS.filter((obj) => obj.visible === true)[0].name)
+        const findTab = TABS_INFOS.filter((obj) => obj.visible === true);
+        if (findTab.length) {
+            setTabInfoSelected(TABS_INFOS.filter((obj) => obj.visible === true)[0].name)
+        } else {
+            setTabInfoSelected('')
+        }
     }, [id, loading])
 
     useEffect(() => {
-        if (ticketStatus.length === 0) getTicketStatus();
+        if (ticketStatus.length === 0) { getTicketStatus(); }
     }, [ticketStatus])
+
+    console.log('data', dataInteractionsGroup)
+
+    function groupByJobService(
+        interactions: ITicketInteraction[],
+        status: string
+    ): ITicketInteractionGroup[] {
+        const map = new Map<string, ITicketInteraction[]>();
+
+        for (const item of interactions) {
+            if (status && item.status !== status) continue;
+
+            const jobService =
+                item.task_file?.job_service || item.task_text?.job_service || "";
+
+            if (!map.has(jobService)) {
+                map.set(jobService, []);
+            }
+            map.get(jobService)!.push(item);
+        }
+
+        const groups: ITicketInteractionGroup[] = Array.from(map.entries()).map(
+            ([job_service, approves]) => {
+                const total = approves.length;
+                const totalPass = approves.filter((a) => a.status === "pass").length;
+                const totalFail = approves.filter((a) => a.status === "fail").length;
+                const totalWait = approves.filter((a) => a.status === "wait").length;
+                const totalFiles = approves.filter((a) => a.task_file).length;
+                const totalTexts = approves.filter((a) => a.task_text).length;
+
+                return {
+                    job_service,
+                    approves,
+                    stats: {
+                        total,
+                        totalPass,
+                        totalFail,
+                        totalWait,
+                        percentagePass: total
+                            ? Number(((totalPass / total) * 100).toFixed(2))
+                            : 0,
+                        percentageFail: total
+                            ? Number(((totalFail / total) * 100).toFixed(2))
+                            : 0,
+                        percentageWait: total
+                            ? Number(((totalWait / total) * 100).toFixed(2))
+                            : 0,
+                        totalFiles,
+                        totalTexts,
+                    },
+                };
+            }
+        );
+
+        return groups.sort((a, b) =>
+            a.job_service === "" ? -1 : b.job_service === "" ? 1 : 0
+        );
+    }
+
+    function calculateGlobalStats(
+        interactions: ITicketInteraction[]
+    ): IGlobalStats {
+        const filtered = status
+            ? interactions.filter((a) => a.status === status)
+            : interactions;
+
+        const total = filtered.length;
+        const totalPass = filtered.filter((a) => a.status === "pass").length;
+        const totalFail = filtered.filter((a) => a.status === "fail").length;
+        const totalWait = filtered.filter((a) => a.status === "wait").length;
+        const totalFiles = filtered.filter((a) => a.task_file).length;
+        const totalTexts = filtered.filter((a) => a.task_text).length;
+
+        return {
+            total,
+            totalPass,
+            totalFail,
+            totalWait,
+            percentagePass: total
+                ? Number(((totalPass / total) * 100).toFixed(2))
+                : 0,
+            percentageFail: total
+                ? Number(((totalFail / total) * 100).toFixed(2))
+                : 0,
+            percentageWait: total
+                ? Number(((totalWait / total) * 100).toFixed(2))
+                : 0,
+            totalFiles,
+            totalTexts,
+        };
+    }
+
+    useEffect(() => {
+        if (dataInteractions.length) {
+
+            const interactionsFilter = dataInteractions.filter((obj: any) => obj.annex || obj.task_text)
+
+            setDataInteractionsGroup([...groupByJobService(interactionsFilter, statusApprove)])
+            setStatsApprove(calculateGlobalStats(interactionsFilter))
+        }
+    }, [dataInteractions, statusApprove])
+
+    useEffect(() => {
+        if (dataInteractionsGroup.length > 0) {
+            setServiceSelected(dataInteractionsGroup[0].job_service)
+        }
+    }, [dataInteractionsGroup])
 
     const getData = async () => {
         setLoading(true);
@@ -123,15 +294,16 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         setDataInteractions([]);
 
         const response = await TicketService.getById(Number(id))
-        const responseFiles = await TicketService.getFiles(Number(id))
         setData({ ...response.item })
-        setDataFiles([...responseFiles.items])
         setLoading(false);
+
+        const responseFiles = await TicketService.getFiles(Number(id));
+        setDataFiles([...responseFiles.items])
 
         const responseInteractions = await TicketService.getInteractions(Number(id))
         setDataInteractions([...responseInteractions.items])
-        setLoadingInteractions(false);
 
+        setLoadingInteractions(false);
         setLoadingStatus(false);
     }
 
@@ -165,20 +337,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             ticket_status_id: status.ticket_status_id
         }, data.ticket_id)
     }
-
-    /*
-    const handleVote = async (type: 'pass' | 'fail', reply_id: number) => {
-        const payload: any = {
-            ticket_id: id,
-            user_id: user?.user_id,
-            message: 'teste',
-            status: type,
-            reply_id,
-        };
-
-        await TicketService.setInteraction(payload)
-    }
-    */
 
     const handleVoteTicket = (item: ITicketInteraction, newItem: ITicketInteraction) => {
 
@@ -306,7 +464,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                                                         return {
                                                             name: item.name,
                                                             onClick: () => handleChangeStatus(item),
-                                                            icon: item.ticket_status_id === data.ticket_status_id ?
+                                                            icon: item.ticket_status_id === data.ticket_status.ticket_status_id ?
                                                                 <S.BulletStatus style={{ backgroundColor: item.color }}><IconCheck /></S.BulletStatus>
                                                                 :
                                                                 <S.BulletStatus style={{ backgroundColor: item.color }} />
@@ -482,68 +640,145 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                             loading={loading}
                         />
 
-                        <div className='conversation'>
-                            {tabSelected === TAB_NAME_APPROVE &&
-                                <div className='tab-approve' ref={listRef}>
 
-                                    <div className='list-cards'>
+                        {tabSelected === TAB_NAME_APPROVE &&
+                            <div className='tab-approve'>
 
-                                        {!loadingInteractions && dataApprovesFilter.length === 0 &&
-                                            <CommentTicket
-                                                loading={false}
-                                                name={tenant?.name ?? ''}
-                                                status={null}
-                                                message={'Não há nenhuma aprovação.'}
-                                                thumbnail={''}
-                                                created={moment().format('YYYY-MM-DD HH:mm:ss')}
-                                                position={'left'}
-                                            />
-                                        }
-
-                                        {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
-                                            <CardTicketApprove
-                                                loading={true}
-                                                status={'wait'}
-                                                name={''}
-                                                avatar={''}
-                                                message={''}
-                                                thumbnail={''}
-                                                created={''}
-                                                interactions={[]}
-                                                onClick={() => undefined}
-                                            />
-                                        )}
-
-                                        {!loadingInteractions && dataApprovesFilter.map((item) =>
-                                            <CardTicketApprove
-                                                key={`approve-${item.ticket_interaction_id}`}
-                                                status={item.status ?? 'wait'}
-                                                name={item.user_name}
-                                                avatar={item.user_avatar}
-                                                message={item.message}
-                                                thumbnail={item.thumbnail}
-                                                created={item.created}
-                                                interactions={dataInteractions.filter((obj) => obj.reply_id === item.ticket_interaction_id)}
-                                                onClick={() => setPreviewApprove({ ...item })}
-                                            />
+                                {!loadingInteractions &&
+                                    <div className='status'>
+                                        {STATUS_STATS.map((status) =>
+                                            <div onClick={() => setStatusApprove(status.status)} className='item-status' style={{ backgroundColor: status.status === statusApprove ? status.colors.colorBadge : 'transparent', border: `1px solid ${status.colors.colorBadge}` }}>
+                                                <div className='head-status'>
+                                                    <i style={{ backgroundColor: status.colors.colorFull }}>
+                                                        {status.icon}
+                                                    </i>
+                                                    <span>
+                                                        {status.name}
+                                                    </span>
+                                                </div>
+                                                <div className='stats-status' style={{ borderColor: status.colors.colorFull }}>
+                                                    <p style={{ color: status.colors.colorFull }}>{status.stats.total}</p>
+                                                    <span style={{ backgroundColor: status.colors.colorFull }}>{status.stats.percent}%</span>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
-                                </div>
-                            }
+                                }
 
-                            {tabSelected === TAB_NAME_INTERACTION &&
+                                {!loadingInteractions && dataInteractionsGroup.length > 0 &&
+                                    <div className='percent-status'>
+                                        {STATUS_STATS.map((status) =>
+                                            <div style={{ width: `${status.stats.percent}%`, backgroundColor: status.colors.colorFull }} />
+                                        )}
+                                    </div>
+                                }
+
+                                {!loadingInteractions &&
+                                    <div className='btn-new' style={{ marginTop: dataInteractionsGroup.length === 0 ? 20 : 0 }}>
+                                        <InputSendTicketApprove
+                                            id={Number(id)}
+                                            onSubmit={(item) => {
+                                                setDataInteractions((prev) => ([...prev, item]));
+                                            }}
+                                        />
+                                    </div>
+                                }
+
+                                <div className='list-cards'>
+
+                                    {!loadingInteractions && dataInteractionsGroup.length === 0 &&
+                                        <div style={{ color: STATUS_TICKET_INTERACTION[statusApprove === 'pass' ? 'pass' : statusApprove === 'fail' ? 'fail' : 'wait'].colorFull, borderColor: STATUS_TICKET_INTERACTION[statusApprove === 'pass' ? 'pass' : statusApprove === 'fail' ? 'fail' : 'wait'].colorFull }} className='empty-interactions'>
+                                            <i>
+                                                <IconEyeClose />
+                                            </i>
+                                            <p>Nenhum arquivo encontrado em <b>{STATUS_TICKET_INTERACTION[statusApprove === 'pass' ? 'pass' : statusApprove === 'fail' ? 'fail' : 'wait'].name}</b>.</p>
+                                        </div>
+                                    }
+
+
+                                    {loadingInteractions &&
+                                        <div className='group-service opened'>
+                                            <div className='items-group' style={{ paddingTop: 15 }}>
+                                                {[0, 1, 2, 3, 4, 5].map(() =>
+                                                    <CardTicketApprove
+                                                        loading={true}
+                                                        status={'wait'}
+                                                        name={''}
+                                                        avatar={''}
+                                                        message={''}
+                                                        thumbnail={''}
+                                                        created={''}
+                                                        interactions={[]}
+                                                        onClick={() => undefined}
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+                                    }
+
+                                    {!loadingInteractions && dataInteractionsGroup.map((group) =>
+
+                                        <div onClick={() => setServiceSelected(group.job_service)} className={`group-service ${group.job_service === '' || group.job_service === serviceSelected ? 'opened' : 'closed'}`}>
+
+                                            {group.job_service &&
+                                                <div className='head-group'>
+                                                    <div className='name'>
+                                                        <i><IconChevronDown /></i>
+                                                        <span>{group.job_service}</span>
+                                                    </div>
+                                                    <div className='totals'>
+                                                        {group.stats.totalFiles > 0 &&
+                                                            <div className='total' style={{ backgroundColor: STATUS_TICKET_INTERACTION[statusApprove === 'pass' ? 'pass' : statusApprove === 'fail' ? 'fail' : 'wait'].colorFull }}>
+                                                                <IconFile />
+                                                                <span>{group.stats.totalFiles}</span>
+                                                            </div>
+                                                        }
+
+                                                        {group.stats.totalTexts > 0 &&
+                                                            <div className='total' style={{ backgroundColor: STATUS_TICKET_INTERACTION[statusApprove === 'pass' ? 'pass' : statusApprove === 'fail' ? 'fail' : 'wait'].colorFull }}>
+                                                                <IconTextarea />
+                                                                <span>{group.stats.totalTexts}</span>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+
+                                            <div className={`items-group`}>
+                                                {group.approves.map((item) =>
+                                                    <CardTicketApprove
+                                                        key={`approve-${item.ticket_interaction_id}`}
+                                                        status={item.status ?? 'wait'}
+                                                        name={item.user_name}
+                                                        avatar={item.user_avatar}
+                                                        message={item.message}
+                                                        thumbnail={item.thumbnail}
+                                                        created={item.created}
+                                                        interactions={dataInteractions.filter((obj) => obj.reply_id === item.ticket_interaction_id)}
+                                                        onClick={() => setPreviewApprove({ ...item })}
+                                                    />
+                                                )}
+                                            </div>
+                                        </div>
+
+                                    )}
+                                </div>
+
+                            </div>
+                        }
+
+                        {tabSelected === TAB_NAME_INTERACTION &&
+
+                            <div className='conversation'>
                                 <div className='list-overflow' ref={listRef}>
 
                                     {!loadingInteractions && dataInteractionsFilter.length === 0 &&
-                                        <CommentTicket
-                                            loading={false}
-                                            name={tenant?.name ?? ''}
-                                            status={null}
-                                            message={'Não há nenhuma mensagem.'}
-                                            thumbnail={''}
-                                            created={moment().format('YYYY-MM-DD HH:mm:ss')}
-                                            position={'left'}
-                                        />
+                                        <div className='empty-interactions'>
+                                            <i>
+                                                <IconSolicitation />
+                                            </i>
+                                            <p>Nenhuma mensagem encontrada.</p>
+                                        </div>
                                     }
 
                                     {loadingInteractions && [0, 1, 2, 3, 4, 5].map(() =>
@@ -575,22 +810,20 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                                         />
                                     )}
                                 </div>
-                            }
+                                {!loadingInteractions &&
+                                    <div className='input-send' style={{ position: 'relative', zIndex: 8 }}>
+                                        <InputSendTicket
+                                            id={Number(id)}
+                                            onExcluireply={() => setReply(null)}
+                                            reply={reply}
+                                            onSubmit={(item) => setDataInteractions((prev) => ([...prev, item]))}
+                                        />
+                                    </div>
+                                }
 
-                            <div className='input-send' style={{ position: 'relative', zIndex: 8 }}>
-                                <InputSendTicket
-                                    approve={tabSelected === TABS[1] ? true : false}
-                                    id={Number(id)}
-                                    onExcluireply={() => setReply(null)}
-                                    reply={reply}
-                                    onSubmit={(item, approve) => {
-                                        setDataInteractions((prev) => ([...prev, item]));
-                                        setTabSelected(approve ? TABS[1] : TABS[0])
-                                    }}
-                                />
                             </div>
+                        }
 
-                        </div>
                     </div>
                 </div>
             </S.Container>

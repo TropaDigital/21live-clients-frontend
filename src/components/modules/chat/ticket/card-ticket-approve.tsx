@@ -66,6 +66,7 @@ export const CardTicketApprove = ({ loading, avatar, name, status, message, crea
                 <div className='list-reply'>
                     {interactions.slice(-4).map((user) =>
                         <AvatarUser
+                            size={21}
                             name={user.user_name}
                             image={user.user_avatar}
                             border={user.status && STATUS_TICKET_INTERACTION[user.status].colorFull}
