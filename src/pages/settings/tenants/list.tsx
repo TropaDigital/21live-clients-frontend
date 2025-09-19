@@ -199,7 +199,7 @@ const RenderTD = ({ row, onDelete }: { row: ITenant, onDelete(id: number): void 
             permission: CONFIG_PAGE_EDIT.permission_edit,
         },
         {
-            name: 'Remover',
+            name: 'Excluir',
             icon: <IconTrash />,
             onClick: () => onDelete(row.tenant_id),
             permission: CONFIG_PAGE_EDIT.permission_remove

@@ -23,7 +23,12 @@ export const Container = styled.div`
     box-sizing: border-box;
     overflow: auto;
     height: calc(100vh - 395px);
-    background-color: ${({ theme }) => theme.colors.neutral[100]};
+    background-color: ${({ theme }) => theme.colors.neutral[500]};
+    background-image: radial-gradient(
+      ${({ theme }) => theme.colors.neutral[400]} 1px,
+      transparent 1px
+    );
+    background-size: 20px 20px;
     animation: fadeIn 1s;
   }
   .foot-buttons {

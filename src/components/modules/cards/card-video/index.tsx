@@ -87,7 +87,7 @@ export const CardVideo = ({ type, item, onView, onEdit, onDelete }: IProps) => {
         }
         if (verifyPermission('videos_delete')) {
             newList.push({
-                name: 'Remover',
+                name: 'Excluir',
                 icon: <IconTrash />,
                 onClick: () => setModalDelete(true)
             })
@@ -160,7 +160,7 @@ export const CardVideo = ({ type, item, onView, onEdit, onDelete }: IProps) => {
             </S.Container>
             <ModalConfirm
                 title="Atenção"
-                description={"Você deseja realmente remover esse vídeo?"}
+                description={"Você deseja realmente Excluir esse vídeo?"}
                 type="danger"
                 opened={modalDelete}
                 onCancel={() => setModalDelete(false)}

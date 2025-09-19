@@ -111,7 +111,7 @@ export const RenderField = ({ admin, field, value, loadingDuplicate, onChange, o
                     <div className='buttons'>
                         <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Duplicar campo'} loading={loadingDuplicate} onClick={() => onClickAction && onClickAction('duplicate', data)} icon={<IconClone />} variant='light' type='button' className='edit' />
                         <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Editar campo'} onClick={() => onClickAction && onClickAction('edit', data)} icon={<IconPencil />} type='button' className='edit' />
-                        <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Remover campo'} onClick={() => onClickAction && onClickAction('delete', data)} icon={<IconTrash />} variant="danger" type='button' className='edit' />
+                        <ButtonDefault data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Excluir campo'} onClick={() => onClickAction && onClickAction('delete', data)} icon={<IconTrash />} variant="danger" type='button' className='edit' />
                     </div>
                 </div>
             )}

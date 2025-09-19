@@ -135,12 +135,8 @@ export const Container = styled.div.withConfig({
         }
         .status-change {
           cursor: pointer;
-          .content-button {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-            flex-direction: row;
-          }
+          display: flex;
+          gap: 5px;
           &:hover {
             .icon-refresh {
               opacity: 1;

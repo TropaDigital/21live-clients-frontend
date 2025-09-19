@@ -144,7 +144,7 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
         }
         if (verifyPermission('links_delete')) {
             newList.push({
-                name: 'Remover',
+                name: 'Excluir',
                 icon: <IconTrash />,
                 onClick: () => setModalDelete(true)
             })
@@ -257,7 +257,7 @@ export const CardFolder = ({ onDelete, onEdit, type, item }: IProps) => {
 
             <ModalConfirm
                 title="Atenção"
-                description={"Você deseja realmente remover essa pasta?"}
+                description={"Você deseja realmente Excluir essa pasta?"}
                 type="danger"
                 opened={modalDelete}
                 onCancel={() => setModalDelete(false)}

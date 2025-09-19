@@ -186,7 +186,7 @@ const RenderTDUser = ({ row, onDelete }: { row: IUser, onDelete(id: number): voi
             permission: 'users_edit',
         },
         {
-            name: 'Remover',
+            name: 'Excluir',
             icon: <IconTrash />,
             onClick: () => onDelete(row.user_id),
             permission: 'users_delete'

@@ -409,7 +409,7 @@ const DICT: Record<string, string> = {
   recycle: "reciclar",
   redo: "refazer",
   registered: "registrado",
-  remove: "remover",
+  remove: "Excluir",
   reply: "responder",
   republican: "republicano",
   restroom: "banheiro",

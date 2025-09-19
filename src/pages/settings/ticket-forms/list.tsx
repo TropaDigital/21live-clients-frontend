@@ -350,7 +350,7 @@ const RenderTD = ({ row, onDelete, onDuplicate }: { row: ITicketCat, onDuplicate
             permission: CONFIG_PAGE_EDIT.permission_edit,
         },
         {
-            name: 'Remover',
+            name: 'Excluir',
             icon: <IconTrash />,
             onClick: () => onDelete(row.ticket_cat_id),
             permission: CONFIG_PAGE_EDIT.permission_remove

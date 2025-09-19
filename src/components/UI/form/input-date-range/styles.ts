@@ -82,6 +82,8 @@ export const Container = styled.div`
     .rdp-day_button {
       color: ${({ theme }) => theme.colors.neutral[500]};
       font-size: 13px;
+      width: 32px;
+      height: 32px;
     }
   }
 `;

@@ -302,7 +302,7 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
 
                 <ModalConfirm
                     title="Atenção"
-                    description={"Você deseja realmente remover esse campo?"}
+                    description={"Você deseja realmente Excluir esse campo?"}
                     type="danger"
                     opened={showModalRemove}
                     onCancel={() => setShowModalRemove(false)}
@@ -782,7 +782,7 @@ export const FieldEditable = ({ field, onClose, onSubmit }: { field: ITicketFiel
                                             }}
                                             variant="danger"
                                             type='button'
-                                            data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Remover opção'}
+                                            data-tooltip-place="top" data-tooltip-id="tooltip" data-tooltip-content={'Excluir opção'}
                                         />
                                     </div>
                                 </div>

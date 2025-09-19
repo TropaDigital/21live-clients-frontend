@@ -179,7 +179,7 @@ const RenderTD = ({ row, onDelete }: { row: IOrganizationGroup, onDelete(id: num
             permission: CONFIG_PAGE_EDIT.permission_edit,
         },
         {
-            name: 'Remover',
+            name: 'Excluir',
             icon: <IconTrash />,
             onClick: () => onDelete(row.orggroup_id),
             permission: CONFIG_PAGE_EDIT.permission_remove

@@ -1,9 +1,9 @@
 import * as S from './styles'
 import { TableDefault, TDViewByHead, type ITHead } from '../../components/UI/table/table-default'
 import { useEffect, useState } from 'react'
-import type { ITicket } from '../../core/types/ITckets'
+import type { ITicket, ITicketStatus } from '../../core/types/ITckets'
 import { TicketService } from '../../core/services/TicketService'
-import { IconClone, IconEye, IconFilter, IconPencil, IconSolicitation, IconStatus, IconTrash } from '../../assets/icons'
+import { IconCheck, IconClone, IconEye, IconFilter, IconPencil, IconRefresh, IconSolicitation, IconTrash } from '../../assets/icons'
 import { BadgeSimpleColor } from '../../components/UI/badge/badge-simple-color'
 import { AvatarUser } from '../../components/UI/avatar/avatar-user'
 import moment from 'moment'
@@ -17,6 +17,8 @@ import { useTenant } from '../../core/contexts/TenantContext'
 import { ModalConfirm } from '../../components/UI/modal/modal-confirm'
 import { FILTER_DEFAULT, ModalFilterTicket, NAME_STORAGE_FILTER_TICKET, type IFilterTicket } from '../../components/modules/cards/modal-filter-ticket'
 import { useAuth } from '../../core/contexts/AuthContext'
+import { BulletStatus } from '../../components/modules/modal-view-ticket/styles'
+import { SubmenuSelect } from '../../components/UI/submenu-select'
 
 export default function Tickets() {
 
@@ -87,7 +89,7 @@ export default function Tickets() {
             "order": true
         },
         {
-            "name": "Formato da Peça",
+            "name": "Formato",
             "value": "media_name",
             "order": true
         },
@@ -125,7 +127,7 @@ export default function Tickets() {
 
     const { id } = useParams();
 
-    const { tenant } = useTenant();
+    const { tenant, ticketStatus, getTicketStatus } = useTenant();
     const { user, verifyPermission } = useAuth();
 
     const [newTicket, setNewTicket] = useState(false)
@@ -155,6 +157,10 @@ export default function Tickets() {
 
     const [modalFilter, setModalFilter] = useState(false)
     const [DTOFilter, setDTOFilter] = useState<IFilterTicket>(STORAGE_FILTER_SAVE ? JSON.parse(STORAGE_FILTER_SAVE) : FILTER_DEFAULT)
+
+    useEffect(() => {
+        if (ticketStatus.length === 0) getTicketStatus();
+    }, [ticketStatus])
 
     const getData = async (page: number, limit: number, search: string, order: string, filter: IFilterTicket) => {
         setLoading(true);
@@ -266,6 +272,23 @@ export default function Tickets() {
         .filter((value) => value !== undefined && value !== 0 && value !== null)
         .length;
 
+    const handleChangeStatus = async (item: ITicket, status: ITicketStatus) => {
+
+        item.ticket_status_color = status.color;
+        item.ticket_status_name = status.name;
+        item.ticket_status_id = status.ticket_status_id;
+
+        console.log('item', item)
+
+        setData([...data.map((row) => {
+            return item.ticket_id === row.ticket_id ? item : row;
+        })])
+
+        await TicketService.set({
+            ticket_status_id: status.ticket_status_id
+        }, item.ticket_id)
+    }
+
     return (
         <S.Container>
 
@@ -331,8 +354,8 @@ export default function Tickets() {
 
             <ModalConfirm
                 opened={DTODelete?.ticket_id ? true : false}
-                title='Remover'
-                description={`Deseja remover a solicitação ${DTODelete?.title}`}
+                title='Excluir'
+                description={`Deseja Excluir a solicitação ${DTODelete?.title}`}
                 onCancel={() => setDTODelete(null)}
                 onConfirm={handleDelete}
                 loading={loadingDelete}
@@ -374,7 +397,30 @@ export default function Tickets() {
                                         {item.media_name}
                                     </TDViewByHead>
                                     <TDViewByHead thead={thead} nameTH={TABLE_HEAD[4].name}>
-                                        <BadgeSimpleColor bg={item.ticket_status_color} name={item.ticket_status_name} color={'white'} />
+                                        {verifyPermission('tickets_edit') ?
+                                            <div className='status-change'>
+                                                <SubmenuSelect
+                                                    whiteSpace='nowrap'
+                                                    submenu={ticketStatus.map((status) => {
+                                                        return {
+                                                            name: status.name,
+                                                            onClick: () => handleChangeStatus(item, status),
+                                                            icon: status.ticket_status_id === item.ticket_status_id ?
+                                                                <BulletStatus style={{ backgroundColor: status.color }}><IconCheck /></BulletStatus>
+                                                                :
+                                                                <BulletStatus style={{ backgroundColor: status.color }} />
+                                                        }
+                                                    })}>
+                                                    <BadgeSimpleColor bg={item.ticket_status_color} name={item.ticket_status_name} color={'white'} />
+                                                </SubmenuSelect>
+                                                <i className='icon-refresh'>
+                                                    <IconRefresh />
+                                                </i>
+                                            </div>
+                                            :
+                                            <BadgeSimpleColor bg={item.ticket_status_color} name={item.ticket_status_name} color={'white'} />
+                                        }
+
                                     </TDViewByHead>
                                     <TDViewByHead thead={thead} nameTH={TABLE_HEAD[5].name}>
                                         {item.organization_name}
@@ -410,19 +456,13 @@ export default function Tickets() {
                                                     permission: 'tickets_edit',
                                                 },
                                                 {
-                                                    name: 'Alterar Status',
-                                                    icon: <IconStatus />,
-                                                    onClick: () => console.log('status', item),
-                                                    permission: 'tickets_edit',
-                                                },
-                                                {
                                                     name: 'Duplicar',
                                                     icon: <IconClone />,
                                                     onClick: () => setDTOClone(item),
                                                     permission: 'tickets_add',
                                                 },
                                                 {
-                                                    name: 'Remover',
+                                                    name: 'Excluir',
                                                     icon: <IconTrash />,
                                                     onClick: () => setDTODelete(item),
                                                     permission: 'tickets_delete'

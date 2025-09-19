@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconCheck, IconCSV, IconExcel, IconEye, IconEyeClose, IconSearch, IconSortOrder } from '../../../../assets/icons';
+import { IconCheck, IconCSV, IconExcel, IconEye, IconEyeClose, IconLoading, IconSearch, IconSortOrder } from '../../../../assets/icons';
 import { ButtonDefault } from '../../form/button-default';
 import { Skeleton } from '../../loading/skeleton/styles';
 import * as S from './styles'
@@ -164,8 +164,16 @@ export const TableDefault = <T,>({
             <div className='head-table'>
                 {onSearch &&
                     <div className='search'>
-                        <input placeholder='Buscar' onBlur={(e) => onSearch(e.target.value)} />
-                        <button type='button'><IconSearch /></button>
+                        <input
+                            placeholder='Buscar'
+                            onBlur={(e) => onSearch(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    onSearch(e.currentTarget.value);
+                                }
+                            }}
+                        />
+                        <button type='button'>{loading ? <IconLoading /> : <IconSearch />}</button>
                     </div>
                 }
 

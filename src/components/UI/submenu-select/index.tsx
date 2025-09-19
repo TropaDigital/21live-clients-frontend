@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import * as S from './styles'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import * as S from './styles';
 import { useClickOutside } from '../../../core/hooks/useClickOutside';
 import { AvatarUser } from '../avatar/avatar-user';
+import { createPortal } from "react-dom";
 
 interface IProps {
     search?: boolean;
@@ -12,11 +13,11 @@ interface IProps {
     label?: string;
     disabled?: boolean;
     description?: string;
-    position?: 'left' | 'right'
-    onSelected?(): void
+    position?: 'left' | 'right';
+    onSelected?(): void;
     closeOnSelected?: boolean;
     loading?: boolean;
-    whiteSpace?: 'nowrap' | 'normal'
+    whiteSpace?: 'nowrap' | 'normal';
 }
 
 export interface ISubmenuSelect {
@@ -26,7 +27,7 @@ export interface ISubmenuSelect {
     iconFont?: string;
     onClick?(name: string): void;
     path?: string;
-    required?: boolean
+    required?: boolean;
     permission?: string;
     jobs?: boolean;
 }
@@ -45,133 +46,182 @@ export const SubmenuSelect = ({
     children,
     whiteSpace = 'normal',
 }: IProps) => {
-
     const [opened, setOpened] = useState(false);
+    const refSubmenu = useRef<HTMLUListElement>(null);
+    const refMenu = useRef<HTMLDivElement>(null);
+    const refChildrenRight = useRef<HTMLDivElement>(null);
 
-    const refSubmenu = useRef<any>(null)
-    const refMenu = useRef<any>(null)
-
-    const refChildrenRight = useRef<HTMLDivElement>(null)
-
-    const [menuRect, setMenuRect] = useState({
-        widthMenu: 0,
-        heightMenu: 0,
-        topMenu: 0,
-        bottomMenu: 0,
-        width: 0,
-        height: 0,
-        top: 0,
-        bottom: 0,
-    });
+    const [positionStyle, setPositionStyle] = useState<React.CSSProperties>({});
 
     const handleOpenMenu = () => {
-        if (!loading) {
-            setOpened(true);
-        }
+        if (!loading) setOpened(true);
     };
 
-    useEffect(() => {
-        if (refSubmenu.current) {
-            const rectMenu = refMenu.current.getBoundingClientRect();
-            const rectSub = refSubmenu.current.getBoundingClientRect();
-            setMenuRect({
-                widthMenu: rectMenu.width,
-                heightMenu: rectMenu.height,
-                topMenu: rectMenu.top,
-                bottomMenu: rectMenu.bottom,
-                width: rectSub.width,
-                height: rectSub.height,
-                top: rectSub.top,
-                bottom: rectSub.bottom
+    // 🔑 Corrigido: useLayoutEffect para evitar o "salto" no primeiro clique
+    useLayoutEffect(() => {
+        if (!refMenu.current || !opened) return;
+
+        const updatePosition = () => {
+            if (!refMenu.current || !refSubmenu.current) return;
+
+            const rect = refMenu.current.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const maxHeight = 250;
+
+            let style: React.CSSProperties = {
+                position: "absolute",
+                zIndex: 9999,
+            };
+
+            // Vertical
+            const spaceBelow = viewportHeight - rect.bottom - 5;
+            const spaceAbove = rect.top - 5;
+
+            if (spaceBelow >= maxHeight || spaceBelow >= spaceAbove) {
+                style.top = rect.bottom + window.scrollY + 5;
+                style.maxHeight = Math.min(maxHeight, spaceBelow);
+            } else {
+                style.top = rect.top + window.scrollY - Math.min(maxHeight, spaceAbove) - 5;
+                style.maxHeight = Math.min(maxHeight, spaceAbove);
+            }
+
+            // Width
+            if (whiteSpace === 'normal') {
+                style.width = rect.width;
+            }
+
+            // Atualiza temporariamente para garantir que o submenu tenha tamanho real
+            setPositionStyle(style);
+
+            // Ajuste horizontal após render
+            requestAnimationFrame(() => {
+                if (!refSubmenu.current) return;
+                const submenuRect = refSubmenu.current.getBoundingClientRect();
+                let left = rect.left + window.scrollX;
+
+                if (left + submenuRect.width > viewportWidth - 8) {
+                    left = viewportWidth - submenuRect.width - 8 + window.scrollX;
+                }
+                left = Math.max(left, 8 + window.scrollX);
+
+                setPositionStyle(prev => ({ ...prev, left }));
             });
-        }
-    }, [refSubmenu, opened])
+        };
 
-    useClickOutside(refSubmenu, () => {
-        setOpened(false);
-    });
+        updatePosition();
 
-    const handleOnClick = ({ onClick }: {
-        onClick(): void;
-    }) => {
-        onClick();
+        const observer = new ResizeObserver(updatePosition);
+        observer.observe(refMenu.current);
+
+        window.addEventListener("resize", updatePosition);
+        window.addEventListener("scroll", updatePosition);
+
+        return () => {
+            observer.disconnect();
+            window.removeEventListener("resize", updatePosition);
+            window.removeEventListener("scroll", updatePosition);
+        };
+    }, [opened, whiteSpace]);
+
+    useClickOutside(refSubmenu, () => setOpened(false));
+
+    // Dentro do seu componente SubmenuSelect
+    useEffect(() => {
+        if (!opened) return;
+
+        const handleScrollOutside = (event: Event) => {
+            if (!refSubmenu.current) return;
+
+            // Pega o elemento alvo do scroll, se houver
+            const target = event.target as HTMLElement;
+            if (!refSubmenu.current.contains(target)) {
+                setOpened(false);
+            }
+        };
+
+        // Scroll global (window)
+        window.addEventListener("scroll", handleScrollOutside, true); // capture phase
+
+        return () => {
+            window.removeEventListener("scroll", handleScrollOutside, true);
+        };
+    }, [opened]);
+
+    const handleOnClick = (onClick?: (name: string) => void, name?: string) => {
+        if (onClick) onClick(name ?? "");
         if (closeOnSelected) setOpened(false);
         if (onSelected) onSelected();
-    }
+    };
 
     return (
         <S.Container
-
-            menuWidth={menuRect?.widthMenu ?? 0}
-            menuHeight={menuRect?.heightMenu ?? 0}
-            menuTop={menuRect?.topMenu ?? 0}
-            menuBottom={window.innerHeight - (menuRect?.bottomMenu ?? 0)}
-
-            subWidth={menuRect?.width ?? 0}
-            subHeight={menuRect?.height ?? 0}
-            subTop={menuRect?.top ?? 0}
-            subBottom={menuRect?.bottom ?? 0}
-
-            heightWindow={window.innerHeight}
             position={position}
             whiteSpace={whiteSpace}
-
             widthChildrenRight={refChildrenRight.current?.clientWidth}
         >
-
             {label && <p className='label'>{label}</p>}
             {description && <p className='description'>{description}</p>}
 
             <div ref={refMenu} className='row'>
-                <div className={`content-button`} onClick={handleOpenMenu}>
-                    {children ? children : search ?
-                        <input /> :
+                <div className="content-button" onClick={handleOpenMenu}>
+                    {children ? children : search ? (
+                        <input />
+                    ) : (
                         <button type='button'>
                             <span>{button}</span>
                         </button>
-                    }
+                    )}
                 </div>
-                {childrenRight &&
+                {childrenRight && (
                     <div ref={refChildrenRight} className='children-right'>
                         {childrenRight}
                     </div>
-                }
+                )}
             </div>
 
             {opened &&
-                <ul ref={refSubmenu}>
-                    {submenu.length === 0 &&
-                        <li>
-                            <button type='button'>
-                                <i></i>
-                                <span>Nenhum registro encontrado.</span>
-                            </button>
-                        </li>}
-                    {submenu.map((item, key) =>
-                        <li key={`sub-select-${item.name}-${key}`}>
-                            <button className={`${item.required ? 'required' : 'normal'}`} type='button' onClick={() => item.required !== true && handleOnClick({
-                                onClick: () => item.onClick && item.onClick(item.name),
-                            })}>
-                                <i className='icon-svg'>
-                                    {item.icon}
-                                </i>
-                                {item.iconFont &&
-                                    <div className='icon-font'>
-                                        <i className={`fa fa-${item.iconFont}`} />
-                                    </div>
-                                }
-                                {item.avatar &&
-                                    <AvatarUser size={30} name={item.name} image={item.avatar} />
-                                }
-                                <span>
-                                    {item.name}
-                                </span>
-                            </button>
-                        </li>
-                    )}
-                </ul>
-            }
-
+                createPortal(
+                    <S.ContainerSubPortal ref={refSubmenu} style={positionStyle}>
+                        {submenu.length === 0 ? (
+                            <li>
+                                <button type='button'>
+                                    <i></i>
+                                    <span>Nenhum registro encontrado.</span>
+                                </button>
+                            </li>
+                        ) : (
+                            submenu.map((item, key) => (
+                                <li key={`sub-select-${item.name}-${key}`}>
+                                    <button
+                                        className={item.required ? 'required' : 'normal'}
+                                        type='button'
+                                        onClick={() =>
+                                            item.required !== true &&
+                                            handleOnClick(item.onClick, item.name)
+                                        }
+                                    >
+                                        <i className='icon-svg'>{item.icon}</i>
+                                        {item.iconFont && (
+                                            <div className='icon-font'>
+                                                <i className={`fa fa-${item.iconFont}`} />
+                                            </div>
+                                        )}
+                                        {item.avatar && (
+                                            <AvatarUser
+                                                size={30}
+                                                name={item.name}
+                                                image={item.avatar}
+                                            />
+                                        )}
+                                        <span>{item.name}</span>
+                                    </button>
+                                </li>
+                            ))
+                        )}
+                    </S.ContainerSubPortal>,
+                    document.body
+                )}
         </S.Container>
-    )
-}
+    );
+};

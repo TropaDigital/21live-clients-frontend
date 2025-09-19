@@ -17,6 +17,9 @@ export const Container = styled.div.withConfig({
     ${({ layout, theme }) =>
       layout === "static" ? theme.colors.neutral[300] : "none"};
   border-radius: ${({ layout }) => (layout === "static" ? "8px" : "0px")};
+  resize: ${({layout}) => layout === 'static' ? 'vertical' : 'none'};;
+  min-height: ${({layout}) => layout === 'static' ? '105px' : 'none'};
+  overflow: ${({layout}) => layout === 'static' ? 'auto' : 'none'};;
   .editor-text-slash {
     flex: 1;
     display: flex;

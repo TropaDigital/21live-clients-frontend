@@ -144,6 +144,13 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
 
                 <div className='form'>
 
+                    <InputDateRange
+                        dates={{ to: DTO.toDate, from: DTO.fromDate }}
+                        label='Data de criação'
+                        setDates={(dates) => setDTO((prev) => ({ ...prev, fromDate: dates?.from, toDate: dates?.to }))}
+
+                    />
+
                     <SelectDefault
                         isValidEmpty='Nenhum Selecionado'
                         label='Formulário'
@@ -174,7 +181,7 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
 
                     <SelectDefault
                         isValidEmpty='Nenhum Selecionado'
-                        label='Usuário'
+                        label='Solicitante'
                         options={LIST_USERS}
                         value={{
                             name: SELECTED_USER?.name ?? 'Nenhum selecionado',
@@ -204,13 +211,6 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
                         loading={loadingOrganization}
                         icon={<IconHome />}
                         search
-                    />
-
-                    <InputDateRange
-                        dates={{ to: DTO.toDate, from: DTO.fromDate }}
-                        label='Data de criação'
-                        setDates={(dates) => setDTO((prev) => ({ ...prev, fromDate: dates?.from, toDate: dates?.to }))}
-
                     />
 
                     <LabelCheckbox>

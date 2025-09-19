@@ -87,7 +87,7 @@ export const CardLink = ({ onDelete, onEdit, type, item }: IProps) => {
         }
         if (verifyPermission('links_delete')) {
             newList.push({
-                name: 'Remover',
+                name: 'Excluir',
                 icon: <IconTrash />,
                 onClick: () => setModalDelete(true)
             })
@@ -176,7 +176,7 @@ export const CardLink = ({ onDelete, onEdit, type, item }: IProps) => {
 
             <ModalConfirm
                 title="Atenção"
-                description={"Você deseja realmente remover esse link?"}
+                description={"Você deseja realmente Excluir esse link?"}
                 type="danger"
                 opened={modalDelete}
                 onCancel={() => setModalDelete(false)}

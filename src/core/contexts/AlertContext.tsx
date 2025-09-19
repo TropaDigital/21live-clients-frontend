@@ -41,7 +41,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
             title,
             description,
             opened: true,
-            duration: time ? time : 10000
+            duration: time ? time : 5000
         })
     }
 

@@ -13,11 +13,11 @@ import { useAlert } from '../../../../core/contexts/AlertContext'
 import { InputCheckbox } from '../../../UI/form/input-checkbox'
 import { LabelCheckbox } from '../../../UI/form/input-checkbox/styles'
 
-export const InputSendTicket = ({ id, reply, approve, onRemoveReply, onSubmit }: {
+export const InputSendTicket = ({ id, reply, approve, onExcluireply, onSubmit }: {
     id: number;
     approve: boolean,
     reply: ITicketInteraction | null;
-    onRemoveReply(): void;
+    onExcluireply(): void;
     onSubmit(item: ITicketInteraction, approve: boolean): void;
 }) => {
 
@@ -77,7 +77,7 @@ export const InputSendTicket = ({ id, reply, approve, onRemoveReply, onSubmit }:
             setFile(null)
             setValue("");
             onSubmit(response.item, checkApprove);
-            onRemoveReply();
+            onExcluireply();
             setLoading(false);
             ;
         } catch (error: any) {
@@ -112,7 +112,7 @@ export const InputSendTicket = ({ id, reply, approve, onRemoveReply, onSubmit }:
                             <IconReply />
                         </i>
                         <div className='render' dangerouslySetInnerHTML={{ __html: reply.message }} />
-                        <button onClick={onRemoveReply}>
+                        <button onClick={onExcluireply}>
                             <IconClose />
                         </button>
                     </div>

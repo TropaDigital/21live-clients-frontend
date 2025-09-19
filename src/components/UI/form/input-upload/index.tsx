@@ -301,7 +301,7 @@ export const InputUpload: React.FC<InputUploadAdvancedProps> = ({
                                             </div>
                                             <button
                                                 onClick={() => handleRemoveFile(folder, file.name)}
-                                                title="Remover arquivo"
+                                                title="Excluir arquivo"
                                             >
                                                 <IconTrash />
                                             </button>

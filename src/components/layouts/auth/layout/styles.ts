@@ -354,7 +354,7 @@ export const ContainerMenuSidebarFolder = styled.div.withConfig({
     color: ${({ active, color }) =>
       active ? color : theme.colors.neutral[700]};
     text-decoration: none;
-    padding: ${({ opened }) => (opened ? "10px 15px" : "5px 0px")};
+    padding: ${({ opened }) => (opened ? "5px 15px" : "5px 0px")};
     align-items: center;
     gap: 10px;
     flex: 1;

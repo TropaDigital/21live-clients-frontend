@@ -68,7 +68,7 @@ export const CardArchive = ({ ref, checked, onChecked, onView, onEdit, onDelete,
         }
         if (verifyPermission('files_delete') && onDelete) {
             newList.push({
-                name: 'Remover',
+                name: 'Excluir',
                 icon: <IconTrash />,
                 onClick: () => setModalDelete(true)
             })
@@ -161,7 +161,7 @@ export const CardArchive = ({ ref, checked, onChecked, onView, onEdit, onDelete,
 
             <ModalConfirm
                 title="Atenção"
-                description={"Você deseja realmente remover esse arquivo?"}
+                description={"Você deseja realmente Excluir esse arquivo?"}
                 type="danger"
                 opened={modalDelete}
                 onCancel={() => setModalDelete(false)}

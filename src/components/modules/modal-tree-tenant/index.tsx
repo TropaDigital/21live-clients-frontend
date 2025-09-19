@@ -34,7 +34,7 @@ export const ModalTreeTenant = ({ opened, onClose }: { opened: boolean, onClose(
             }
         }
 
-        // (Opcional) Remover arrays vazios de children
+        // (Opcional) Excluir arrays vazios de children
         const prune = (n: ITenant) => {
             if (n.children && n.children.length === 0) delete (n as any).children;
             n.children?.forEach(prune);

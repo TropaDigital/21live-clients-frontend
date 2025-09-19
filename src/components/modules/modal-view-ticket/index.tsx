@@ -33,7 +33,7 @@ interface IPreviewFile {
 
 export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
-    const { tenant } = useTenant();
+    const { tenant, getTicketStatus, ticketStatus } = useTenant();
     const { user, verifyPermission } = useAuth();
     const { redirectSlug } = useRedirect();
 
@@ -49,7 +49,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     const [reply, setReply] = useState<ITicketInteraction | null>(null)
 
     const [loadingStatus, setLoadingStatus] = useState(false);
-    const [dataStatus, setDataStatus] = useState<ITicketStatus[]>([])
 
     console.log('loadingStatus', loadingStatus)
 
@@ -112,6 +111,9 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         setTabInfoSelected(TABS_INFOS.filter((obj) => obj.visible === true)[0].name)
     }, [id, loading])
 
+    useEffect(() => {
+        if (ticketStatus.length === 0) getTicketStatus();
+    }, [ticketStatus])
 
     const getData = async () => {
         setLoading(true);
@@ -130,8 +132,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         setDataInteractions([...responseInteractions.items])
         setLoadingInteractions(false);
 
-        const responseStatus = await TicketService.getStatus();
-        setDataStatus([...responseStatus.items])
         setLoadingStatus(false);
     }
 
@@ -150,8 +150,6 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     }, [dataInteractionsFilter, dataApprovesFilter, id]);
 
     const handleChangeStatus = async (status: ITicketStatus) => {
-        console.log('status', status)
-
         const newData = {
             ...data,
             ticket_status: {
@@ -161,15 +159,11 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                 ticket_status_id: status.ticket_status_id,
             }
         }
-
         setData({ ...newData })
-
         onUpdate('status', status)
-
         await TicketService.set({
             ticket_status_id: status.ticket_status_id
         }, data.ticket_id)
-
     }
 
     /*
@@ -303,29 +297,31 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                             <div className='label'>
                                 <b>Status:</b>
                                 {loading ? <Skeleton width='80px' height='18px' /> :
-                                    <div className='status-change'>
+                                    <>
                                         {verifyPermission('tickets_edit') ?
-                                            <SubmenuSelect
-                                                whiteSpace='nowrap'
-                                                submenu={dataStatus.map((item) => {
-                                                    return {
-                                                        name: item.name,
-                                                        onClick: () => handleChangeStatus(item),
-                                                        icon: item.ticket_status_id === data.ticket_status_id ?
-                                                            <S.BulletStatus style={{ backgroundColor: item.color }}><IconCheck /></S.BulletStatus>
-                                                            :
-                                                            <S.BulletStatus style={{ backgroundColor: item.color }} />
-                                                    }
-                                                })}>
-                                                <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
+                                            <div className='status-change'>
+                                                <SubmenuSelect
+                                                    whiteSpace='nowrap'
+                                                    submenu={ticketStatus.map((item) => {
+                                                        return {
+                                                            name: item.name,
+                                                            onClick: () => handleChangeStatus(item),
+                                                            icon: item.ticket_status_id === data.ticket_status_id ?
+                                                                <S.BulletStatus style={{ backgroundColor: item.color }}><IconCheck /></S.BulletStatus>
+                                                                :
+                                                                <S.BulletStatus style={{ backgroundColor: item.color }} />
+                                                        }
+                                                    })}>
+                                                    <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
+                                                </SubmenuSelect>
                                                 <i className='icon-refresh'>
                                                     <IconRefresh />
                                                 </i>
-                                            </SubmenuSelect>
+                                            </div>
                                             :
                                             <BadgeSimpleColor color='white' bg={data?.ticket_status?.color} name={data?.ticket_status?.name} />
                                         }
-                                    </div>
+                                    </>
                                 }
                             </div>
                         }
@@ -585,7 +581,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
                                 <InputSendTicket
                                     approve={tabSelected === TABS[1] ? true : false}
                                     id={Number(id)}
-                                    onRemoveReply={() => setReply(null)}
+                                    onExcluireply={() => setReply(null)}
                                     reply={reply}
                                     onSubmit={(item, approve) => {
                                         setDataInteractions((prev) => ([...prev, item]));

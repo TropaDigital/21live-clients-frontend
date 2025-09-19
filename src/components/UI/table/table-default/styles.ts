@@ -120,7 +120,7 @@ export const Container = styled.div.withConfig({
       td {
         font-size: 13px;
         color: ${({ theme }) => theme.colors.neutral[700]};
-        padding: 8px 20px;
+        padding: 5px 20px;
         border-bottom: 1px solid ${({ theme }) => theme.colors.neutral[200]};
         .row {
           display: flex;
