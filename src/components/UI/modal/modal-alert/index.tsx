@@ -21,7 +21,7 @@ export const ModalAlert = ({ title, description, type, opened, onConfirm, durati
     return (
         <>
             {type === 'success' ?
-                <S.ContainerAlertSuccess opened={opened}>
+                <S.ContainerAlertSuccess opened={opened} onClick={onConfirm}>
 
                     <div className='box-alert' onClick={onConfirm}>
                         <i>
