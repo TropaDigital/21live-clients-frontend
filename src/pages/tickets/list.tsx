@@ -191,6 +191,7 @@ export default function Tickets() {
 
     const handleOnSubmitTicket = (item: ITicket, type: 'edit' | 'new') => {
         if (type === 'new') {
+            console.log('item', item, 'new')
             setData((prev) => ([item, ...prev]));
             setNewTicket(data.length === 1);
             setTimeout(() => {

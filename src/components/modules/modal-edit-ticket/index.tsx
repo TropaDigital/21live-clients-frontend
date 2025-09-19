@@ -167,7 +167,6 @@ export const ModalEditTicket = ({ opened, ticket, onClose, onSubmit }: IProps) =
                 await TicketService.setFiles(item.file, response.item.ticket_id);
             }
 
-            onSubmit(response.item, ticket?.ticket_id ? 'edit' : 'new');
             setPercentSubmit('100%');
         } catch (error: any) {
             console.log('error', error)

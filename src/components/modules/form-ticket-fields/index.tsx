@@ -73,11 +73,18 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
             setDTO((prev: any) => ({ ...prev, organization_id: organizations[0].organization_id }))
         }
         if (data.default_media_id) {
+            console.log('existe', data.default_media_id)
             setDTO((prev: any) => ({ ...prev, media_id: data.default_media_id }))
         }
     }, [organizations, data]);
 
-    console.log('DTO', DTO)
+    useEffect(() => {
+        console.log('DTO', DTO)
+    }, [DTO])
+
+    useEffect(() => {
+        console.log('data', data)
+    }, [data])
 
     useEffect(() => {
         if (DTOEdit?.ticket_id) {
@@ -120,11 +127,7 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
 
             //setDTOFields({ ...DTOFields })
         } else {
-            setDTO({
-                organization_id: DTO.organization_id,
-                user_id: DTO.user_id,
-                media_id: DTO.media_id
-            })
+  
             setDTOFields({})
         }
     }, [DTOEdit])
@@ -284,7 +287,6 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
     const SELECTED_USER = dataUsers.find((obj) => Number(obj.value) === Number(DTO.user_id));
     const SELECTED_ORGANIZATION = organizations.find((obj) => obj.organization_id === Number(DTO.organization_id));
 
-
     const LIST_MEDIAS = dataMedias.map((item) => {
         return {
             name: item.name,
@@ -293,7 +295,7 @@ export const FormTicketFields = ({ id, admin, data, loading, DTOEdit, onSubmit, 
     })
 
     const SELECETED_MEDIA = LIST_MEDIAS.find((obj) => obj.value === String(DTO.media_id));
-    
+
     const SELECETED_MEDIA_FULL = dataMedias.find((obj) => obj.media_id === data.default_media_id);
 
     return (
