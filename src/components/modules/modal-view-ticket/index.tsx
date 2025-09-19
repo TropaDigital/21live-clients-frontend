@@ -266,7 +266,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
 
     useEffect(() => {
         if (dataInteractions.length) {
-            const interactionsFilter = dataInteractions.filter((obj: any) => obj.annex || obj.task_text)
+            const interactionsFilter = dataInteractions.filter((obj: any) => (obj.annex && obj.status) || obj.task_text)
             setDataInteractionsGroup([...groupByJobService(interactionsFilter, statusApprove)])
             setStatsApprove(calculateGlobalStats(interactionsFilter))
         } else {
