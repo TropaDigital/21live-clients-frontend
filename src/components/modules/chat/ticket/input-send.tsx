@@ -7,9 +7,10 @@ import type { ITicketInteraction } from '../../../../core/types/ITckets'
 import { TicketService } from '../../../../core/services/TicketService'
 import { useAuth } from '../../../../core/contexts/AuthContext'
 import { ModalDefault } from '../../../UI/modal/modal-default'
-import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type UploadResult } from '../../../UI/form/input-upload'
+import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type IFileInputUpload, type UploadResult } from '../../../UI/form/input-upload'
 import { ButtonDefault } from '../../../UI/form/button-default'
 import { useAlert } from '../../../../core/contexts/AlertContext'
+import { Skeleton } from '../../../UI/loading/skeleton/styles'
 
 export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
     id: number;
@@ -36,36 +37,65 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
 
     const { addAlert } = useAlert();
 
-    const handleSubmit = async (file?: File | null) => {
+    const handleSubmit = async (files?: IFileInputUpload[]) => {
         try {
 
             setLoading(true);
-            const payload: any = {
-                ticket_id: id,
-                user_id: user?.user_id,
-                message: value,
-                status: null,
-                annex: null,
-                annex_title: null,
-            };
 
-            if (!file && ((!value) || (value === '<p></p>'))) {
-                throw new Error('Mensagem é obrigatória')
+            if (files && files?.length > 0) {
+                for (const file of files) {
+                    const payload: any = {
+                        ticket_id: id,
+                        user_id: user?.user_id,
+                        message: value,
+                        status: null,
+                        annex: null,
+                        annex_title: null,
+                    };
+
+                    if (!file && ((!value) || (value === '<p></p>'))) {
+                        throw new Error('Mensagem é obrigatória')
+                    }
+
+                    payload.reply_id = reply?.ticket_interaction_id ?? null;
+                    payload.annex = file.file;
+                    payload.annex_title = file.file.name;
+
+                    const response = await TicketService.setInteraction(payload)
+
+                    handleCloseUpload()
+                    setFile(null)
+                    setValue("");
+                    onSubmit(response.item);
+                    onExcluireply();
+                }
+            } else {
+                const payload: any = {
+                    ticket_id: id,
+                    user_id: user?.user_id,
+                    message: value,
+                    status: null,
+                    annex: null,
+                    annex_title: null,
+                };
+
+                if (!file && ((!value) || (value === '<p></p>'))) {
+                    throw new Error('Mensagem é obrigatória')
+                }
+
+                payload.reply_id = reply?.ticket_interaction_id ?? null;
+
+                const response = await TicketService.setInteraction(payload)
+
+                handleCloseUpload()
+                setFile(null)
+                setValue("");
+                onSubmit(response.item);
+                onExcluireply();
             }
 
-            payload.reply_id = reply?.ticket_interaction_id ?? null;
-            payload.annex = file;
-            payload.annex_title = file?.name;
-
-            const response = await TicketService.setInteraction(payload)
-
-            handleCloseUpload()
-            setFile(null)
-            setValue("");
-            onSubmit(response.item);
-            onExcluireply();
             setLoading(false);
-            ;
+
         } catch (error: any) {
             setLoading(false)
             addAlert('error', 'Ops', error.message);
@@ -75,7 +105,7 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
 
     const handleConfirmUpload = () => {
         try {
-            handleSubmit(file?.files[0].file ?? null);
+            handleSubmit(file?.files);
             setModalFile(false);
         } catch (error: any) {
             addAlert('error', 'Ops', error.message);
@@ -104,7 +134,13 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
                     </div>
                 }
                 <div className='message-principal'>
-                    <EditorTextSlash value={value ?? ''} onChange={(value) => !loading && setValue(value)} />
+                    {!loading ?
+                        <EditorTextSlash value={value ?? ''} onChange={(value) => !loading && setValue(value)} />
+                        :
+                        <div style={{ flex: 1 }}>
+                            <Skeleton borderRadius='14px 0px 0px 14px' height={'58px'} />
+                        </div>
+                    }
                     <div className='btn-action'>
                         <button onClick={() => setModalFile(true)}>
                             {DTOFile.file && <i>1</i>}
@@ -120,7 +156,7 @@ export const InputSendTicket = ({ id, reply, onExcluireply, onSubmit }: {
             <ModalDefault layout='center' title='Anexar Arquivo' opened={modalFile} onClose={() => setModalFile(false)}>
                 <S.ContainerModalUpload>
                     <InputUpload
-                        multiple={false}
+                        multiple={true}
                         label="Arquivos"
                         typeFile="file"
                         maxSizeMB={1536}
