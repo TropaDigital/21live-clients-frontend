@@ -316,7 +316,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         const responseFiles = await TicketService.getFiles(Number(id));
         setDataFiles([...responseFiles.items])
 
-        const responseInteractions = await TicketService.getInteractions(Number(id))
+        const responseInteractions = await TicketService.getInteractions({ ticket_id: Number(id) })
         setDataInteractions([...responseInteractions.items])
 
         setLoadingInteractions(false);

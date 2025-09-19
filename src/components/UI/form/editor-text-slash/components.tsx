@@ -7,6 +7,7 @@ import { IconAlignCenter, IconAlignLeft, IconAlignRight, IconBgColor, IconBold, 
 import { InputDefault } from '../input-default';
 import { ButtonDefault } from '../button-default';
 import { IconCode, IconH1, IconH2, IconH3, IconListBullet, IconListCheck, IconListNumber, IconParagraph, IconQuoteBlock } from './icons';
+import { createPortal } from 'react-dom';
 
 interface MenuVerticalProps {
   editor: any;
@@ -312,7 +313,6 @@ export const MenuVertical: React.FC<MenuVerticalProps> = ({
 };
 
 const MenuIconColor = ({
-  refContainer,
   position,
   editor,
   type,
@@ -321,128 +321,168 @@ const MenuIconColor = ({
   onChange,
   icon
 }: {
-  refContainer: React.RefObject<HTMLDivElement>;
   position: { top: number; left: number };
-  editor: any
-  type: 'text' | 'bg'
+  editor: any;
+  type: "text" | "bg";
   colors: any[];
   color: string;
   onChange(value: string): void;
   icon: any;
 }) => {
-
-  const [opened, setOpened] = useState(false)
-  const refModal = useRef<any>(null)
-  const refMenuColors = useRef<any>(null)
-  const [positionTop, setPositionTop] = useState(30);
+  const [opened, setOpened] = useState(false);
+  const refTrigger = useRef<HTMLButtonElement | null>(null); // botão que abre o menu
+  const refMenuColors = useRef<HTMLDivElement | null>(null); // menu (portal)
+  const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   useLayoutEffect(() => {
-    if (refContainer.current && refMenuColors.current) {
+    // calcula posição após abrir (menu já montado)
+    if (opened && refTrigger.current && refMenuColors.current) {
+      const triggerRect = refTrigger.current.getBoundingClientRect();
+      const menuRect = refMenuColors.current.getBoundingClientRect();
 
-      const heightEditor = refContainer.current.offsetHeight;
-      const heightMenu = refMenuColors.current.offsetHeight;
-      const heightMenuEditor = position.top;
+      // centraliza horizontalmente em relação ao botão por padrão
+      let left = triggerRect.left + (triggerRect.width - menuRect.width) / 2;
+      const margin = 8;
 
-      if (heightEditor - heightMenu - 100 <= heightMenuEditor) {
-        setPositionTop(heightMenu * -1)
-      } else {
-        setPositionTop(30)
+      // evita overflow direito
+      if (left + menuRect.width > window.innerWidth - margin) {
+        left = window.innerWidth - menuRect.width - margin;
       }
+      // evita overflow esquerdo
+      if (left < margin) left = margin;
 
-      console.log('altura do editor', refContainer.current.offsetHeight);
-      console.log('position', position)
-      console.log('altura do menu', refMenuColors.current.offsetHeight);
+      // coloca abaixo do botão por padrão
+      let top = triggerRect.bottom - 20;
+      // se estourar embaixo, posiciona acima
+      if (top + menuRect.height > window.innerHeight - margin) {
+        top = triggerRect.top - menuRect.height - 8;
+      }
+      setCoords({ top, left });
     }
-  }, [opened, editor?.getHTML()])
+    // re-calcula quando o conteúdo do editor muda ou a abertura muda
+  }, [opened, editor?.getHTML(), position]);
 
+  // click fora: considera tanto o trigger quanto o menu (portal)
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (refModal.current && !refModal.current.contains(event.target as Node)) {
+    function handleClickOutside(e: MouseEvent) {
+      const target = e.target as Node;
+      const clickedOnTrigger = refTrigger.current?.contains(target);
+      const clickedOnMenu = refMenuColors.current?.contains(target);
+      if (!clickedOnTrigger && !clickedOnMenu) {
         setOpened(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
+    if (opened) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [refModal, opened]);
+  }, [opened]);
 
-  function extractUsedColorsFromHTML(html: string, type: 'text' | 'bg') {
-    const colors = new Set<string>();
+  // fecha ao scroll (captura) em qualquer elemento da página
+  useEffect(() => {
+    function handleScroll() {
+      if (opened) setOpened(false);
+    }
+    if (opened) {
+      window.addEventListener("scroll", handleScroll, true);
+    }
+    return () => {
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [opened]);
 
-    // pega todos os atributos style=""
+  function extractUsedColorsFromHTML(html: string, type: "text" | "bg") {
+    const colorsSet = new Set<string>();
     const regex = /style="([^"]*)"/g;
-
     for (const match of html.matchAll(regex)) {
       const styleContent = match[1];
-
-      // TEXT COLORS (somente se não for bg)
-      if (type === 'text') {
+      if (type === "text") {
         const colorMatch = styleContent.match(/color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/i);
         const bgMatch = styleContent.match(/background-color:/i);
-
-        if (colorMatch && !bgMatch) {
-          colors.add(colorMatch[1]); // aqui estava errado, antes usava [2]
-        }
+        if (colorMatch && !bgMatch) colorsSet.add(colorMatch[1]);
       }
-
-      // BACKGROUND COLORS
-      if (type === 'bg') {
+      if (type === "bg") {
         const bgMatch = styleContent.match(/background-color:\s*(#[0-9a-fA-F]{3,6}|[a-zA-Z]+)/i);
-        if (bgMatch) {
-          colors.add(bgMatch[1]);
-        }
+        if (bgMatch) colorsSet.add(bgMatch[1]);
       }
     }
-
-    return Array.from(colors);
+    return Array.from(colorsSet);
   }
 
-  const recentColors = extractUsedColorsFromHTML(editor.getHTML(), type)
+  const recentColors = extractUsedColorsFromHTML(editor.getHTML(), type);
 
   return (
-    <div ref={refModal} className="button-color">
-
-      <button type='button' onClick={() => setOpened(true)} style={{ borderColor: color }}>{icon}</button>
+    <div className="button-color">
+      <button
+        ref={refTrigger}
+        type="button"
+        onClick={() => setOpened((s) => !s)} // toggle
+        style={{ borderColor: color }}
+      >
+        {icon}
+      </button>
 
       {opened &&
-        <div ref={refMenuColors} style={{
-          marginTop: positionTop
-        }} className='menu-colors'>
-
-          {recentColors.length > 1 &&
-            <>
-              <p className='title-color'>Usado recentemente</p>
-              <div className='list-colors'>
-                {recentColors.map((item, key) =>
-                  <button type='button' key={`c-${key}-${item}`} onClick={() => onChange(item)} style={
-                    type === 'text' ?
-                      { borderColor: color === item ? item : 'rgba(0,0,0,.1)', color: item }
-                      :
-                      { borderColor: color === item ? 'rgba(0,0,0,.5)' : 'rgba(0,0,0,.1)', backgroundColor: item }
-                  }>
-                    {type === 'text' ? icon : ''}
-                  </button>
-                )}
-              </div>
-            </>
-          }
-
-          <p className='title-color'>{type === 'text' ? 'Cor de texto' : 'Cor de fundo'}</p>
-          <div className='list-colors'>
-            {colors.map((item, key) =>
-              <button type='button' key={`c-${key}`} onClick={() => onChange(item.color)} style={
-                type === 'text' ?
-                  { borderColor: color === item.color ? item.color : 'rgba(0,0,0,.1)', color: item.color }
-                  :
-                  { borderColor: color === item.color ? 'rgba(0,0,0,.5)' : 'rgba(0,0,0,.1)', backgroundColor: item.color }
-              }>
-                {type === 'text' ? icon : ''}
-              </button>
+        createPortal(
+          <S.ContainerMenuColors
+            ref={refMenuColors}
+            style={{
+              position: "fixed",
+              top: coords.top,
+              left: coords.left,
+              zIndex: 9999,
+            }}
+          >
+            {recentColors.length > 1 && (
+              <>
+                <p className="title-color">Usado recentemente</p>
+                <div className="list-colors">
+                  {recentColors.map((item, key) => (
+                    <button
+                      type="button"
+                      key={`c-${key}-${item}`}
+                      onClick={() => {
+                        onChange(item);
+                        setOpened(false);
+                      }}
+                      style={
+                        type === "text"
+                          ? { borderColor: color === item ? item : "rgba(0,0,0,.1)", color: item }
+                          : { borderColor: color === item ? "rgba(0,0,0,.5)" : "rgba(0,0,0,.1)", backgroundColor: item }
+                      }
+                    >
+                      {type === "text" ? icon : ""}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
-          </div>
-        </div>
-      }
+
+            <p className="title-color">{type === "text" ? "Cor de texto" : "Cor de fundo"}</p>
+            <div className="list-colors">
+              {colors.map((item, key) => (
+                <button
+                  type="button"
+                  key={`c-${key}`}
+                  onClick={() => {
+                    onChange(item.color);
+                    setOpened(false);
+                  }}
+                  style={
+                    type === "text"
+                      ? { borderColor: color === item.color ? item.color : "rgba(0,0,0,.1)", color: item.color }
+                      : { borderColor: color === item.color ? "rgba(0,0,0,.5)" : "rgba(0,0,0,.1)", backgroundColor: item.color }
+                  }
+                >
+                  {type === "text" ? icon : ""}
+                </button>
+              ))}
+            </div>
+          </S.ContainerMenuColors>,
+          document.body
+        )}
     </div>
   );
 };
@@ -456,11 +496,9 @@ interface MenuHorizontalProps {
   position: { top: number; left: number };
   menuRef: React.RefObject<HTMLDivElement>;
   layout: 'fixed' | 'static';
-  refContainer: React.RefObject<HTMLDivElement>
 }
 
 export const MenuHorizontal: React.FC<MenuHorizontalProps> = ({
-  refContainer,
   editor,
   textColor,
   backgroundColor,
@@ -614,11 +652,10 @@ export const MenuHorizontal: React.FC<MenuHorizontalProps> = ({
       <div className="line" />
 
       {/* Cor do texto */}
-      <MenuIconColor refContainer={refContainer} position={position} editor={editor} type='text' colors={colors.textColors} icon={<IconFontColor />} color={textColor} onChange={onTextColorChange} />
+      <MenuIconColor position={position} editor={editor} type='text' colors={colors.textColors} icon={<IconFontColor />} color={textColor} onChange={onTextColorChange} />
 
       {/* Cor de fundo */}
       <MenuIconColor
-        refContainer={refContainer}
         position={position}
         editor={editor}
         type='bg'

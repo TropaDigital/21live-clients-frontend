@@ -17,9 +17,6 @@ export const Container = styled.div.withConfig({
     ${({ layout, theme }) =>
       layout === "static" ? theme.colors.neutral[300] : "none"};
   border-radius: ${({ layout }) => (layout === "static" ? "8px" : "0px")};
-  resize: ${({layout}) => layout === 'static' ? 'vertical' : 'none'};;
-  min-height: ${({layout}) => layout === 'static' ? '105px' : 'none'};
-  overflow: ${({layout}) => layout === 'static' ? 'auto' : 'none'};;
   .editor-text-slash {
     flex: 1;
     display: flex;
@@ -27,13 +24,15 @@ export const Container = styled.div.withConfig({
     height: 100%;
 
     .tiptap {
-      flex: 1;
       outline: none;
       box-shadow: none;
       border: none;
       border-radius: 0px;
       padding: ${({ layout }) => (layout === "static" ? "20px" : "0px")};
       height: 100%;
+      resize: ${({ layout }) => (layout === "static" ? "vertical" : "none")};
+      min-height: ${({ layout }) => (layout === "static" ? "18px" : "none")};
+      overflow: ${({ layout }) => (layout === "static" ? "auto" : "none")};
 
       iframe {
         border: none;
@@ -362,47 +361,6 @@ export const ContainerMenuHorizontal = styled.div.withConfig({
     &:hover {
       background: var(--primary-100);
     }
-    .menu-colors {
-      position: absolute;
-      width: 182px;
-      margin-top: 30px;
-      padding: 15px;
-      background-color: white;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-      animation: fadeIn 0.5s;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      cursor: auto;
-      .title-color {
-        font-size: 12px;
-        color: ${({ theme }) => theme.colors.neutral[700]};
-      }
-      .list-colors {
-        display: flex;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-        gap: 8px;
-        > button {
-          width: 30px;
-          height: 30px;
-          border-radius: 5px;
-          border: 2px solid rgba(0, 0, 0, 0.1);
-          display: flex;
-          align-items: center;
-          font-size: 20px;
-          justify-content: center;
-          background-color: white;
-          transition: all 0.5s;
-          &:hover {
-            transform: scale(1.3);
-            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
-          }
-        }
-      }
-    }
     > button {
       position: absolute;
       z-index: 2;
@@ -419,6 +377,48 @@ export const ContainerMenuHorizontal = styled.div.withConfig({
         height: 20px;
       }
       cursor: pointer;
+    }
+  }
+`;
+
+export const ContainerMenuColors = styled.div`
+  position: absolute;
+  width: 182px;
+  margin-top: 30px;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: auto;
+  .title-color {
+    font-size: 12px;
+    color: ${({ theme }) => theme.colors.neutral[700]};
+  }
+  .list-colors {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    > button {
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      font-size: 20px;
+      justify-content: center;
+      background-color: white;
+      transition: all 0.5s;
+      &:hover {
+        transform: scale(1.3);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+      }
     }
   }
 `;

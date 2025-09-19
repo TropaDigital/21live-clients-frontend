@@ -164,12 +164,12 @@ export default function TicketsApproval() {
 
     const getData = async (page: number, limit: number, search: string, order: string, filter: IFilterTicket) => {
         setLoading(true);
-        const response = await TicketService.get({
+        const response = await TicketService.getApproval({
             page: pagination.page,
             limit: pagination.limit,
-            search,
             order,
-            filter
+            search: search,
+            filter: filter
         })
         setPagination({ page, limit, total: response.total, total_show: response.items.length })
         setData([...response.items]);

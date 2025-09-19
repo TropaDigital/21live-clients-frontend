@@ -71,6 +71,70 @@ export const TicketService = {
 
     return response.data;
   },
+  getApproval: async ({
+    page,
+    limit,
+    search,
+    order,
+    filter,
+  }: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    order?: string;
+    filter?: IFilterTicket;
+  }) => {
+    const tenant = getSlug();
+
+    const queryOrder = order ? `&sort=${order}` : ``;
+    const querySearch = search ? `&search=${search}` : ``;
+
+    /*
+    fromDate: Date | undefined;
+    toDate: Date | undefined;
+    organization_id: number | undefined;
+    ticket_cat_id: number | undefined;
+    ticket_status_id: number | undefined;
+    user_id: number | undefined;
+    */
+
+    const queryFromDate = filter?.fromDate
+      ? `&createdFrom=${moment(filter?.fromDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryToDate = filter?.toDate
+      ? `&createdTo=${moment(filter?.toDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryOrganization = filter?.organization_id
+      ? `&organization_id=${filter.organization_id}`
+      : ``;
+    const queryCatId = filter?.ticket_cat_id
+      ? `&ticket_cat_id=${filter.ticket_cat_id}`
+      : ``;
+    const queryStatusId = filter?.ticket_status_id
+      ? `&ticket_status_id=${filter.ticket_status_id}`
+      : ``;
+    const queryUserId = filter?.user_id ? `&user_id=${filter.user_id}` : ``;
+
+    const response = await BaseService.get(
+      `/${tenant}/API/Tickets/approval?page=${page ?? 1}&limit=${
+        limit ?? 999999
+      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}`
+    );
+
+    if (response.data.items && page) {
+      response.data.items = response.data.items.map(
+        (item: ITicketCat, index: number) => {
+          const order = index + 1;
+          return {
+            ...item,
+            ordem: page > 1 ? 10 * (page - 1) + order : order,
+          };
+        }
+      );
+    }
+
+    return response.data;
+  },
   delete: async (id: number) => {
     const tenant = getSlug();
     const response = await BaseService.delete(`/${tenant}/API/Tickets/${id}`);
@@ -105,24 +169,53 @@ export const TicketService = {
 
     return response.data;
   },
-  getInteractions: async (
-    ticket_id: number,
-    page?: number,
-    limit?: number,
-    search?: string,
-    order?: string,
-    deleted?: boolean
-  ) => {
+  getInteractions: async ({
+    ticket_id,
+    page,
+    limit,
+    search,
+    order,
+    deleted,
+    filter,
+  }: {
+    ticket_id?: number;
+    page?: number;
+    limit?: number;
+    search?: string;
+    order?: string;
+    deleted?: boolean;
+    filter?: IFilterTicket;
+  }) => {
     const tenant = getSlug();
 
     const queryDeleted = deleted ? `&deleted=true` : ``;
     const queryOrder = order ? `&sort=${order}` : ``;
     const querySearch = search ? `&search=${search}` : ``;
 
+    const queryApproval = filter?.approval ? `&status=!null` : ``;
+    const queryFromDate = filter?.fromDate
+      ? `&createdFrom=${moment(filter?.fromDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryToDate = filter?.toDate
+      ? `&createdTo=${moment(filter?.toDate).format("YYYY-MM-DD")}`
+      : ``;
+    const queryOrganization = filter?.organization_id
+      ? `&organization_id=${filter.organization_id}`
+      : ``;
+    const queryCatId = filter?.ticket_cat_id
+      ? `&ticket_cat_id=${filter.ticket_cat_id}`
+      : ``;
+    const queryStatusId = filter?.ticket_status_id
+      ? `&ticket_status_id=${filter.ticket_status_id}`
+      : ``;
+    const queryUserId = filter?.user_id ? `&user_id=${filter.user_id}` : ``;
+
     const response = await BaseService.get(
-      `/${tenant}/API/TicketInteractions/${ticket_id}?page=${page ?? 1}&limit=${
+      `/${tenant}/API/TicketInteractions${
+        ticket_id ? `/${ticket_id}` : ""
+      }?page=${page ?? 1}&limit=${
         limit ?? 999999
-      }${querySearch}${queryOrder}${queryDeleted}`
+      }${querySearch}${queryOrder}${queryDeleted}${queryApproval}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}`
     );
 
     return response.data;

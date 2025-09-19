@@ -6,7 +6,7 @@ import type { ITicketInteraction } from '../../../../core/types/ITckets'
 import { TicketService } from '../../../../core/services/TicketService'
 import { useAuth } from '../../../../core/contexts/AuthContext'
 import { ModalDefault } from '../../../UI/modal/modal-default'
-import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type UploadResult } from '../../../UI/form/input-upload'
+import { FILE_ACCEPTED_EXTENSIONS, InputUpload, type IFileInputUpload, type UploadResult } from '../../../UI/form/input-upload'
 import { ButtonDefault } from '../../../UI/form/button-default'
 import { useAlert } from '../../../../core/contexts/AlertContext'
 
@@ -26,41 +26,40 @@ export const InputSendTicketApprove = ({ id, onSubmit }: {
 
     const { addAlert } = useAlert();
 
-    const handleSubmit = async (file?: File | null) => {
+    const handleSubmit = async (files: IFileInputUpload[]) => {
         try {
-
             setLoading(true);
-            const payload: any = {
-                ticket_id: id,
-                user_id: user?.user_id,
-                message: value,
-                status: null,
-                annex: null,
-                annex_title: null,
-            };
 
-            payload.status = 'wait';
-            payload.annex = file;
-            payload.annex_title = file?.name;
+            for (const file of files) {
+                const payload: any = {
+                    ticket_id: id,
+                    user_id: user?.user_id,
+                    message: value,
+                    status: "wait",
+                    annex: file.file,
+                    annex_title: file.file?.name,
+                };
 
-            const response = await TicketService.setInteraction(payload)
+                const response = await TicketService.setInteraction(payload);
 
-            handleCloseUpload()
-            setFile(null)
-            setValue("");
-            onSubmit(response.item, true);
+                handleCloseUpload();
+                setFile(null);
+                setValue("");
+                onSubmit(response.item, true);
+            }
+
             setLoading(false);
-            ;
         } catch (error: any) {
-            setLoading(false)
-            addAlert('error', 'Ops', error.message);
+            setLoading(false);
+            addAlert("error", "Ops", error.message);
         }
-
-    }
+    };
 
     const handleConfirmUpload = () => {
         try {
-            handleSubmit(file?.files[0].file ?? null);
+            if (!file) return;
+
+            handleSubmit(file.files);
         } catch (error: any) {
             addAlert('error', 'Ops', error.message);
         }
@@ -77,7 +76,7 @@ export const InputSendTicketApprove = ({ id, onSubmit }: {
             <ModalDefault layout='center' title='Anexar Arquivo' opened={opened} onClose={handleCloseUpload}>
                 <S.ContainerModalUpload>
                     <InputUpload
-                        multiple={false}
+                        multiple={true}
                         label="Arquivos"
                         typeFile="file"
                         maxSizeMB={1536}

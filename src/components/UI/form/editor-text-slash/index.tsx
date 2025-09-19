@@ -369,7 +369,6 @@ const EditorTextSlash = ({
             editor.chain().focus().setHighlight({ color }).run();
           }}
           position={cursorPosition}
-          refContainer={refContainer}
           menuRef={refMenuHorizontal}
         />
       )}
