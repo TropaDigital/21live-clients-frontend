@@ -79,7 +79,7 @@ export const TicketService = {
   getApprovalStatus: async (search: string) => {
     const tenant = getSlug();
     const response = await BaseService.get(
-      `/${tenant}/API/Tickets/approvalStatus?search=${search}`
+      `/${tenant}/API/TicketInteractions/approvalStatus?search=${search}`
     );
     return response.data;
   },

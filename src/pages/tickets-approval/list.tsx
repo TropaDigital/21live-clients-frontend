@@ -37,12 +37,16 @@ export default function TicketsApproval() {
         total_show: 0,
     })
 
-    const getData = async (page: number, limit: number, search: string, order: string) => {
-        setLoading(true);
+    const getDataStatusApproval = async () => {
         setLoadingStats(true);
         const responseStatus = await TicketService.getApprovalStatus(search);
-        setLoadingStats(false);
         setStats({ ...responseStatus.info })
+        setLoadingStats(false);
+    }
+
+    const getData = async (page: number, limit: number, search: string, order: string) => {
+        setLoading(true);
+        getDataStatusApproval()
         const response = await TicketService.getApproval({
             page: pagination.page,
             limit: pagination.limit,
@@ -116,7 +120,7 @@ export default function TicketsApproval() {
                         <div className='text'>
                             <span className='title'>{STATUS_TICKET_INTERACTION.wait.name}</span>
                             {loadingStats ? <Skeleton height='30px' width='60px' /> :
-                                <span style={{color: STATUS_TICKET_INTERACTION.wait.colorText}} className='value'>{stats.wait}</span>
+                                <span style={{ color: STATUS_TICKET_INTERACTION.wait.colorText }} className='value'>{stats.wait}</span>
                             }
                         </div>
                         <i style={{ background: STATUS_TICKET_INTERACTION.wait.colorBadge, color: STATUS_TICKET_INTERACTION.wait.colorText }}>
@@ -127,7 +131,7 @@ export default function TicketsApproval() {
                         <div className='text'>
                             <span className='title'>{STATUS_TICKET_INTERACTION.pass.name}</span>
                             {loadingStats ? <Skeleton height='30px' width='60px' /> :
-                                <span style={{color: STATUS_TICKET_INTERACTION.pass.colorText}} className='value'>{stats.pass}</span>
+                                <span style={{ color: STATUS_TICKET_INTERACTION.pass.colorText }} className='value'>{stats.pass}</span>
                             }
                         </div>
                         <i style={{ background: STATUS_TICKET_INTERACTION.pass.colorBadge, color: STATUS_TICKET_INTERACTION.pass.colorText }}>
@@ -138,7 +142,7 @@ export default function TicketsApproval() {
                         <div className='text'>
                             <span className='title'>{STATUS_TICKET_INTERACTION.fail.name}</span>
                             {loadingStats ? <Skeleton height='30px' width='60px' /> :
-                                <span style={{color: STATUS_TICKET_INTERACTION.fail.colorText}}className='value'>{stats.fail}</span>
+                                <span style={{ color: STATUS_TICKET_INTERACTION.fail.colorText }} className='value'>{stats.fail}</span>
                             }
                         </div>
                         <i style={{ background: STATUS_TICKET_INTERACTION.fail.colorBadge, color: STATUS_TICKET_INTERACTION.fail.colorText }}>
@@ -164,6 +168,7 @@ export default function TicketsApproval() {
                             }
                             if (name === 'awaiting_approval') {
                                 if (user) {
+                                    getDataStatusApproval();
                                     setUser({
                                         ...user, notifications: {
                                             ...user.notifications,
