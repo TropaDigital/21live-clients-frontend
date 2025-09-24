@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconHome, IconProfile, IconSolicitation, IconStatus } from '../../../../assets/icons';
+import { IconCheck, IconHome, IconProfile, IconSolicitation, IconStatus } from '../../../../assets/icons';
 import { useTenant } from '../../../../core/contexts/TenantContext';
 import { InputDateRange } from '../../../UI/form/input-date-range';
 import { SelectDefault } from '../../../UI/form/select-default';
@@ -9,12 +9,14 @@ import { ButtonDefault } from '../../../UI/form/button-default';
 import { useAuth } from '../../../../core/contexts/AuthContext';
 import { LabelCheckbox } from '../../../UI/form/input-checkbox/styles';
 import { InputCheckbox } from '../../../UI/form/input-checkbox';
+import moment from 'moment';
 
 interface IProps {
     opened: boolean;
     onClose(): void;
     DTOFilter: IFilterTicket;
     setDTOFilter(DTO: IFilterTicket): void;
+    pageStorage: string;
 }
 
 export interface IFilterTicket {
@@ -22,6 +24,7 @@ export interface IFilterTicket {
     toDate: Date | undefined;
     organization_id: number | undefined;
     ticket_cat_id: number | undefined;
+    finish: string;
     ticket_status_id: number | undefined;
     user_id: number | undefined
     approval?: boolean
@@ -34,6 +37,7 @@ export const FILTER_DEFAULT: IFilterTicket = {
     ticket_cat_id: undefined,
     ticket_status_id: undefined,
     user_id: undefined,
+    finish: '',
 }
 
 export const FILTER_APPROVAL_DEFAULT: IFilterTicket = {
@@ -43,13 +47,13 @@ export const FILTER_APPROVAL_DEFAULT: IFilterTicket = {
     ticket_cat_id: undefined,
     ticket_status_id: undefined,
     user_id: undefined,
-    approval: true,
+    finish: '',
 }
 
 export const NAME_STORAGE_FILTER_TICKET = '@21filter-ticket'
 export const NAME_STORAGE_FILTER_TICKET_APPROVAL = '@21filter-ticket-approval'
 
-export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: IProps) => {
+export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter, pageStorage }: IProps) => {
 
     const { user } = useAuth();
 
@@ -76,14 +80,16 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
     }, [DTOFilter, opened])
 
     useEffect(() => {
-        if (ticketCats.length === 0) getTicketCats();
-        if (ticketStatus.length === 0) getTicketStatus();
-        if (users.length === 0) getUsers();
-        if (organizations.length === 0) getOrganizations();
-    }, [ticketCats, ticketStatus, users, organizations])
+        if (opened) {
+            if (ticketCats.length === 0) getTicketCats();
+            if (ticketStatus.length === 0) getTicketStatus();
+            if (users.length === 0) getUsers();
+            if (organizations.length === 0) getOrganizations();
+        }
+    }, [ticketCats, ticketStatus, users, organizations, opened])
 
     useEffect(() => {
-        const STORAGE_FILTER = window.localStorage.getItem(NAME_STORAGE_FILTER_TICKET);
+        const STORAGE_FILTER = window.localStorage.getItem(pageStorage);
         if (STORAGE_FILTER) {
             setSaveStorage(true);
         }
@@ -93,9 +99,9 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
 
         if (saveStorage) {
             const JSON_FILTER = JSON.stringify(DTO);
-            window.localStorage.setItem(NAME_STORAGE_FILTER_TICKET, JSON_FILTER);
+            window.localStorage.setItem(pageStorage, JSON_FILTER);
         } else {
-            window.localStorage.removeItem(NAME_STORAGE_FILTER_TICKET)
+            window.localStorage.removeItem(pageStorage)
         }
 
         setDTOFilter(DTO);
@@ -103,7 +109,7 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
     }
 
     const handleReset = () => {
-        window.localStorage.removeItem(NAME_STORAGE_FILTER_TICKET);
+        window.localStorage.removeItem(pageStorage);
         setSaveStorage(false)
         setDTOFilter({ ...FILTER_DEFAULT });
         onClose();
@@ -124,6 +130,23 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
         }
     })
     const FORM_SELECTED = LIST_FORMS.find((obj) => Number(obj.value) === DTO.ticket_cat_id);
+
+    const LIST_FINISH = [
+        {
+            name: 'Ambos',
+            value: '',
+        },
+        {
+            name: 'Pendentes',
+            value: 'false',
+        },
+        {
+            name: 'Finalizados',
+            value: 'true',
+        },
+
+    ]
+    const FINISH_SELECTED = LIST_FINISH.find((obj) => obj.value === DTO.finish);
 
     const LIST_USERS = [
         {
@@ -157,7 +180,7 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
                 <div className='form'>
 
                     <InputDateRange
-                        dates={{ to: DTO.toDate, from: DTO.fromDate }}
+                        dates={{ to: DTO.toDate ? moment(DTO.toDate).toDate() : undefined, from: DTO.fromDate ? moment(DTO.fromDate).toDate() : undefined }}
                         label='Data de criação'
                         setDates={(dates) => setDTO((prev) => ({ ...prev, fromDate: dates?.from, toDate: dates?.to }))}
 
@@ -223,6 +246,18 @@ export const ModalFilterTicket = ({ opened, onClose, DTOFilter, setDTOFilter }: 
                         loading={loadingOrganization}
                         icon={<IconHome />}
                         search
+                    />
+
+                    <SelectDefault
+                        label='Entrega'
+                        options={LIST_FINISH}
+                        onChange={(e) => setDTO((prev) => ({ ...prev, finish: e.value }))}
+                        search={true}
+                        icon={<IconCheck />}
+                        value={{
+                            name: FINISH_SELECTED?.name ?? 'Ambos',
+                            value: FINISH_SELECTED?.value ?? ''
+                        }}
                     />
 
                     <LabelCheckbox>

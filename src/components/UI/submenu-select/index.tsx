@@ -79,10 +79,12 @@ export const SubmenuSelect = ({
             const spaceAbove = rect.top - 5;
 
             if (spaceBelow >= maxHeight || spaceBelow >= spaceAbove) {
+                // abre para baixo
                 style.top = rect.bottom + window.scrollY + 5;
                 style.maxHeight = Math.min(maxHeight, spaceBelow);
             } else {
-                style.top = rect.top + window.scrollY - Math.min(maxHeight, spaceAbove) - 5;
+                // abre para cima
+                style.bottom = viewportHeight - rect.top + window.scrollY + 5;
                 style.maxHeight = Math.min(maxHeight, spaceAbove);
             }
 

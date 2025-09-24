@@ -288,7 +288,7 @@ export default function Tickets() {
     }
 
     const countFilled = Object.values(DTOFilter)
-        .filter((value) => value !== undefined && value !== 0 && value !== null)
+        .filter((value) => value !== undefined && value !== 0 && value !== null && value !== '')
         .length;
 
     const handleChangeStatus = async (item: ITicket, status: ITicketStatus) => {
@@ -337,6 +337,7 @@ export default function Tickets() {
                     onClose={() => setModalFilter(false)}
                     DTOFilter={DTOFilter}
                     setDTOFilter={handleSetFilter}
+                    pageStorage={NAME_STORAGE_FILTER_TICKET}
                 />
             }
 

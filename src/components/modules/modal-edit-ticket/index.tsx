@@ -49,10 +49,6 @@ export const ModalEditTicket = ({ opened, ticket, onClose, onSubmit }: IProps) =
     const [DTOEdit, setDTOEDit] = useState<ITicketDetail | null>(null)
 
     useEffect(() => {
-        if (ticketCats.length === 0) getTicketCats();
-    }, [ticketCats])
-
-    useEffect(() => {
         if (ticket?.ticket_cat_id) {
             setId(ticket?.ticket_cat_id)
         } else {
@@ -98,9 +94,12 @@ export const ModalEditTicket = ({ opened, ticket, onClose, onSubmit }: IProps) =
     }, [id])
 
     useEffect(() => {
-        if (organizations.length === 0) getOrganizations();
-        if (users.length === 0) getUsers();
-    }, [id, organizations, users])
+        if (opened) {
+            if (organizations.length === 0) getOrganizations();
+            if (users.length === 0) getUsers();
+            if (ticketCats.length === 0) getTicketCats();
+        }
+    }, [id, organizations, users, ticketCats, opened])
 
     const handleSubmit = async () => {
         try {

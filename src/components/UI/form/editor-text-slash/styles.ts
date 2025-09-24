@@ -33,13 +33,11 @@ export const Container = styled.div.withConfig({
       resize: ${({ layout }) => (layout === "static" ? "vertical" : "none")};
       min-height: ${({ layout }) => (layout === "static" ? "18px" : "none")};
       overflow: ${({ layout }) => (layout === "static" ? "auto" : "none")};
-
-      iframe {
+      color: black;
+      iframe {    
         border: none;
         border-radius: 8px;
       }
-
-      color: ${({ theme }) => theme.colors.neutral[600]};
       font-size: 13px;
       span {
         mark {
@@ -172,9 +170,15 @@ export const Container = styled.div.withConfig({
         font-style: italic; /* Texto em itálico */
       }
 
+      ul {
+        padding: 0px 1rem;
+        li {
+          list-style: disc;
+        }
+      }
       /* checklist */
       ul[data-type="taskList"] {
-        list-style: none;
+        list-style: none !important;
         padding: 0;
         position: relative;
         &:before {
@@ -184,6 +188,7 @@ export const Container = styled.div.withConfig({
         li {
           display: flex;
           align-items: center;
+          list-style: none;
           margin: 0.5rem 0; /* Espaçamento entre os itens */
         }
 
@@ -493,7 +498,7 @@ export const ContainerMenuVertical = styled.div`
         }
         p {
           font-size: 13px;
-          color: ${({ theme }) => theme.colors.neutral[500]};
+          
           white-space: nowrap;
         }
       }

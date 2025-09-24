@@ -1,6 +1,6 @@
 import moment from "moment";
 import type { IFilterTicket } from "../../components/modules/cards/modal-filter-ticket";
-import type { ITicketCat } from "../types/ITckets";
+import type { ITicket, ITicketCat } from "../types/ITckets";
 import { getSlug } from "../utils/params-location";
 import BaseService from "./BaseService";
 
@@ -51,15 +51,20 @@ export const TicketService = {
 
     const queryApproval = filter?.approval ? `&status!=null` : ``;
 
+    const queryFinish =
+      filter?.finish !== ""
+        ? `&finished=${filter?.finish === "true" ? true : false}`
+        : ``;
+
     const response = await BaseService.get(
       `/${tenant}/API/Tickets?page=${page ?? 1}&limit=${
         limit ?? 999999
-      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}${queryApproval}`
+      }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}${queryApproval}${queryFinish}`
     );
 
     if (response.data.items && page) {
       response.data.items = response.data.items.map(
-        (item: ITicketCat, index: number) => {
+        (item: ITicket, index: number) => {
           const order = index + 1;
           return {
             ...item,
@@ -69,6 +74,13 @@ export const TicketService = {
       );
     }
 
+    return response.data;
+  },
+  getApprovalStatus: async (search: string) => {
+    const tenant = getSlug();
+    const response = await BaseService.get(
+      `/${tenant}/API/Tickets/approvalStatus?search=${search}`
+    );
     return response.data;
   },
   getApproval: async ({
@@ -120,18 +132,6 @@ export const TicketService = {
         limit ?? 999999
       }${querySearch}${queryOrder}${queryFromDate}${queryToDate}${queryOrganization}${queryCatId}${queryStatusId}${queryUserId}`
     );
-
-    if (response.data.items && page) {
-      response.data.items = response.data.items.map(
-        (item: ITicketCat, index: number) => {
-          const order = index + 1;
-          return {
-            ...item,
-            ordem: page > 1 ? 10 * (page - 1) + order : order,
-          };
-        }
-      );
-    }
 
     return response.data;
   },

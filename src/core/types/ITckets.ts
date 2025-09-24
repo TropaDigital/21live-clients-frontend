@@ -190,6 +190,10 @@ export interface ITicket {
   jobs_deadline: string;
 }
 
+export interface ITicketApproval extends ITicket {
+  awaiting_approval_interactions: ITicketInteraction[];
+}
+
 export interface ITicketCat {
   ticket_cat_id: number;
   tenant_id: number;

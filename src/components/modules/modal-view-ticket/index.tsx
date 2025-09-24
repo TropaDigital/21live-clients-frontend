@@ -21,6 +21,7 @@ import { CardTicketApprove } from '../chat/ticket/card-ticket-approve';
 import { ModalViewInteraction } from '../modal-view-interaction';
 import { STATUS_TICKET_INTERACTION } from '../../../core/utils/status';
 import { InputSendTicketApprove } from '../chat/ticket/input-send-approve';
+import { useLocation } from 'react-router-dom';
 
 interface IProps {
     id: string | undefined;
@@ -56,6 +57,9 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     const { user, verifyPermission } = useAuth();
     const { redirectSlug } = useRedirect();
 
+    const location = useLocation();
+    const isApproval = location.pathname.includes("/approval");
+
     const [opened, setOpened] = useState(false);
 
     const listRef = useRef<HTMLDivElement>(null);
@@ -81,16 +85,16 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     const TAB_NAME_INTERACTION = 'Mensagens';
     const TAB_NAME_APPROVE = 'Aprovações';
 
-    const TABS = [TAB_NAME_INTERACTION, TAB_NAME_APPROVE]
-    const [tabSelected, setTabSelected] = useState(TAB_NAME_INTERACTION)
+    const TABS = isApproval ? [TAB_NAME_APPROVE] : [TAB_NAME_INTERACTION, TAB_NAME_APPROVE]
+    const [tabSelected, setTabSelected] = useState(isApproval ? TAB_NAME_APPROVE : TAB_NAME_INTERACTION)
 
     useEffect(() => {
-        if (data?.app === 'jobs') {
+        if (data?.app === 'jobs' || isApproval) {
             setTabSelected(TAB_NAME_APPROVE);
         } else {
             setTabSelected(TAB_NAME_INTERACTION)
         }
-    }, [data])
+    }, [data, isApproval])
 
     const TABS_INFOS = [
         {
@@ -172,8 +176,10 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     }, [id, loading])
 
     useEffect(() => {
-        if (ticketStatus.length === 0) { getTicketStatus(); }
-    }, [ticketStatus])
+        if (opened) {
+            if (ticketStatus.length === 0) getTicketStatus();
+        }
+    }, [ticketStatus, opened])
 
     function groupByJobService(
         interactions: ITicketInteraction[],
@@ -291,7 +297,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
     }, [statsApprove])
 
     useEffect(() => {
-        if (!loading && !loadingInteractions) {
+        if (!loading && !loadingInteractions && statsApprove) {
             onUpdate('notifications', dataInteractionsFilter.length)
             onUpdate('awaiting_approval', statsApprove.totalWait)
         }
@@ -368,7 +374,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             paddingHeader='20px 40px 20px 40px'
             title={`#${id} ${loading ? '' : data?.title ?? ''}`}
             layout={"center"}
-            onClose={() => redirectSlug(`/tickets`)}
+            onClose={() => redirectSlug(isApproval ? `/approval` : `/tickets`)}
             opened={opened}
             maxWidth='100%'
         >
