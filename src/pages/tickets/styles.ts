@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   .content-page {
-    padding: 30px 30px 0px 30px;
+    padding: 30px 30px 30px 30px;
     box-sizing: border-box;
   }
   .header {
@@ -12,6 +12,9 @@ export const Container = styled.div`
     gap: 10px;
     box-sizing: border-box;
     padding: 30px 30px 0px 30px;
+    @media (max-width: 900px) {
+      flex-direction: column;
+    }
     .right {
       display: flex;
       gap: 10px;

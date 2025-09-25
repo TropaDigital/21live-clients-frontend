@@ -11,7 +11,7 @@ import { useSessionTimer } from "../../../../core/hooks/useSessionTimer";
 import { AvatarTenant } from "../../../UI/avatar/avatar-tenant";
 
 import * as S from "./styles";
-import { IconConfig, IconDashboard, IconHome, IconLike, IconLogout, IconMenu, IconProfile, IconSearch, IconSolicitation, IconSortable, IconStar } from "../../../../assets/icons";
+import { IconConfig, IconDashboard, IconHome, IconLike, IconLogout, IconMenu, IconProfile, IconSearch, IconSolicitation, IconSortable } from "../../../../assets/icons";
 import type { IFolder } from "../../../../core/types/iFolder";
 import { FoldersService } from "../../../../core/services/FoldersService";
 import { LoadingMenu } from "../loading-menu";
@@ -149,9 +149,9 @@ export default function AuthLayout() {
                     {(verifyPermission('dashboard_admin') || verifyPermission('dashboard_user')) &&
                         <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Dashboard" icon={<IconDashboard />} redirect="dashboard" />
                     }
-                    {verifyPermission('folders_view') &&
+                    {/*verifyPermission('folders_view') &&
                         <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Favoritos" icon={<IconStar />} redirect="folders/bookmarks" />
-                    }
+                    */}
                     {verifyPermission('tickets_view') &&
                         <MenuSidebarDefault opened={isMobile ? true : siderbarToggle} name="Solicitações" icon={<IconSolicitation />} redirect="tickets" total={user?.notifications.interactions} />
                     }

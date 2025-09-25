@@ -150,6 +150,10 @@ export const ContainerComment = styled.div.withConfig({
       display: flex;
       align-items: center;
       justify-content: center;
+      @media (max-width: 500px) {
+        width: 300px;
+        height: 220px;
+      }
       .overlay {
         width: 100%;
         height: 100%;
@@ -374,6 +378,7 @@ export const ContainerModalUpload = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  max-width: 100%;
   .foot {
     display: flex;
     gap: 20px;

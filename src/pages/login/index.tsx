@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { theme } from "../../assets/theme/theme";
 import { useTenant } from "../../core/contexts/TenantContext";
-import { LinkSlug } from "../../core/utils/link-slug";
 import { useRedirect } from "../../core/hooks/useRedirect";
 import { UserService } from "../../core/services/UserService";
 import { useAuth } from "../../core/contexts/AuthContext";
@@ -104,14 +103,14 @@ export default function Login() {
 
                                 <div className="after-input">
                                     <InputCheckbox checked={rememberLogin} onChange={setRememberLogin} label="Mantenha-me conectado" />
-                                    <LinkSlug path="/forgot">Esqueceu a senha?</LinkSlug>
+                                    <a target="_blank" href={`https://app.21live.com.br/${tenant?.slug}/forgot/`}>Esqueceu a senha?</a>
                                 </div>
                                 <ButtonDefault loading={loading}>Entrar</ButtonDefault>
                             </div>
                             <p className="or-line">
                                 <span>Ou</span>
                             </p>
-                            <ButtonDefault variant="dark" onClick={() => redirectSlug('/register')}>Cadastre-se</ButtonDefault>
+                            <ButtonDefault variant="dark" onClick={() => window.open("https://21live.com.br/", "_blank")}>Cadastre-se</ButtonDefault>
 
                         </div>
                     </form>

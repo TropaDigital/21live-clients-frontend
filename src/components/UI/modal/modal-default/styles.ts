@@ -89,6 +89,10 @@ export const Container = styled.div.withConfig({
     display: flex;
     flex-direction: column;
     z-index: 3;
+    @media (max-width: 600px) {
+      max-width: 100%;
+      width: 100%;
+    }
     .head-box {
       display: flex;
       justify-content: flex-end;

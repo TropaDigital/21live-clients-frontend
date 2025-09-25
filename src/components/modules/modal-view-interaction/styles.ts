@@ -7,6 +7,28 @@ export const Container = styled.div`
   height: 100%;
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.neutral[300]};
+
+  @media (max-width: 400px) {
+    max-width: 100vw;
+  }
+  .hamburger-mobile {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    z-index: 99;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    margin: 30px 10px;
+    border: none;
+    background: transparent;
+    @media (max-width: 400px) {
+      display: flex;
+    }
+  }
+
   .preview-render {
     display: flex;
     min-width: 380px;
@@ -29,7 +51,10 @@ export const Container = styled.div`
     overflow: hidden;
     position: relative;
     @media (max-width: 400px) {
-      max-height: 500px;
+      max-height: 100%;
+      border-radius: 0px;
+      min-width: calc(100%);
+      max-width: calc(100%);
     }
     .text-render {
       width: calc(100vw - 700px);
@@ -95,6 +120,20 @@ export const Container = styled.div`
     max-height: calc(100vh - 90px);
     background-color: ${({ theme }) => theme.colors.background.default};
     border-left: 1px solid ${({ theme }) => theme.colors.neutral[300]};
+    transition: all 0.2s;
+    @media (max-width: 400px) {
+      border-radius: 0px;
+      min-width: 100%;
+      height: 100%;
+      max-width: 100%;
+      position: absolute;
+      left: -100%;
+      z-index: 10;
+      border-left: none;
+      &.opened {
+        left: 0;
+      }
+    }
     .head-infos {
       display: flex;
       flex-direction: column;
@@ -239,6 +278,9 @@ export const Container = styled.div`
         background-image: url(/bg-chat.png);
         opacity: 0.08;
         content: "";
+        @media (max-width: 400px) {
+          border-radius: 0px;
+        }
       }
     }
   }

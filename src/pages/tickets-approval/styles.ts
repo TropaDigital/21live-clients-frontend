@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 export const Container = styled.div`
+  @media (max-width: 400px) {
+    width: 100vw;
+  }
   .content-page {
     padding: 0px 30px 30px 30px;
     box-sizing: border-box;

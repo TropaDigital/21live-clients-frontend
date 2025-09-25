@@ -194,6 +194,11 @@ export const Container = styled.div.withConfig({
       flex-direction: column;
       gap: 15px;
     }
+    @media(max-width: 600px) {
+      .last, .first, .next, .prev {
+        display: none;
+      }
+    }
     .left {
       .total {
         font-size: 13px;

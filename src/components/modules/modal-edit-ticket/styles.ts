@@ -11,6 +11,9 @@ export const Container = styled.div`
   height: 100%;
   width: 900px;
   max-width: 80vw;
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
   .head-select-form {
     padding: 30px;
     box-sizing: border-box;
@@ -30,6 +33,13 @@ export const Container = styled.div`
     );
     background-size: 20px 20px;
     animation: fadeIn 1s;
+    @media (max-width: 600px) {
+      height: calc(100vh - 295px);
+      .inputs {
+        border-radius: 0px;
+        margin: 0px 0px;
+      }
+    }
   }
   .foot-buttons {
     display: flex;

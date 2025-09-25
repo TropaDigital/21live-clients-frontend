@@ -6,7 +6,7 @@ import {
 import { ModalDefault } from '../../UI/modal/modal-default';
 import * as S from './styles';
 import { ButtonDefault } from "../../UI/form/button-default";
-import { IconChevronDown, IconDislike, IconLike, IconMinus, IconPlus } from "../../../assets/icons";
+import { IconChevronDown, IconDislike, IconHamburger, IconLike, IconMinus, IconPlus } from "../../../assets/icons";
 import { getFileTypeFromURL } from "../../../core/utils/files";
 import type { ITicketInteraction } from "../../../core/types/ITckets";
 import { CommentTicket } from "../chat/ticket/comment";
@@ -95,9 +95,15 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
 
     }
 
+    const [openedMobile, setOpenedMobile] = useState(false);
+
     return (
         <ModalDefault padding='0px' paddingHeader='30px 40px' layout='right' title={item.task_text ? 'Texto' : item.annex_title} opened={opened} onClose={onClose}>
             <S.Container color={tenant?.colorhigh}>
+
+                <button onClick={() => setOpenedMobile(!openedMobile)} className="hamburger-mobile">
+                    <IconHamburger />
+                </button>
 
                 {extension === 'image' &&
                     <div className="preview-render">
@@ -141,7 +147,7 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
                     </div>
                 }
 
-                <div className="right-interactions">
+                <div className={`right-interactions ${openedMobile ? 'opened' : ''}`}>
 
                     <div className="head-infos">
                         {item.annex_title &&

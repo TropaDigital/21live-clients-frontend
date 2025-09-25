@@ -488,6 +488,63 @@ export const Container = styled.div.withConfig({
       }
     }
   }
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 0px;
+    gap: 10px;
+    .infos {
+      width: 100%;
+      height: auto;
+      overflow: unset;
+      margin: 0px;
+      padding: 0px;
+      .item-text {
+        border-radius: 0px;
+        border-left: none;
+        border-right: none;
+      }
+      .tabs-infos {
+        padding: 0px 10px;
+      }
+      .list-organizations > div {
+        border-radius: 0px;
+        border-left: none;
+        border-right: none;
+      }
+    }
+    .interactions {
+      margin: 0px;
+      padding: 0px;
+      border-radius: 0px;
+      .status {
+        padding: 0px !important;
+        gap: 0px !important;
+        .item-status {
+          border-radius: 0px !important;
+          padding: 10px 0px !important;
+          border-left: none !important;
+          border-right: none !important;
+          border-top: none !important;
+        }
+        .head-status,
+        .stats-status {
+          text-align: center;
+          flex-direction: column;
+        }
+        .head-status {
+          span {
+            height: 35px;
+          }
+        }
+      }
+      .list-overflow {
+        padding: 10px 10px 0px 10px !important;
+      }
+    }
+  }
 `;
 
 export const ContainerTextMinius = styled.div`

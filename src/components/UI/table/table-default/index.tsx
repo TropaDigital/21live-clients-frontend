@@ -335,10 +335,10 @@ export const TableDefault = <T,>({
                         {onPaginate &&
                             <div className='paginte'>
 
-                                <button onClick={() => pages.current - 1 !== 0 ? onPaginate(Number(pages.current - 1)) : null}>Anterior</button>
+                                <button className='prev' onClick={() => pages.current - 1 !== 0 ? onPaginate(Number(pages.current - 1)) : null}>Anterior</button>
 
                                 {pages.pages.filter((obj) => obj === 1).length === 0 &&
-                                    <button onClick={() => onPaginate(Number(1))}>Primeira</button>
+                                    <button className='first' onClick={() => onPaginate(Number(1))}>Primeira</button>
                                 }
 
                                 {pages.pages.map((page) =>
@@ -346,10 +346,10 @@ export const TableDefault = <T,>({
                                 )}
 
                                 {pages.pages.filter((obj) => obj === pages.totalPages).length === 0 &&
-                                    <button onClick={() => onPaginate(Number(pages.totalPages))}>Última</button>
+                                    <button className='last' onClick={() => onPaginate(Number(pages.totalPages))}>Última</button>
                                 }
 
-                                <button onClick={() => pages.current + 1 !== pages.totalPages ? onPaginate(Number(pages.current + 1)) : null}>Próxima</button>
+                                <button className='next' onClick={() => pages.current + 1 !== pages.totalPages ? onPaginate(Number(pages.current + 1)) : null}>Próxima</button>
                             </div>
                         }
                         {onLimit &&
