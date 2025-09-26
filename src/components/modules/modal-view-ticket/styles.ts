@@ -8,7 +8,7 @@ export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) => !["opened", "isMobile"].includes(prop),
 })<IProps>`
   width: calc(90vw - 60px);
-  height: calc(100vh - 120px);
+  height: calc(100vh - 140px);
   display: flex;
   gap: 0px;
   padding: 0px 40px;

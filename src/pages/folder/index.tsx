@@ -46,7 +46,7 @@ interface IPropsModalLink extends IFolderLink {
     opened: boolean
 }
 
-const LIMIT_PAGE = 5;
+const LIMIT_PAGE = 30;
 
 export default function Folder() {
 
@@ -178,10 +178,12 @@ export default function Folder() {
             }
         })
 
-        response.item.children.folders = response.item.children.folders.slice(0, LIMIT_PAGE)
-        response.item.children.files = response.item.children.files.slice(0, LIMIT_PAGE)
-        response.item.children.links = response.item.children.links.slice(0, LIMIT_PAGE)
-        response.item.children.videos = response.item.children.videos.slice(0, LIMIT_PAGE)
+        response.item.childrenCount.folders = response.item.children.folders.total;
+
+        response.item.children.folders = response.item.children.folders.items
+        response.item.children.files = response.item.children.files
+        response.item.children.links = response.item.children.links
+        response.item.children.videos = response.item.children.videos
 
         setBreadcrumb([...newBreadcrumb])
         setFolder({ ...response.item })
@@ -401,7 +403,7 @@ export default function Folder() {
                 sort: order.value,
                 search: search,
             });
-            response.item.children.folders.forEach((item: any) => {
+            response.item.children.folders.items.forEach((item: any) => {
                 folder.children.folders.push(item)
             })
             setFolder({ ...folder })
