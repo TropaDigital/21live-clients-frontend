@@ -48,7 +48,7 @@ export const ModalDefault = ({
             <button type='button' className='outside' onClick={handleOnClose} />
 
             {opened &&
-                <div ref={refBox} className='box' style={{ backgroundColor: bg ?? '', borderRadius }}>
+                <div ref={refBox} className='box' style={{ backgroundColor: bg ?? '', borderRadius: (layout === 'center' || layout === 'top' || layout === 'bottom') ? borderRadius: undefined }}>
 
                     <div className='head-box'>
 
