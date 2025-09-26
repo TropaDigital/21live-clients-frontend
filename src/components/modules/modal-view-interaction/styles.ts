@@ -8,27 +8,6 @@ export const Container = styled.div`
   position: relative;
   border-top: 1px solid ${({ theme }) => theme.colors.neutral[300]};
 
-  @media (max-width: 400px) {
-    max-width: 100vw;
-  }
-  .hamburger-mobile {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 30px;
-    height: 30px;
-    z-index: 99;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    margin: 30px 10px;
-    border: none;
-    background: transparent;
-    @media (max-width: 400px) {
-      display: flex;
-    }
-  }
-
   .preview-render {
     display: flex;
     min-width: 380px;
@@ -282,6 +261,13 @@ export const Container = styled.div`
           border-radius: 0px;
         }
       }
+    }
+  }
+
+  @media (max-width: 400px) {
+    max-width: 100vw;
+    .tools {
+      flex-direction: row !important;
     }
   }
 `;

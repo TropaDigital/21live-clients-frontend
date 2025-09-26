@@ -368,6 +368,8 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
         setDataInteractions([...newData, newItem]);
     }
 
+    const isMobile = window.innerWidth < 600 ? true : false;
+
     return (
         <ModalDefault
             padding='0px'
@@ -377,6 +379,7 @@ export const ModalViewTicket = ({ id, onUpdate }: IProps) => {
             onClose={() => redirectSlug(isApproval ? `/approval` : `/tickets`)}
             opened={opened}
             maxWidth='100%'
+            borderRadius={isMobile ? '0px' : undefined}
         >
 
             <ModalViewArchive opened={previewFile ? true : false} onClose={() => setPreviewFile(null)} item={{

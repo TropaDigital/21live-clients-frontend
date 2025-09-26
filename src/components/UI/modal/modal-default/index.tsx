@@ -1,5 +1,5 @@
 import { useRef, type ReactNode } from 'react';
-import { IconClose } from '../../../../assets/icons'
+import { IconClose, IconHamburger } from '../../../../assets/icons'
 import * as S from './styles'
 
 interface IProps {
@@ -14,6 +14,8 @@ interface IProps {
     children: ReactNode;
     zIndex?: number;
     layout: 'left' | 'center' | 'bottom' | 'top' | 'right'
+    borderRadius?: string;
+    onClickHamburger?(): void;
 }
 
 export const ModalDefault = ({
@@ -27,7 +29,9 @@ export const ModalDefault = ({
     subTitle,
     onClose,
     children,
-    opened
+    opened,
+    borderRadius = '30px',
+    onClickHamburger,
 }: IProps) => {
 
     const refBox = useRef<any>(null)
@@ -44,9 +48,15 @@ export const ModalDefault = ({
             <button type='button' className='outside' onClick={handleOnClose} />
 
             {opened &&
-                <div ref={refBox} className='box' style={{ backgroundColor: bg ?? '' }}>
+                <div ref={refBox} className='box' style={{ backgroundColor: bg ?? '', borderRadius }}>
 
                     <div className='head-box'>
+
+                        {onClickHamburger &&
+                            <button type="button" onClick={onClickHamburger} className="hamburger-mobile">
+                                <IconHamburger />
+                            </button>
+                        }
                         {title &&
                             <div className='head-title'>
                                 <p className='title'>

@@ -97,12 +97,31 @@ export const Container = styled.div.withConfig({
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 25px;
+      gap: 15px;
       position: relative;
       z-index: 3;
       padding: ${({ paddingHeader }) => paddingHeader};
-      .head-title {
+      .hamburger-mobile {
+        width: 30px;
+        height: 30px;
+        z-index: 99;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        margin: 0px;
+        border: none;
+        background: transparent;
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+        @media (max-width: 400px) {
+          display: flex;
+        }
+      }
+      > .head-title {
         flex: 1;
+        max-width: calc(100% - 40px);
         .title {
           flex: 1;
           font-size: 18px;
@@ -110,6 +129,10 @@ export const Container = styled.div.withConfig({
           color: ${({ theme }) => theme.colors.neutral[700]};
           margin: 0px;
           padding: 0px;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          max-width: calc(100%);
         }
         .sub {
           flex: 1;

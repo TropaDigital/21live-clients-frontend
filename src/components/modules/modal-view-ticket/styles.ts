@@ -8,7 +8,7 @@ export const Container = styled.div.withConfig({
   shouldForwardProp: (prop) => !["opened", "isMobile"].includes(prop),
 })<IProps>`
   width: calc(90vw - 60px);
-  height: calc(100vh - 140px);
+  height: calc(100vh - 130px);
   display: flex;
   gap: 0px;
   padding: 0px 40px;
@@ -17,6 +17,10 @@ export const Container = styled.div.withConfig({
   background-color: ${({ theme }) => theme.colors.background.surface};
   border: 1px solid ${({ theme }) => theme.colors.neutral[300]};
   border-radius: 0px 0px 30px 30px;
+  @media(max-width: 600px){
+    height: calc(100vh - 180px);
+    border-radius: 0px;
+  }
   * {
     &::-webkit-scrollbar {
       height: 8px;

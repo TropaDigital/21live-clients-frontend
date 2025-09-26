@@ -97,13 +97,20 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
 
     const [openedMobile, setOpenedMobile] = useState(false);
 
-    return (
-        <ModalDefault padding='0px' paddingHeader='30px 40px' layout='right' title={item.task_text ? 'Texto' : item.annex_title} opened={opened} onClose={onClose}>
-            <S.Container color={tenant?.colorhigh}>
+    const isMobile = window.innerWidth < 600 ? true : false;
 
-                <button onClick={() => setOpenedMobile(!openedMobile)} className="hamburger-mobile">
-                    <IconHamburger />
-                </button>
+    return (
+        <ModalDefault
+            onClickHamburger={() => setOpenedMobile(!openedMobile)}
+            padding='0px'
+            paddingHeader='30px 40px'
+            layout='right'
+            title={item.task_text ? 'Texto' : item.annex_title}
+            opened={opened}
+            onClose={onClose}
+            borderRadius={isMobile ? '0px' : undefined}
+        >
+            <S.Container color={tenant?.colorhigh}>
 
                 {extension === 'image' &&
                     <div className="preview-render">
@@ -239,7 +246,7 @@ export const ModalViewInteraction = ({ item, interactions, opened, onSubmit, onC
 
                 </div>
             </S.Container>
-        </ModalDefault>
+        </ModalDefault >
     );
 };
 
